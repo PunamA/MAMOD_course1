@@ -1,35 +1,52 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Julie Lowndes at NCEAS, 12/14/16" />
+<meta name="author" content="Adam Saddler, Amelia Bertozzi-Villa, Annie Browne, Jailos Lubinda, Justin Millar, Punam Amratia, Susan Rumisha, Tasmin Symons" />
 
 
-<title>Making free websites with RStudio’s R Markdown</title>
+<title>Introduction to Spatial Analysis for Infectious Diseases</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
-<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -42,37 +59,12 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
-</head>
 
-<body>
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
 
 <style type = "text/css">
 .main-container {
@@ -80,58 +72,71 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
 }
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 45px;
-  padding-bottom: 40px;
+.dropdown-submenu {
+  position: relative;
 }
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 50px;
-  margin-top: -50px;
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
 }
-
-.section h2 {
-  padding-top: 50px;
-  margin-top: -50px;
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
 }
-.section h3 {
-  padding-top: 50px;
-  margin-top: -50px;
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
 }
-.section h4 {
-  padding-top: 50px;
-  margin-top: -50px;
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
 }
-.section h5 {
-  padding-top: 50px;
-  margin-top: -50px;
+.dropdown-submenu.pull-left {
+  float: none;
 }
-.section h6 {
-  padding-top: 50px;
-  margin-top: -50px;
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -142,26 +147,166 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
-
-
-<div class="container-fluid main-container">
 
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -169,26 +314,29 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">HOME</a>
+      <a class="navbar-brand" href="index.html">Before we get Started</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="first_observations.html">First Observations</a>
+  <a href="01_datamanagement.html">Data management</a>
 </li>
 <li>
-  <a href="basic_workflow.html">Basic Workflow</a>
+  <a href="02_datahandling.html">Data handling and Visualiation in R</a>
 </li>
 <li>
-  <a href="getting_sophisticated.html">Getting Sophisticated</a>
+  <a href="03_QGIS.html">Spatial Data in QGIS</a>
 </li>
 <li>
-  <a href="your_turn.html">Your Turn</a>
+  <a href="04_spatial_in_R.html">Spatial Data in R</a>
+</li>
+<li>
+  <a href="05_Intro_to_INLA.html">Introduction to R-INLA</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -198,37 +346,254 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
-<h1 class="title toc-ignore">Making free websites with RStudio’s R Markdown</h1>
-<h4 class="author"><em><a href="https://github.com/jules32">Julie Lowndes</a> at <a href="https://www.nceas.ucsb.edu/">NCEAS</a>, 12/14/16</em></h4>
+<h1 class="title toc-ignore">Introduction to Spatial Analysis for
+Infectious Diseases</h1>
+<h4 class="author">Adam Saddler, Amelia Bertozzi-Villa, Annie Browne,
+Jailos Lubinda, Justin Millar, Punam Amratia, Susan Rumisha, Tasmin
+Symons</h4>
 
 </div>
 
 
 <hr />
-<p>It’s possible to create well-designed websites for free using <a href="http://rmarkdown.rstudio.com/">RStudio’s R Markdown</a> and hosting them on <a href="http://github.com">Github</a>. This is very new and incredibly cool. It is a really powerful way to communicate science using the same reproducible workflow you use for your analyses and collaborations.</p>
-<p><strong><em>Creating websites with R Markdown can be done without knowing R or HTML, CSS, etc,</em></strong> and that’s where we’ll start. However, R Markdown integrates with these tools so the more you know the more complex and beautiful your website can be. This tutorial borrows heavily from a lot of great tutorials and resources you should check out too – there are links throughout.</p>
-<p>The best way to learn is to follow along with your own laptop, but all are welcome. We’ll spend half the time with the tutorial and half the time for you to work on your own website and get help. If you bring your laptop please do this beforehand:</p>
-<ol style="list-style-type: decimal">
-<li>install <a href="https://www.rstudio.com/products/rstudio/download/">RStudio</a></li>
-<li>create a <a href="(http://github.com)">GitHub</a> account (<a href="http://happygitwithr.com/github-acct.html">advice</a>)</li>
-<li>set up your computer to talk to GitHub
-<ul>
-<li>have RStudio linked directly (preferred) (<a href="http://happygitwithr.com/hello-git.html">instructions sections 8-14</a>)</li>
-<li>or install the <a href="https://desktop.github.com/">Desktop App</a></li>
-<li>or be familiar with git commands for the command line (<a href="https://try.github.io/levels/1/challenges/1">tutorial</a>)</li>
-</ul></li>
-</ol>
+<p>
+</p>
+<div style="text-align: center; margin-top: 30px; margin-bottom: 30px;">
+<p><img src="images/map-logo_col.png" /></p>
+</div>
+<p>
+</p>
+<p>Welcome to the Introduction of Spatial Analysis for Infectious
+diseases tutorial pages. In this part of the workshop we aim to teach
+basic concepts, skills and tools for working with data so that you can
+get more done n less time, and with less pain. The lessons here focus
+mainly on the use of R and QGIS.</p>
+<p>The main sections of this workshop are designed to be introductory
+for participants with little to no programming experience. The advanced
+section taught in R for Geostatistical Modelling using
+<code>R-INLA</code> requires participants to have some statistical
+knowledge, some understanding of bayesian statistics and some prior
+knowledge of spatial data.</p>
 <hr />
-<p><strong>Examples:</strong></p>
-<p>We have been using R Markdown for the Ocean Health Index: <a href="http://ohi-science.org/ohi-global"><strong>ohi-science.org/ohi-global</strong></a>.<br />
-And R Markdown is much more than just websites – here’s a <a href="http://rmarkdown.rstudio.com/lesson-1.html"><strong>one-minute video about R Markdown</strong></a> to get you excited.</p>
+<p><strong>Goal of this tutorial:</strong></p>
+<p>We want to provide our audience with a few useful tools for their
+day-to-day data activities. Given the restricted time of ASTMH, we may
+not be able to cover all important aspects of data handling. But the
+team are excited to release future workshops more tailored to
+regional/country requests. Please get in touch with us at <strong>INSERT
+EMAIL</strong></p>
+<hr />
+<p><br></p>
+<div id="preparations" class="section level2">
+<h2>Preparations</h2>
+<p>This workshops is expected to be hands-on, and to follow this lessons
+participants must have R, RStudio and QGIS installed on their computers.
+They also need to be able to install a number of R packages, create
+directories and download files.</p>
+<p>To avoid troubleshooting during the lesson, participants should
+follow the instruction below to download and install everything
+beforehand. If they are using their own computers this should be no
+problem, but if the computer is managed by their organization’s IT
+department they might need help from an IT administrator.</p>
+<p><br></p>
+<div id="install-qgis" class="section level3">
+<h3>Install QGIS</h3>
+<p>Follow the <a
+href="https://www.qgis.org/en/site/forusers/download.html">QGIS</a>
+download for the appropriate operating system to download on your
+computer.</p>
+<p><br></p>
+</div>
+<div id="install-r-and-rstudio" class="section level3">
+<h3>Install R and RStudio</h3>
+<p>R and RStudio are two separate pieces of software:</p>
+<ul>
+<li><strong>R</strong> is a programming language that is especially
+powerful for data exploration, visualization, and statistical
+analysis</li>
+<li><strong>RStudio</strong> is an integrated development environment
+(IDE) that makes using R easier. In this course we use RStudio to
+interact with R.</li>
+</ul>
+<p>If you don’t already have R and RStudio installed, follow the
+instructions for your operating system below. You have to install R
+before you install RStudio.</p>
+<div id="windows" class="section level4">
+<h4>Windows</h4>
+<ul>
+<li>Download R from the <a
+href="https://cran.r-project.org/bin/windows/base/release.htm">CRAN
+website</a>.</li>
+<li>Run the <code>.exe</code> file that was just downloaded</li>
+<li>Go to the <a
+href="https://www.rstudio.com/products/rstudio/download/#download">RStudio
+download page</a></li>
+<li>Under <em>All Installers</em>, download the RStudio Installer for
+Windows.</li>
+<li>Double click the file to install it</li>
+<li>Once it’s installed, open RStudio to make sure it works and you
+don’t get any error messages.</li>
+</ul>
+</div>
+<div id="macos" class="section level4">
+<h4>MacOS</h4>
+<ul>
+<li>Download R from the <a
+href="https://cran.r-project.org/bin/macosx/">CRAN website</a>.</li>
+<li>Select the <code>.pkg</code> file for the latest R version</li>
+<li>Double click on the downloaded file to install R</li>
+<li>It is also a good idea to install <a
+href="https://www.xquartz.org/">XQuartz</a> (needed by some
+packages)</li>
+<li>Go to the <a
+href="https://www.rstudio.com/products/rstudio/download/#download">RStudio
+download page</a></li>
+<li>Under <em>All Installers</em>, download the RStudio Installer for
+MacOS.</li>
+<li>Double click the file to install RStudio</li>
+<li>Once it’s installed, open RStudio to make sure it works and you
+don’t get any error messages.</li>
+</ul>
+</div>
+<div id="linux" class="section level4">
+<h4>Linux</h4>
+<ul>
+<li>Follow the instructions for your distribution from <a
+href="https://cloud.r-project.org/bin/linux">CRAN</a>, they provide
+information to get the most recent version of R for common
+distributions. For most distributions, you could use your package
+manager (e.g., for Debian/Ubuntu run
+<code>sudo apt-get install r-base</code>, and for Fedora
+<code>sudo yum install R</code>), but we don’t recommend this approach
+as the versions provided by this are usually out of date. In any case,
+make sure you have at least R 3.3.1.</li>
+<li>Go to the <a
+href="https://www.rstudio.com/products/rstudio/download/#download">RStudio
+download page</a></li>
+<li>Under <em>All Installers</em>, select the version that matches your
+distribution and install it with your preferred method (e.g., with
+Debian/Ubuntu
+<code>sudo dpkg -i   rstudio-YYYY.MM.X-ZZZ-amd64.deb</code> at the
+terminal).</li>
+<li>Once it’s installed, open RStudio to make sure it works and you
+don’t get any error messages.</li>
+</ul>
+<p><br></p>
+</div>
+</div>
+<div id="update-r-and-rstudio" class="section level3">
+<h3>Update R and RStudio</h3>
+<p>If you already have R and RStudio installed, first check if your R
+version is up to date:</p>
+<ul>
+<li>When you open RStudio your R version will be printed in the console
+on the bottom left. Alternatively, you can type
+<code>sessionInfo()</code> into the console. If your R version is 4.0.0
+or later, you don’t need to update R for this lesson. If your version of
+R is older than that, download and install the latest version of R from
+the R project website <a
+href="https://cran.r-project.org/bin/windows/base/">for Windows</a>, <a
+href="https://cran.r-project.org/bin/macosx/">for MacOS</a>, or <a
+href="https://cran.r-project.org/bin/linux/">for Linux</a></li>
+<li>It is not necessary to remove old versions of R from your system,
+but if you wish to do so you can check <a
+href="https://cran.r-project.org/bin/windows/base/rw-FAQ.html#How-do-I-UNinstall-R_003f">How
+do I uninstall R?</a></li>
+<li>Note: The changes introduced by new R versions are usually
+backwards-compatible. That is, your old code should still work after
+updating your R version. However, if breaking changes happen, it is
+useful to know that you can have multiple versions of R installed in
+parallel and that you can switch between them in RStudio by going to
+<code>Tools &gt; Global Options &gt; General &gt; Basic</code>.</li>
+<li>After installing a new version of R, you will have to reinstall all
+your packages with the new version. For Windows, there is a package
+called <code>installr</code> that can help you with upgrading your R
+version and migrate your package library.</li>
+</ul>
+<p>To update RStudio to the latest version, open RStudio and click on
+<code>Help &gt; Check for Updates</code>. If a new version is available
+follow the instruction on screen. By default, RStudio will also
+automatically notify you of new versions every once in a while.</p>
+<p><br></p>
+</div>
+<div id="install-required-r-packages" class="section level3">
+<h3>Install required R packages</h3>
+<p>During the course we will need a number of R packages. Packages
+contain useful R code written by other people. We will use the packages
+<code>tidyverse</code>, <code>sf</code> and <code>terra</code> mainly
+for this workshop.</p>
+<p>To try to install these packages, open RStudio and copy and paste the
+following command into the console window (look for a blinking cursor on
+the bottom left), then press the <kbd>Enter</kbd> (Windows and Linux) or
+<kbd>Return</kbd> (MacOS) to execute the command.</p>
+<pre class="r"><code>list.of.packages &lt;- c(&quot;tidyverse&quot;, &quot;sf&quot;, &quot;terra&quot;, &quot;rgdal&quot;, &quot;sp&quot;, &quot;raster&quot;, &quot;scico&quot;, &quot;RColorBrewer&quot;, &quot;viridis&quot;, &quot;viridisLite&quot;, &quot;ggplot2&quot;, &quot;tidyr&quot;, &quot;dplyr&quot;, &quot;readxl&quot;)
+new.packages &lt;- list.of.packages[!(list.of.packages %in% installed.packages()[,&quot;Package&quot;])]
+if(length(new.packages)) install.packages(new.packages)</code></pre>
+<p>Alternatively, you can install the packages using RStudio’s graphical
+user interface by going to <code>Tools &gt; Install Packages</code> and
+typing the names of the packages separated by a comma.</p>
+<p>R tries to download and install the packages on your machine. When
+the installation has finished, you can try to load the packages by
+pasting the following code into the console:</p>
+<pre class="r"><code>library(tidyverse)
+library(sf)
+library(terra)
+library(rgdal)</code></pre>
+<p>If you do not see an error like
+<code>there is no package called ‘...’</code> you are good to go!</p>
+<p><br></p>
+</div>
+<div id="installing-inla" class="section level3">
+<h3>Installing INLA</h3>
+<p>The integrated nested Laplace approximation (INLA) is a method for
+approximate Bayesian inference. In the last years it has established
+itself as an alternative to other methods such as Markov chain Monte
+Carlo because of its speed and ease of use via the R-INLA package.
+Although the INLA methodology focuses on models that can be expressed as
+latent Gaussian Markov random fields (GMRF), this encompasses a large
+family of models that are used in practice.</p>
+<p>To install the INLA-package in R, you have to manually add the r-inla
+repository is not on CRAN.</p>
+<pre class="r"><code>packages &lt;- c(&quot;malariaAtlas&quot;, &quot;lattice&quot;, &quot;gridExtra&quot;, &quot;devtools&quot;, &quot;rlang&quot;)
+if(length(setdiff(packages, rownames(installed.packages()))) &gt; 0) { 
+  install.packages(setdiff(packages, rownames(installed.packages()))) }
+
+#For INLA!!
+if(length(setdiff(&quot;INLA&quot;, rownames(installed.packages()))) &gt; 0){
+  install.packages(&quot;INLA&quot;,repos=c(getOption(&quot;repos&quot;),INLA=&quot;https://inla.r-inla-download.org/R/stable&quot;), dep=TRUE)
+}</code></pre>
+</div>
+<div id="updating-r-packages" class="section level3">
+<h3>Updating R packages</h3>
+<p>Generally, it is recommended to keep your R version and all packages
+up to date, because new versions bring improvements and important
+bugfixes. To update the packages that you have installed, click
+<code>Update</code> in the <code>Packages</code> tab in the bottom right
+panel of RStudio, or go to
+<code>Tools &gt; Check for Package Updates...</code>.</p>
+<p>Sometimes, package updates introduce changes that break your old
+code, which can be very frustrating. To avoid this problem, you can use
+a package called <code>renv</code>. It locks the package versions you
+have used for a given project and makes it straightforward to reinstall
+those exact package version in a new environment, for example after
+updating your R version or on another computer. However, the details are
+outside of the scope of this lesson.</p>
+<p><br></p>
+</div>
+<div id="download-the-data" class="section level3">
+<h3>Download the data</h3>
+<p>All data for this workshop will be found on your USB sticks</p>
+</div>
+</div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -236,13 +601,59 @@ And R Markdown is much more than just websites – here’s a <a href="http://rm
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
