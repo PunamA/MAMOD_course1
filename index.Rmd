@@ -3,6 +3,9 @@ title: "Introduction to Spatial Analysis for Infectious Diseases"
 author: Adam Saddler, Amelia Bertozzi-Villa, Annie Browne, Jailos Lubinda, Justin Millar, Punam Amratia, Susan Rumisha, Tasmin Symons
 output:
   html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
     fig_width: 1
 ---
 

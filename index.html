@@ -547,26 +547,6 @@ library(rgdal)</code></pre>
 <code>there is no package called ‘...’</code> you are good to go!</p>
 <p><br></p>
 </div>
-<div id="installing-inla" class="section level3">
-<h3>Installing INLA</h3>
-<p>The integrated nested Laplace approximation (INLA) is a method for
-approximate Bayesian inference. In the last years it has established
-itself as an alternative to other methods such as Markov chain Monte
-Carlo because of its speed and ease of use via the R-INLA package.
-Although the INLA methodology focuses on models that can be expressed as
-latent Gaussian Markov random fields (GMRF), this encompasses a large
-family of models that are used in practice.</p>
-<p>To install the INLA-package in R, you have to manually add the r-inla
-repository is not on CRAN.</p>
-<pre class="r"><code>packages &lt;- c(&quot;malariaAtlas&quot;, &quot;lattice&quot;, &quot;gridExtra&quot;, &quot;devtools&quot;, &quot;rlang&quot;)
-if(length(setdiff(packages, rownames(installed.packages()))) &gt; 0) { 
-  install.packages(setdiff(packages, rownames(installed.packages()))) }
-
-#For INLA!!
-if(length(setdiff(&quot;INLA&quot;, rownames(installed.packages()))) &gt; 0){
-  install.packages(&quot;INLA&quot;,repos=c(getOption(&quot;repos&quot;),INLA=&quot;https://inla.r-inla-download.org/R/stable&quot;), dep=TRUE)
-}</code></pre>
-</div>
 <div id="updating-r-packages" class="section level3">
 <h3>Updating R packages</h3>
 <p>Generally, it is recommended to keep your R version and all packages
