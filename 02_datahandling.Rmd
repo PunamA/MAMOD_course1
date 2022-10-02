@@ -1,0 +1,1322 @@
+---
+title: "Introduction to data handling and visualisation in R"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
+```
+
+
+This module provides an introduction to R and RStudio. It includes hands on teaching for how to handle data in R using key packages such as `tidyverse` `sf`, `sp`, `rgdal` and `terra`.
+
+In this module we will cover what R is, how to install it on your machine and how to interact with the RStudio interface. We will look at how to manage your projects in R then introduce basic data management and processing. This will then be expanded on and you will learn about data manipulation and key functions used to clean and investigate your data. We will introduce the ggplot package and explore how this can be used to produce high quality data visualisations. Finally we will cover how to save your data. 
+
+The teaching is followed by a practical session implementing the acquired skills to clean and process replica DHIS2 routine malaria surveillance data.
+
+\vspace{15pt}
+\renewcommand\contentsname{}
+\setcounter{tocdepth}{2}
+\hrule
+\tableofcontents
+\vspace{25pt}
+\hrule
+
+<br>
+
+## Introduction to R and Rstudio
+R is a popular programming language for data science. It is a powerful language which can be used for basic data cleaning and analysis, building complex statistical models, creating publication quality visualisations, as well building interactive tools and websites. R is an open source software with numerous people contributing packages to improve it"s functionality. 
+
+We will be using R to run all of the code in this module. To improve ease of use we will run this through the RStudio interface. RStudio is an integrated development environment (IDE) from which we can run R. This is more user friendly and has large functionality for organising projects and building reproducible code.
+
+<br>
+
+### Installing R and RStudio
+Firstly to install R go to the R-project webpage: [https://www.r-project.org/](https://www.r-project.org/). Select a CRAN mirror in a location close to you from which to download R. Follow the prompts to download R for your processing system.  
+ 
+```{r, echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/download_R.png")
+```
+\vspace{10pt}
+
+Rstudio can then be downloaded from the webpage: [https://www.rstudio.com/products/rstudio/download](https://www.rstudio.com/products/rstudio/download). Select the free desktop version to proceed.
+
+\vspace{10pt}
+```{r, out.width="50%", echo=FALSE}
+knitr::include_graphics("images/download_Rstudio.png")
+```
+
+<br>
+
+### Overview of RStudio
+Once installed, open up RStudio. You will see the console on your left, this is where you can type code and run R commands. There are two windows on your right, the top one shows you what is in the global R environment, and the bottom one is where you can view files, plots, packages and help pages. 
+
+There are two ways we can run R code in RStudio, directly from the console, or from an R script. We will start by looking at the console where we can write basic code to be run line by line. 
+
+<br>
+
+### Basic expressions
+In the console we can write expressions and execute them by pressing enter. The most basic code we can write is simple calculations; when we press enter the calculation will be processed and a value returned.
+
+```{r}
+5 + 5
+```
+
+You can create variables and assign values to them, for example, we want to create a variable for the number of people tested for malaria. We want the variable to be called "tested" and for it to have the value of 120. We assign this using the `<-` sign. This will now appear in your global environment window on the top right. We can use the shortcut "`alt` and `-`" to input the `<-` sign.
+
+```{r}
+tested <- 120
+```
+
+You can then refer to the variable in the code you write and it will work as the value assigned to it. It is then possible to do calculations based on this variable.
+
+```{r}
+tested * 2
+tested / 10
+```
+
+Creating another variable will allow us to perform calculations between those variables. These variables can then be updated and the same code rerun to produce updated results. For example, we received information telling us that of the 120 people tested for malaria, 80 were confirmed positive. We can assign this value to the variable "positive" and calculate the proportion of those tested who were confirmed positive.
+
+```{r}
+positive <- 80
+positive / tested  ## Proportion of people tested confirmed positive
+```
+
+If we then received updated information that 160 people were tested, not 120, we can update the value for tested and recalculate the proportion of positive cases.
+
+```{r}
+tested <- 160    
+positive / tested 
+```
+
+We can store the output value as a new variable and give it a name. This can then be called on from the environment.
+
+```{r}
+proportion_positive <- positive / tested 
+proportion_positive
+```
+
+R isn't restricted to numeric variables, we can also create variables of character strings in the same way.
+
+```{r}
+country <- "Burkina Faso"
+country
+```
+
+<br>
+
+### Vectors
+In R we commonly work with vectors, these are sequences of values. Vectors can be numeric or character strings and are created using the `c()` function. Once we have created the vector we can access different values of the vector by using square brackets. `[2]` will return the second value in the vector.  
+
+```{r}
+tested <- c(56, 102, 65, 43, 243) 
+tested[2]
+
+countries <- c("Burkina Faso", "Nigeria", "Tanzania", "Uganda")
+countries[2]
+```
+
+<br>
+
+### Basic functions
+Next we can run some functions in R. There are a range of base functions in R, and additional ones made available by installing "packages" (more details on this later). Functions often take arguments in brackets (). Some of the base functions in R allow us to easily compute common summary statistics on vectors. Here are some examples.
+
+```{r}
+sum(tested)
+mean(tested)
+max(tested)
+```
+Some functions will take additional arguments. Take the `round()` function. This takes two arguments, the first is the number you wish to round, the second is the number of digits to round to.
+
+```{r}
+round(3.14159, 2)
+```
+
+<br>
+
+### Scripts
+In most situations you will be wanting to write multiple lines of reproducible code. To do this you can open an R script by going to File > New File > R Script (or the shortcut `Ctrl+Shift+N`). This opens a text editor in the top left window where we can write our code. You can then run the whole script by clicking the "Run" button. Alternatively, you can run sections by highlighting the lines to execute and either clicking "Run" or `Ctrl+Enter`. You can also run the script line by line, by typing `Ctr+Enter` to run the line your cursor is currently on. Scripts can be saved, shared with others, and built on or rerun at later dates. From this point on we will work in R scripts.   
+  
+  <br>
+  
+### Installing packages
+R has a range of base functions available to be used, these include things such as `mean()`, `sqrt()` and `round()`. For more advanced data management, analysis and visualisations there are additional packages you can download which contain a wide range of functions.
+
+Many packages are available on CRAN. CRAN is "The Comprehensive R Archive Network" and it stores up-to-date versions of code and documentation for R. Packages from CRAN can be installed directly from RStudio. For this module we will primarily be using the `tidyverse` group of packages. First we need to install the packages, then we need to load it into R to be able to use the functions. At the top of most R scripts you will find code for the packages being used in that script.
+
+```{r, warning=FALSE, eval=FALSE}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r lib, results='hide', message=FALSE, echo=FALSE}
+library(tidyverse)
+```
+You will only need to install the package onto your machine once, from then on for each new session of R you will need to load the packages required, but not to install them again.
+
+<br>
+
+### Help available in R studio
+There is a range of help available in RStudio. The most basic and informative of these is the `help()` function or `?` operator. These provide access to the R help pages and documentation for the packages and functions. For example, if we look at the help page for the `round()`, which is a base R function, we can see a description of the function and the format the code needs to take.
+
+```{r, eval=FALSE}
+?round
+```
+
+We can also access help pages for packages. This will show all of the help pages available for that package
+
+```{r, eval=FALSE}
+help(package = tidyverse)
+```
+
+Alternatively many packages have vignettes. These are documents detailing the facilities in a package. They can be accessed from the help page of the project, as above, or called on directly.
+
+```{r, eval=FALSE}
+vignette("pivot")
+```
+
+Finally, the internet provides a huge amount of help for coding in R. Search engines such as Google will provide multiple results for the problems you face (if you are struggling someone will have had the same problem before and asked for help!). Sites such as [stackoverflow](https://stackoverflow.com/) contain large numbers of questions and answers from the R users community. 
+
+<br>
+
+## Project management with Rstudio
+In RStudio you can use "projects" to manage your files and code. These help by organising everything into a working directory and allowing you to easily keep your files, scripts and outputs for a single project in one place. 
+
+You can either create a new project from scratch in RStudio, create a project from an existing folder containing R code or by cloning a version controlled (e.g. Git) repository.
+
+We will look at how to start a new project in RStudio. To do this we go to File > New Project. Select the option to create the project in a new directory and give the directory a name and create the project.
+
+```{r, out.width="80%", echo=FALSE}
+knitr::include_graphics("images/new_proj.png")
+```
+
+You will then see the project appear in the bottom right window. You can now navigate your project from this window. You can see the files you have saved as part of the project, create new folders, delete, move or rename files. 
+
+```{r, out.width="50%", echo=FALSE}
+knitr::include_graphics("images/new_proj2.png")
+```
+
+<br>
+
+> ### Task 1
+> - Open up RStudio and create a new project called  **MAP_spatial_analysis_course**
+> - Create some folders to organise your work. Create one new folder called *"scripts"* and one called *"data"*.
+> - Move the data you have downloaded from XXX to the *"data"* folder
+> - Open a new script in RStudio, install and load the `tidyverse` package and save the script into the scripts folder, calling in `session2.R`
+
+<br>
+
+## Data structures
+We will now introduce you to some of the basic data types in R, how to import data and interrogate it in R Studio. The major data structures in R are:
+
+- Vectors
+- Factors
+- Data frames
+- Lists
+- Matrices
+
+We have looked at vectors, which are a series of values, either numbers, characters or logical values (TRUE or FALSE). Factors are the data type for storing categorical data. Data frames are a selection of equal length vectors grouped together, where the vectors can be of different data types.
+
+A matrix is a 2-dimensional array which can hold numeric, character or logical data types. All of the data in a matrix has to be of the same type and there is a fixed number of rows and columns.   
+
+Lists are essentially a list of other items, these can be a mixture of different data types, for example you can create a list  of data frames, matrices and vectors. It is useful way of organising and storing data. 
+
+Data frames are the most common format used to analyse datasets in R. In this section we will work with data frames, and introduce factors.
+
+<br>
+
+### Importing data
+R has the functionality to import various types of data. One of the most common file types we work with are `.csv` files, but we can also import `.dta` files and `.xlsx` files amongst others.
+
+We can import .csv files into RStudio using the base function `read.csv()`. In this function we insert the file path to the data we wish to import. Note that as we have set up a project, this is our base directory so file paths stem from where the project is saved. We can assign the imported dataset to an object, here called "routine_data", using the `<-` operator to store it in our environment.
+
+For this module we are using a dataset called "routine_data". This is an fake dataset of malaria routine case reporting and contains variables for the numbers of malaria tests performed and the numbers of confirmed cases. Data are reported by health facility for children under and over the age of 5 seperately. 
+
+```{r}
+routine_data <- read.csv("data/routine_data.csv") 
+```
+
+Other data types can easily be read into R using different packages available. Stata files (.dta) can be read in using the `read_dta()` function from the `Haven` package, and excel files (.xls or .xlsx) using the `read_excel()` function from the `readxl` package. Both of these packages are part of the `tidyverse` we installed earlier so they do not need to be installed, just loaded.
+
+```{r, eval=FALSE}
+## Examples, not run
+library(haven)
+dta_file <- read_dta("filename.dta")
+
+library(readxl)
+excel_file <- read_excel("filename.xlsx")
+```
+
+Whilst `read.csv()` is the most common way to read data into R, there is the alternative `read_csv()` function (note the underscore). This is part of the `tidyverse` group of packages and is often a better option for reading in CSV files. This function is quicker, it reads the data in as a tibble instead of a data frame and allows for non standard variable namesm amongst other benefits.
+
+```{r}
+routine_data <- read_csv("data/routine_data.csv") 
+```
+
+There are various options we can use when importing data, such as whether to include headers, what character to use for decimal points, what to import as missing values. To explore these options you can look at the help pages e.g. `?read_csv`.
+
+<br>
+
+### Data frames
+We will now look at the csv we just imported. You will now see the "routine_data" object in your environment that we created and assigned this dataset too. You can see what the data looks like either by clicking on it in the global environment window or by typing the command `View(routine_data)` which opens up a window displaying the data. Alternatively, we may just want to look at a few rows. We can do this by using the `head()` function, which shows us the first n rows of data
+
+```{r}
+head(routine_data, 5)
+```
+
+To understand the structure of the data we can use the `str()` command. This shows us that "routine_data" is a data.frame with 15 observations of 6 variables. The variables "country" and "method" are character strings, whilst "year", "tested" and "confirmed" are integers and "mean_age" is numeric.
+
+```{r}
+str(routine_data)
+```
+
+As we did with the vector, we can extract parts of the data frame using indices. For a data frame we can select the nth row, or the nth column using square brackets (note where the comma is paced).
+
+```{r, out.line = 5}
+routine_data[,1]  # First column
+routine_data[1,]  # First row
+```
+
+To access variables of the data frame in base R we can use the `$` operator in the format of `dataframe$variable`. We can now look at some of the variables within our data frame. `summary()` will provide a summary of the numerical variable, whilst `table()` will tabulate categorical variables.
+
+```{r}
+summary(routine_data$test_u5)
+table(routine_data$adm1)
+```
+We can see here that there are -9990 values in the test field. This is a common way of representing missing data. We can define this as missing when we import the data in the `read_csv` function.
+
+```{r}
+routine_data <- read_csv('data/routine_data.csv', na = c("", "NA", -9999))
+summary(routine_data$test_u5)
+```
+
+<br>
+
+### Factors
+In our data frame `routine_data` the variable "month" is a categorical variable. However, this is currently stored as a character. 
+
+```{r}
+class(routine_data$month)
+```
+In R we store and analyse categorical data as factors. It is important that variables are stored correctly so that they are treated as categorical variables in statistical models and data visualisations. We can convert "month" to a factor using this code.
+
+```{r}
+routine_data$month <- factor(routine_data$month)
+class(routine_data$month)
+```
+
+However, month should be an ordered variable and the factor needs to be ordered accordingly. We can see that R has ordered the factor alphabetically as standard, we can manually determine the levels of the factor so that they are ordered correctly using the "levels" option in the `factor()` command. 
+
+```{r}
+table(routine_data$month)
+
+routine_data$month <- factor(routine_data$month,
+                        levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+table(routine_data$month)
+```
+
+<br>
+
+> ### Task 2 {.challenge}
+> - Import the `routine_data.csv` file using the `read_csv()` function, setting -9999 values to NA, call the object `routine_data`
+> - Explore the data using functions such as `str()`, `head()` and `summary()`
+> - Convert the variable `month` to an ordered factor
+>
+>
+> <details>
+>   <summary markdown="span">Solution</summary>
+> 
+>  ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>  routine_data <- read_csv("data/routine_data.csv")
+>  str(routine_data)
+>  head(routine_data)
+>  summary(routine_data)
+>  routine_data$month <- factor(routine_data$month, levels = month.abb)
+>  ```
+> </details>
+
+<br>
+
+## Exploring data frames
+In this section we introduce you to the `tidyverse` packages and show how these functions can be used to explore, manipulate and analyse data. 
+
+Tidyverse is a collection of R packages for data science, designed to make cleaning and analyses of data easy and tidy. It uses a range of packages and functions, along with the pipe operator, `%>%`, to produce easily readable and reproducible code.
+
+We will start by looking at the basic data manipulation functions from the tidyverse. We have already loaded this package with the command `library(tidyverse)`.
+
+We will cover the following simple, commonly used functions in tidyverse:
+
+- select
+- filter
+- rename
+- mutate
+- group_by
+- summarise
+
+We will continue this investigation using the `routine_data.csv` dataset we imported into R in the previous section.
+
+<br>
+
+### Select
+Firstly, we can use `select()` to select columns from the data frame. The first argument is the name of the data frame, followed by the columns you wish to keep. Here we will just select the tested and confirmed numbers of malaria cases, along with the location and date information.
+
+```{r, out.lines = 8}
+select(routine_data, adm1, adm2, hf, year, month, test_u5, conf_u5)
+```
+
+This function can also be used to remove variables from a dataset by using a minus sign before the variables. This means that the same results could be achieved with the following code.
+
+```{r, out.lines = 8}
+select(routine_data, 
+       -test_rdt_u5, -test_rdt_ov5, -test_mic_u5, -test_mic_ov5,
+       -conf_rdt_u5, -conf_rdt_ov5, -conf_mic_u5, -conf_mic_ov5)
+```
+
+If we want to assign this to a new object, or replace the existing object, we can do so using the `<-` operator.
+
+```{r}
+routine_data <- select(routine_data, adm1, adm2, hf, year, month, test_u5, conf_u5)
+```
+<style>
+div.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+</style>
+<div class = "blue">
+
+NOTE: When using tidyverse there are a range of helper functions to help you concisely refer to multiple variables based on their name. This makes it easier to select numerous variables and includes helper functions such as `starts_with()` and `ends_with()`. To explore these further look at `?select`
+
+</div>
+
+<br>
+
+### Filter
+Next, we can filter the data to only include rows which meet a certain specification. To do this we use the `filter()` function. The first argument is the data frame we wish to filter, followed by the argument that we want to filter by. In the first command we select the rows for West region In the second command we select all rows which tested more than 500 children under 5 for malaria. 
+
+We can filter data to be equal to a value using the double equals sign `==`, not equal to using `!=`, and standard operators for more than/less than (`>`, `<`) and more/less than or equal to (`>=`, `<=`). Note that when filtering variables that are characters the string must appear in quotation marks, "", whilst with numerical values this is not required. 
+
+We can also combine multiple commands into the same filter using the `&` (and) or `|` (or) operators.  
+
+```{r, out.lines = 8}
+filter(routine_data, 
+       adm1 == "West")
+
+filter(routine_data, 
+       test_u5 >500)
+
+filter(routine_data, 
+       (adm1 == "West" | adm1 == "Central") &
+       test_u5 >=500)
+```
+We may want to use the `filter` function to identify erroneous data in our dataset, for example, we can identify situations where the number of people confirmed with malaria is higher than the number tested.
+
+```{r, out.lines = 8}
+filter(routine_data,
+       conf_u5>test_u5)
+```
+
+<br>
+
+### Rename
+There may be situations when we want to rename variables in a data frame to make it more comprehensive and easier to process. This can easily be done using the function `rename()`. We pass to this function the data frame we are working with, the new name we want the variable to take and the existing name of the variable. So if we wanted to change the variable "conf_u5" to "positive_u5", and to overwrite the object "routine_data" with this we would simply write:
+
+```{r, out.lines = 8}
+rename(routine_data, 
+       positive_u5 = conf_u5)
+```
+
+<br>
+
+### Mutate
+Next, we can add new variables to the dataset or change existing variables using `mutate()`. Mutate allows us to assign new variables using the `=` sign. For example, if we wanted to create a variable of the proportion of tested cases confirmed positive we could write:
+
+```{r, out.lines = 8}
+mutate(routine_data,
+       prop_positive_u5 = conf_u5/test_u5)
+```
+
+We can also use `mutate()` to alter existing variables within the data frame. Say we noticed that there was an error in the admin 1 name where in some instance "North Coast" was entered as "N. Coast" we can change this by by combining the `mutate()` function with an `ifelse` statement. The first command of the `ifelse()` statement is the condition which has to be met, here `adm1 == "N. Coast"`; the second command is what you wish to replace the variable with if this condition is met; the third part is what the variable should be else this condition is not met. 
+
+```{r, eval=FALSE}
+table(routine_data$adm1)
+
+mutate(routine_data,
+       country = ifelse(adm1 == "N. Coast", "North Coast", adm1))
+```
+
+Similarly, we can use `case_when` instead of `ifelse` when replacing parts of a variable. This is particularly useful if making multiple changes. As there were other errors in the adm1 variables we can correct these at the same time using the following code.
+
+
+```{r, eval=FALSE}
+routine_data <- 
+  mutate(routine_data,
+         adm1 = case_when(adm1 =='N. Coast'~'North Coast',
+                          adm1 == 'central'~'Central',
+                          TRUE~adm1))
+table(routine_data$adm1)
+```
+
+<br>
+
+### Null values
+Null values are treated differently in R. They appear as `NA` in the dataset, so we may expect the following code to work for filtering data to remove all missing values for the number of people tested for malaria:
+
+```{r, eval = FALSE}
+filter(routine_data, test_u5 !=NA)
+```
+
+However, this does not work as R has a special way of dealing with missing values. We use the `is.na()` command, which checks fo `NA` values. As with the equals command, if we want the reverse of this, i.e. "not NA" we can use `!is.na()`. So the code to remove missing values would be:
+
+```{r, eval = FALSE}
+filter(routine_data, !is.na(test_u5))
+```
+
+Another method for removing missing data in tidyverse is using the `drop_na()` function. As with the filter function this takes the dataset as the first argument, followed by the variables for which you are dropping NA values. 
+
+```{r}
+routine_data <- drop_na(routine_data, test_u5)
+```
+
+<br>
+
+### Dates
+Dates in R tidyverse are managed using the `lubridate`. This makes working with dates and times in R far easy allowing for various formats and calculations with dates. In the `lubridate` package we can use the following functions to get the current date and time.
+
+```{r, warning=F, message=F}
+library(lubridate)
+
+today()
+
+now()
+```
+
+In our routine_data dataset we have a variable of month and year, from these we want to create one variable for date. We can do this using the `make_date()` function. This function expects inputs for the day, month and year. If the day or month is missing then this defaults to 1, and if the year is missing it defaults to 1970.
+
+```{r}
+make_date(year = 2022, month = 6, day = 13)
+
+make_date(year = 2022, month = 6)
+
+make_date(year = 2022)
+```
+
+We can use this function to create a date variable in our routine dataset, combining it with mutate.
+
+```{r}
+routine_data <- mutate(routine_data,
+                       date_tested = make_date(year = year, month = month))
+```
+
+Once a date is in the correct date format it is then very easy to change the format of the date and do calculations on the dates. for more information look at the lubridate vignette `vignette("lubridate")`
+
+<br>
+
+### Sorting and reordering data frames
+Sorting a data frame by rows and reordering columns is easy in R. To sort a data frame by a column we use the function `arrange()`. We specify the data frame and the column to sort by, and the default is to sort in ascending order. To sort in a descending order we can specify this with `desc()`. Additionally, we can sort by multiple variables, and sorting will be undertaken in the order they appear in the command.
+
+```{r, out.lines = 8}
+arrange(routine_data, test_u5)
+
+arrange(routine_data, desc(test_u5))
+
+arrange(routine_data, adm1, hf, date_tested)
+```
+We can change the order that columns appear in the dataset using the `relocate()` function. This takes the first argument as the data frame, the second as the column(s) you wish to move, and then where you want to over them to.
+
+```{r, out.lines = 8}
+relocate(routine_data, date_tested, .before = adm1)
+```
+
+<br>
+
+### Summarising data
+There are some useful functions in tidyverse to help you summarise the data. The first of these is the `count()` function. This is a quick function which will allow you to quickly count the occurrences of an item within a dataset.
+
+```{r}
+count(routine_data, adm1)
+```
+
+By including multiple variables in the command we can count the numbers of times that combination of variables appears. 
+
+```{r, out.lines = 8}
+count(routine_data, adm1, month)
+```
+
+If we want to summarise numerical variables we can use the function `summarise()`. This is used in conjunction with other mathematical functions such as `sum()`, `mean()`, `median()`, `max()`. 
+
+```{r}
+summarise(routine_data,
+          total_tested = sum(test_u5),
+          mean_tested = mean(test_u5),
+          median_tested = median(test_u5),
+          max_tested = max(test_u5))
+```
+
+We can combine the `summarise()` function with `group_by()` to summarise the data by different variables in the dataset. To calculate the total number of people tested and positive for malaria in each country in our dataset, we would group by this variable first and then summarise the data. Grouping is not restricted to one variable, if you wanted to group the data by location and date then both variables would be included in the command.
+
+```{r}
+routine_data <- group_by(routine_data, adm1)
+summarise(routine_data, 
+          total_tested_u5 = sum(test_u5),
+          total_positive_u5 = sum(conf_u5))
+```
+
+<br>
+
+### Pipes
+We have introduced some of the key functions for data cleaning and manipulation. However, creating intermediate variables in lots of steps can be cumbersome. In these cases we can use the pipe operator `%>%` to link commands together. This takes the output of one command and passes it to the next. So if we had the vector called "tested" we created earlier, and wanted to find the mean of it, rather than the basic R code we can use the pipe operator to pass the vector "tested" into the mean function. We can use the shortcut `Ctrl+Shift+M` to write the pipe operator.
+
+```{r}
+tested <- c(56, 102, 65, 43, 243) 
+mean(tested)        # Basic command
+tested %>% mean()   # Using the pipe
+```
+
+This means that using our "routine_data" dataset we can link some of the commands we have introduced today together. We can read in our dataset, select the variables we want to keep, filter our dataest, and edit/create variables in one chunk of piped code. Note that as we are using the pipe operator we no longer need to tell each command what data frame is being used.
+
+```{r}
+routine_data <- read.csv("data/routine_data.csv") %>% 
+  select(adm1, adm2, hf, month, year, test_u5, conf_u5) %>% 
+  drop_na(test_u5) %>% 
+  filter(test_u5>conf_u5) %>% 
+  mutate(adm1 = case_when(adm1 =='N. Coast'~'North Coast',
+                          adm1 == 'central'~'Central',
+                          TRUE~adm1))
+```
+
+Additionally, we can link the `group_by()` and `summarise()` functions together to show data summaries.
+
+```{r}
+routine_data %>% 
+  group_by(adm1) %>% 
+  summarise(total_tested = sum(test_u5),
+            total_positive = sum(conf_u5))
+```
+
+<br>
+
+> ### Task 3 {.challenge}
+> Using the "routine_data" dataset we imported in the last task:
+> 
+> - Select the variables for location, date and the number of people tested and confirmed cases for children over 5 only (suffix "_ov5")
+> - Identify and remove any missing data, or unrealistic values (e.g  confirmed cases higher than those tested)
+> - Identify any errors in year variable and correct them
+> - Create a date variable called `date_tested` using the `lubridate`  package
+> 
+>
+> <details>
+>   <summary markdown="span">Solution</summary>
+> 
+>  ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>  routine_data %>% 
+>  select(month, year, test_ov5, conf_u5)
+>  routine_data %>% 
+>  drop_na(test_ov5, conf_ov5) %>% 
+>  filter(test_ov5 > conf_ov5) 
+>  unique(routine_data$year)
+>  routine_data %>% 
+>  mutate(year = case_when(year == 3018 ~ 2018,
+>                   year == 18 ~ 2018,
+>                   TRUE ~ year)) %>% 
+>  mutate(date_tested = make_date(year = year, month = month))
+>  
+>  ```
+> </details>
+
+
+<br>
+
+### Demo 1
+We now want to take everything we have learnt to import and clean the routine dataset. We want our output to contain the total numbers of malaria tests performed and the number of confirmed cases in children under 5, people over 5, and calculate a total for all ages. We want to have the total by admin level 2 locations and for each month in the dataset. This is how we would go about building the code.
+
+```{r, message=F}
+routine_data <- read_csv('data/routine_data.csv', na = c("", "NA", -9999))
+
+clean_routine_data <- routine_data %>% 
+  select(adm1, adm2, hf, month, year, test_u5, test_ov5, conf_u5, conf_ov5) %>% 
+  drop_na(test_u5, test_ov5, conf_u5, conf_ov5) %>% 
+  filter(test_u5>conf_u5,
+         test_ov5>conf_ov5) %>% 
+  mutate(adm1 = case_when(adm1 =='N. Coast'~'North Coast',
+                          adm1 == 'central'~'Central',
+                          TRUE~adm1),
+         month = factor(month,
+                        levels = 
+                          c("Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")),
+         year = case_when(year == 3018 ~ 2018,
+                          year == 18 ~ 2018,
+                          TRUE ~ year),
+         date_tested = make_date(year = year, month = month), 
+         test_total = test_u5+test_ov5,
+         conf_total = conf_u5+conf_ov5) %>%
+  group_by(adm1, adm2, date_tested) %>% 
+  summarise(test_total = sum(test_total),
+            test_u5 = sum(test_u5),
+            test_ov5 = sum(test_ov5),
+            conf_total = sum(conf_total),
+            conf_u5 = sum(conf_u5),
+            conf_ov5 = sum(conf_ov5))
+
+head(clean_routine_data)
+```
+
+
+<br>
+
+## Advanced manipulation of data frames
+In this section we are building on the what we have introduced in the previous section and introducing some more advanced functions for data manipulation. We will be using the "clean_routine_data" dataset we just created.
+
+<br>
+
+### Reshshaping data
+Reshaping or pivoting data is an important part of data cleaning and manipulation. Tidyverse has introduced the functions `pivot_wider()` and `pivot_longer()` to improve the ease of reshaping data in R. 
+
+`pivot_longer()` takes a wide dataset and converts it into a long one, decreasing the number of columns and increasing the number of rows. Datasets are often created in a wide format, but for analysis a long format is often preferable, especially for data visualisations. 
+
+To reshape the data long we need to pass the argument the columns which are being pivoted, a name for the new column to identify the columns being reshaped, and a name for the values of the columns being reshaped. We can also combine this with helper functions such as `starts_with()` to help identify the columns to reshape. 
+
+Lets look at an example using the confirmed malaria cases from our "clean_routine_data" dataset. Here we are taking all of the columns which start with "conf" and reshaping the data so there is one variable identifying the age group and one identifying the number of confirmed cases. We can use the option `names_prefix = ` to identify a common prefix on the variable names to be removed.
+
+```{r}
+conf_cases <- select(clean_routine_data, adm1, adm2, date_tested, starts_with('conf'))
+
+long_data <- conf_cases %>% 
+  pivot_longer(cols = starts_with("conf"),
+               names_to = "age_group", 
+               values_to = "confirmed_cases",
+               names_prefix = "conf_")
+
+head(long_data)
+```
+
+There are a range of different options in this function to help pivot the data in the cleanest way possible. To see these you can look at the vignette by typing the code `vignette("pivot")`. 
+
+To pivot the data from long to wide we use the function `pivot_wider()`. This is essentially the reverse of the `pivot_longer()` function. If we take the object we reshaped long and want to convert it back to a wide data frame we do this by specifying the columns which identify the unique observations, and the columns you wish to reshape. "names_from" is the variable which will give you the column names, and "values_from" identifies the variable with the values you want to reshape.  
+
+```{r, out.lines = 8}
+long_data %>% pivot_wider(id_cols = c('adm1', 'adm2', 'date_tested'),
+                          names_from = age_group,
+                          names_prefix = "conf_",
+                          values_from = confirmed_cases)               
+```
+
+<br>
+
+### Joining data frames
+In R we can easily join two data frames together based on one, or multiple variables. There are the following options for joining two data frames, `x` and `y`:
+
+- `inner_join()`: includes all rows that appear in both x and y
+- `left_join()`: includes all rows in x
+- `right_join()`: includes all rows in y
+- `full_join()`: includes all rows in x or y
+
+To run the command you need to pass it the data frames you wish to join and the variable(s) you wish to join by. If there are matching variables in the data frames these will be detected and you do not need to specify them. 
+
+If we have two data frames with varying numbers of rows, we can investigate the outcomes of using the different join commands. Firstly, we create two data frames of different lengths, `tested`, and `confirmed`, then look at what the commands and outcomes would be.
+
+```{r}
+tested <- data.frame(year = c(2015, 2016, 2017, 2018, 2019, 2020),
+                     tested = c(1981, 1992, 2611, 2433, 2291, 2311))
+
+positive <- data.frame(year = c(2013, 2014, 2015, 2016, 2017, 2018),
+                     positive = c(1164, 1391, 981, 871, 1211, 998))
+
+# Command written in full
+inner_join(tested, positive, by = "year") 
+
+# Using the pipe operator
+tested %>% inner_join(positive)     # Keeps only matching records
+tested %>% left_join(positive)      # Keeps all records for the first dataset
+tested %>% right_join(positive)     # Keeps all records for the second dataset 
+tested %>% full_join(positive)    # Keeps all records from both datasets
+```
+
+We can also join datasets which have different names for the variables we wish to join on. Say if the variable for "year" in the positive dataset was "yr", we could use the command:
+
+```{r, out.lines = 8}
+positive <- data.frame(yr = c(2013, 2014, 2015, 2016, 2017, 2018),
+                     positive = c(1164, 1391, 981, 871, 1211, 998))
+
+tested %>% inner_join(positive,
+                      by= c("year"="yr"))
+
+```
+
+<br>
+
+## Writing data
+Once you have finished working on your data there are multiple ways you can save your work in R.
+
+One of the basic ones is to save your dataset as a csv. This is useful as it can easily be opened in other software (such as excel). You may also want to save your data as a Stata (dta) file. 
+
+R has some specific formats you can use to store data, these are `.RDS` and `.RData`. RDS files store one R object, whilst RData can store multiple objects.
+
+Here, we can select which format we want to save the data in and save the `pf_incidence` data frame we created in this module.
+
+Similarly to importing data, we can use the base R functions of `write.csv()`, or preferably the `tidyverse` option if `write_csv()`
+
+```{r, eval = FALSE}
+write_csv(clean_routine_data, "outputs/clean_routine_data")
+write_dta(clean_routine_data, "outputs/clean_routine_data.dta")
+
+saveRDS(clean_routine_data, "outputs/clean_routine_data.RDS")
+save(clean_routine_data, population, "outputs/clean_data.R")
+```
+
+<br>
+
+> ### Task 4 {.challenge}
+> - Import a clean version of the `routine_data.csv`, setting -9999 values  to NA
+> - Remove NAs from the `conf_u5` and `conf_ov5` variables
+> - Create a new data frame called `confirmed_malaria` which it the sum of confirmed malaria cases in children under 5 and people over 5 by admin 2  district
+> - Pivot this data into the long format so that there is one variable  identifying the age group and one identifying the number of confirmed  cases. 
+> - Save this data frame as a csv called `confirmed_malaria` in the  `outputs` folder
+>
+>
+> <details>
+>   <summary markdown="span">Solution</summary>
+> 
+>  ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>  clean_routine_data <- read_csv("data/routine_data.csv", na = c("-9999")) %>% 
+>  drop_na(conf_u5, conf_ov5)
+>  
+>  confirmed_malaria <- clean_routine_data %>% 
+>  group_by(adm1, adm2) %>% 
+>  summarise(conf_u5 = sum(conf_u5, na.rm=TRUE),
+>            conf_ov5 = sum(conf_ov5, na.rm=TRUE)) %>% 
+>  pivot_longer(col = conf_u5:conf_ov5, names_to = c("metric","age"), names_sep = "_", values_to = "confirmed cases")
+>  
+>  write_csv(confirmed_malaria, "outputs/confirmed_malaria.csv")
+>  
+>  ```
+> </details>
+
+
+<br>
+
+### Demo 2
+In this demo we will link together what we have learnt to create a dataset of the total number of confirmed cases, population and malaria incidence by month, and district. Then another dataset aggergated for the whole country.
+
+```{r, message = F}
+# Import the population dataset
+pop <- read_csv('data/population.csv')
+
+# Confirmed cases and malaria incidence by age group per month for each admin 2 location
+pf_incidence <- inner_join(clean_routine_data, pop) %>% 
+  select(adm1, adm2, date_tested, starts_with('conf'),starts_with('pop') ) %>% 
+  pivot_longer(cols = starts_with("conf")|starts_with("pop"),
+               names_to = c("metric", "age_group"),
+               names_sep = "_",
+               values_to = 'value') %>% 
+  pivot_wider(id_cols = c('adm1', 'adm2', 'date_tested', 'age_group'),
+              names_from = metric,
+              values_from = value) %>% 
+  mutate(incidence = conf/pop*100000)
+
+# Confirmed cases and malaria incidence by age group per month for the whole country
+pf_incidence_national <- 
+  group_by(pf_incidence,
+           date_tested, age_group) %>% 
+  summarise(across(c(conf, pop), sum)) %>% 
+  mutate(incidence = conf/pop*100000)
+
+write_csv(pf_incidence, 'outputs/pf_incidence.csv')
+write_csv(pf_incidence_national, 'outputs/pf_incidence_national.csv')
+
+```
+
+<br>
+
+## Data visualization
+In this section we will introduce data visualisation using the popular `ggplot` package. This package contains functions to build a range of different plots, from scatter plots and line graphs, to box plots, bar charts and even maps. It is descriptive and makes it easy to build on plots and adjust the visualisations to your desired output, making publication quality plots.
+
+The data we will be using to create our plots is the dataset for the incidence of malaria created from our routine data. 
+
+<br>
+
+### Basic plotting
+We will start by showing you how to build a basic plot with the `ggplot()` function. The `ggplot()` function creates a blank plot to which you add different functions to build your data visualisation using the `+` operator. 
+
+There are two main arguments to the `ggplot() function`, these are:
+
+- `data`: the name of the data frame we are working with
+- `mapping`: the columns of the data frame we are plotting. This is created using the `aes()` command.
+
+`aes()` stands for "aesthetic" and is used to specify what we want to show in the plot. We will start by looking at plots of simple time trends using the malaria incidence data for all ages. First, we  filter the `pf_incidence_national` data frame for `age_group == "total"`. 
+
+```{r}
+total_incidence <- 
+  filter(pf_incidence_national, age_group == 'total')
+
+```
+
+We then start with the ggplot command. We want to use the NGA dataset and wish to plot the year on the x-axis and the incidence on the y-axis so the command is as follows:
+
+```{r, eval = FALSE}
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))
+```
+
+<br>
+
+### Scatter plots & line graphs
+This wont yet produce a figure as we need to tell ggplot what sort of figure we would like this to be. We will start by making a scatter plot using `geom_point()`. We add layers to the ggplot object using the `+` operator.
+
+```{r, out.width='60%'}
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_point()
+```
+
+We can then control how the points look by adding commands to the `geom_point()` function, such as the size, colour and transparency (alpha) of the points.
+
+```{r, out.width='60%'}
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_point(size=5, colour = "blue", alpha = 0.5)
+```
+
+We can also change the type of the point by using the `shape = ` command. 
+
+```{r, echo=FALSE}
+shapes <- data.frame(
+  shape = c(0:19, 22, 21, 24, 23, 20),
+  x = 0:24 %/% 5,
+  y = -(0:24 %% 5)
+)
+shapes <- ggplot(shapes, aes(x, y)) + 
+  geom_point(aes(shape = shape), size = 5, fill = "red") +
+  geom_text(aes(label = shape), hjust = 0, nudge_x = 0.15) +
+  scale_shape_identity() +
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=2))
+```
+
+
+```{r, out.width='50%', fig.show = 'hold', fig.align='default'}
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_point(size=4, colour = 'blue', alpha = 0.5, shape = 18)
+
+# Available shapes (don't run)
+shapes
+```
+
+The general structure of the `ggplot()` command remains similar for different plots.This means that it is easy to change the type of an established plot, or create a different plot using a similar code structure. 
+
+We can change the type of plot by replacing `geom_point()` with other options such as a line graph: `geom_line()`, or smoothed conditional means: `geom_smooth()`.
+
+```{r, out.width='50%', fig.align='default', fig.show='hold', message=FALSE}
+# Line plot
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_line(size=2, colour = "red", alpha = 0.5)
+
+# Smoothed line of fit
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_smooth(colour = "yellow")
+
+```
+
+The size, colour and alpha commands are similarly used to control the appearance of the line but instead of using `shape = ` to control the appearance of the points we can change the style of the line in a line plot by specifying `linetype = `
+
+```{r, echo = F, out.width='50%', fig.align='default', fig.show='hold'}
+lty <- c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash")
+linetypes <- data.frame(
+  y = seq_along(lty),
+  lty = lty
+)
+
+lty <- ggplot(linetypes, aes(0, y)) + 
+  geom_segment(aes(xend = 3, yend = y, linetype = lty)) + 
+  scale_linetype_identity() + 
+  geom_text(aes(label = lty), hjust = 0, nudge_y = 0.2) +
+  scale_x_continuous(NULL, breaks = NULL) + 
+  scale_y_reverse(NULL, breaks = NULL)+
+  theme_void() +
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=2))
+```
+
+```{r, out.width=c('50%', '50%'), fig.align='default', fig.show='hold'}
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_line(size=2, colour = "red", alpha = 0.5, linetype = 'dashed')
+
+# Available line types (not run)
+lty
+```
+
+Additionally, you can layer the types of plots together, e.g. plotting the points and lines on the same graph.
+
+```{r, out.width='60%', message = FALSE}
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_line(size=1, colour = "red", alpha = 0.5)+
+  geom_point(size=5, colour = 'blue', shape = 18)
+```
+
+<br>
+
+> ### Task 5
+> - Import the dataset `pf_incidence_national` we created in the demo from > the data folder and filter to just contain data for under 5's 
+> - Create a line graph plotting the incidence of malaria (y-axis) by date (x-axis)
+> - Change this to be a green dotted line and increase the line thickness
+> 
+>  <details>
+>    <summary markdown="span">Solution</summary>
+>  
+>   ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>   pf_incidence_national <- read_csv("outputs/pf_incidence_national.csv")  %>% 
+>   filter(age_group=="u5") 
+>   
+>   ggplot(pf_incidence_national)+
+>   geom_line(mapping = aes(x = date_tested, y = incidence), color =  'green', size = 2)+
+>   theme_bw()
+>   
+>   ```
+> </details>
+
+<br>
+
+### Themes
+Further commands can then be added to the ggplot() object to control the appearance of the plot. We can label the axis and add a title using `labs()`, and can select different themes for the background appearance, such as the black and white theme: `theme_bw()`, or the dark theme: `theme_dark()`.
+
+```{r, out.width='60%'}
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_point(size=2, colour = "blue")+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()
+```
+
+We can control the x and y axis limits by using `xlim()` or `ylim()`. As our x-axis is a date we can control this using the command `scale_x_date()`. Otherwise if this was a continuous variable we could use `scale_x_continous()` to control the scale. This command has additional options to control where you want the breaks in the axis to be and to alter the data labels
+
+```{r, out.width='50%', fig.show='hold', fig.align='default', warning =FALSE}
+# Option 1 using xlim() and ylim()
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_point(size=5, colour = 'blue')+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  ylim(0,1000)
+
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_point(size=5, colour = 'blue')+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  scale_x_date(limit=c(as.Date("2018-01-01"),as.Date("2018-06-01")),
+               date_breaks = "1 month", date_labels = "%b")
+
+```
+
+Furthermore, we can control the text of the axis and title within the `theme()` command. `theme()` provides a large amount of control over the appearance of the plot. Common examples of what we can do within this command is rotating the x-axis text using the option `angle = `, changing the font size using `size = ` and the font type using `face = `. 
+
+```{r, out.width='60%',  warning =FALSE}
+ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
+  geom_point(size=5, colour = 'blue')+
+  labs(x = "Month",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  scale_x_date(date_breaks = "1 month", date_labels = "%b")+
+  theme(axis.text.x = element_text(angle = 90, hjust = 0.5, vjust = 0.5),
+        axis.title.x = element_text(size = 14,face = 'bold'),
+        axis.title.y = element_text(size = 14,face = 'bold'),
+        title = element_text(size = 16,face = 'bold'))
+```
+
+<br>
+
+### Subgroups and facets
+We will now look visualising multiple data trends, for example if you had incidence data for multiple countries there are various ways you could show this data. Here we will use the dataset `pf_incidence_national.csv` we imported earlier, with incidence for different age groups.
+
+Firstly, we can incorporate the trends for different age_groups on the same plot by using different colours. We use the `colour` argument inside the `aes` functions and assign it to the country variable. This results in ggplot plotting a line for each country in the dataset in a different colour, with a legend added to the plot.
+
+```{r, out.width='60%'}
+ggplot(data = pf_incidence_national, mapping = aes(x = date_tested, y = incidence, colour = age_group))+
+  geom_line(size = 3)+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018",
+       colour = 'Age group')+
+  theme_bw()
+```
+
+We can control the colours in the plots by using the `scale_color_manual()` function, and passing it the colours you wish to use. You can use either the names of colours or the HEX codes. We can also move the position of the legend to the bottom using the `legend.position = "bottom"` command within `theme()` and change the title of the legend within `labs()`. 
+
+```{r, out.width='60%'}
+ggplot(data = pf_incidence_national, mapping = aes(x = date_tested, y = incidence, colour = age_group))+
+  geom_line(size = 3)+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018",
+       colour = 'Age group')+
+  theme_bw()+
+  theme(legend.position = 'bottom')+
+    scale_colour_manual(values = c('pink', 'yellow', 'purple'))
+```
+
+Another way to look at multiple data trends in one plot is to uses facets. This creates separate plots for each "facet", as part of the overall plot.
+
+```{r, out.width='60%'}
+ggplot(data = pf_incidence_national, mapping = aes(x = date_tested, y = incidence))+
+  geom_line(size=2, colour = "blue")+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  facet_wrap(~age_group)
+
+```
+
+There are various options in `facet_wrap()`. If you have largely varying scales between the facets you are plotting, you can plot these on different scales using either `free_y = TRUE`, or `free_x = TRUE` as options inside of `facet_wrap()`. You can also specify the number of rows or columns you want in the plot, e.g. if you had 6 facets you could plot it as `nrow = 2, ncol = 3` or `nrow = 3, ncol = 2`.
+
+```{r, out.width='60%', message = FALSE}
+ggplot(data = pf_incidence_national, mapping = aes(x = date_tested, y = incidence))+
+  geom_line(size=2, colour = "blue")+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  facet_wrap(~age_group, scales = 'free_y', nrow = 3)
+
+```
+
+<br>
+
+>### Task 6
+> - Using the `pf_incidence_national` dataset create scatter plots the number of confirmed malaria cases(y-axis) by date tested (x-axis), with  facets for age group.
+> - Change the colour of the points based on the age group
+> - Change the axis labels and add a title to the plot
+> - Change the plot theme to black and white
+>
+>  <details>
+>    <summary markdown="span">Solution</summary>
+>  
+>   ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>   pf_incidence_national <- read_csv("outputs/pf_incidence_national.csv")
+>   
+>   ggplot(pf_incidence_national)+
+>   geom_line(mapping = aes(x = date_tested, y = incidence, color =  >age_group))+
+>   facet_wrap(~age_group)+
+>   labs(x = "Date", y = "Incidence per 1000 PYO", title = "Incidence >Rate")+
+>   theme_bw()
+>   
+>   ```
+> </details>
+
+<br>
+
+### Continuous colour scales
+Similarly to using the `colour` option to plot your data by categorical variables, we can use this options to plot continuous data on a colour scale. For example, if we wanted colour the points on our plot of incidence by year based on the total population we can add `colour = population` to the aesthetic command.
+
+```{r, out.width='60%'}
+ggplot(total_incidence, aes(x = date_tested, y = incidence, colour = pop))+
+  geom_point(size=5)+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()
+```
+
+There are then a few options for how we can control the colour scale of a continuous variable. Firstly we can use the `scale_colour_gradient()` command to specify the low and high colours of a gradient from which to build the colour ramp. Secondly ggpplot allows us to use colour scales from ColorBrewer (https://colorbrewer2.org). This has a wide range of sequential, diverging and qualitative colour schemes you can use for a rnage of data and projects. For continuous data this is specified using the command `scale_colour_distiller()` and using the option `palette = ` to specify the colour palette to use.
+
+```{r, fig.show='hold',out.width='50%', fig.align='default'}
+ggplot(total_incidence, aes(x = date_tested, y = incidence, colour = pop))+
+  geom_point(size=5)+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  scale_colour_gradient(low = "yellow", high = "red")
+
+ggplot(total_incidence, aes(x = date_tested, y = incidence, colour = pop))+
+  geom_point(size=5)+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  scale_colour_distiller(palette = 'Greens')
+```
+
+An additional option for- continuous colour scales are the viridis scales. These are well designed colour scales which are excellent for graphs and maps. They are colourful, appear uniform in both colour and black-and-white and are easy to view for persons with common forms of colour blindness. There are various options withing this package and they can be used within ggplot through the command `scale_colour_viridis_c()`.
+
+```{r, fig.show='hold',out.width='33%', fig.align='default'}
+# Default viridis colour scale
+ggplot(total_incidence, aes(x = date_tested, y = incidence, colour = pop))+
+  geom_point(size=5)+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  scale_colour_viridis_c()
+  
+# Inferno option
+ggplot(total_incidence, aes(x = date_tested, y = incidence, colour = pop))+
+  geom_point(size=5)+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  scale_colour_viridis_c(option = 'inferno')
+
+# Reversing the direction
+ggplot(total_incidence, aes(x = date_tested, y = incidence, colour = pop))+
+  geom_point(size=5)+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018")+
+  theme_bw()+
+  scale_colour_viridis_c(option = 'inferno', direction = -1)
+```
+
+Finally, we can use ggplot to have plot different data on different layers of the plot. We do this by moving the `data = ` and `mapping = ` arguments from the `ggpplot()` to the specific layers such as `geom_point()`. Here we plot a scatter plot with different colours for each country, but we add a smoothed mean line for all of the data.
+
+```{r, out.width='60%', message = FALSE}
+ggplot()+
+  geom_point(data = filter(pf_incidence_national, age_group != 'total'),
+             aes(x = date_tested, y = incidence, colour = age_group), size=4)+
+  geom_line(data = filter(pf_incidence_national, age_group == 'total'),
+            aes(x = date_tested, y = incidence), colour = 'grey', size = 2, linetype = 'dashed')+
+  labs(x = "Date",
+       y = "Incidence/100,000/month",
+       title = "Malaria incidence in 2018",
+       colour = 'Age group')+
+  theme_bw()
+```
+
+<br>
+
+### Box plots, bar charts and histograms
+`ggplot` can also be used to create plots summarising the data and incorporating statistical transformations. 
+
+Box plots are a good way of summarising continuous data by discrete variables. For example, in this dataset we have the number of confirmed malaria cases in different districts for each month. In `ggplot` we can use box plots to easiy summarise and visualise these data. 
+
+As in the previous section, we provide ggplot() with the x and y variables in the `aes()` argument and R will calculate the size of the boxes and whiskers. Similarly, you can control the colour of the lines and the fill colour of the plot by using the `colour` and `fill` arguments. 
+
+To look at these plots we will use the "pf_incidence" dataset we created earlier, with the confirmed cases, incidence, and population by date and district. We will subset this data to look at all ages initially. We introduced pipes earlier, these can also be used with ggplot. Dates in ggplot are treated as continuous variables to here we must specify `group = date_tested` to group the data by date.
+
+```{r, out.width='60%'}
+filter(pf_incidence, age_group == 'total') %>% 
+  ggplot(aes(x = date_tested, y = conf, group=date_tested))+
+  geom_boxplot(colour = 'black', fill = 'dark red')+  
+  labs(x = "Date",
+       y = "Number of cases",
+       title = "Number of malaria cases by month")+
+  theme_bw()
+```
+
+Histograms are created using the `geom_histogram()` function. This splits the data into bins using `stat_bins()` and counts the number of occurrences in each bin. You can control the number of bins or the width of the bins using `bins` and `binwidth` respectively. Options such as `fill` can also be used to control the fill colour of the bars, along with the additional options already discussed.
+
+```{r, out.width='60%'}
+filter(pf_incidence, age_group == 'total') %>% 
+  ggplot(aes(x = conf))+
+  geom_histogram(bins = 20, fill = 'purple', colour = 'black')+
+  theme_bw()+
+  labs(x = "Number tested",
+       y = "Count",
+       title = "Histogram of malaria tests conducted")
+
+```
+
+For bar plots the `geom_bar()`function is used. The default transformation is to count the number of rows for each category, `stat = "bin"`. There are other transformations we can use, so if we want to make the heights of the bars to represent values in the data (provided by the assigning the y aesthetic), we use `stat = identity`. Here we plot a bar chart of the total number of malaria tests conducted each month in our routine data.
+
+```{r, out.width='60%'}
+filter(pf_incidence, age_group == 'total') %>% 
+  ggplot(aes(x = date_tested, y = conf, group=date_tested))+
+  geom_bar(stat = "identity", fill = "blue")+
+  labs(x = "Number tested",
+       y = "Count",
+       title = "Bar chart of malaria tests conducted per month") +
+  theme_bw()
+
+```
+
+If we want to display different subgroups of data, such as number of tests by age group, on a bar plot we can either create a stacked bar plot with different colours representing the subgroups by using the `fill = age_group` command, or by creating a side-by-side bar plot by combining `fill = age_group` with the command `position = "dodge"`.
+
+```{r, out.width='60%'}
+# Stacked bar chart
+filter(pf_incidence, age_group != 'total') %>% 
+ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
+  geom_bar(stat = "identity")+
+  theme_bw()+
+  labs(x = "Number tested",
+       y = "Count",
+       title = "Bar chart of confirmed malaria cases per month, by age group",
+       fill = NULL)
+
+```
+
+```{r, out.width='60%'}
+# Side by side bar chart
+filter(pf_incidence, age_group != 'total') %>% 
+ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
+  geom_bar(stat = "identity", position = "dodge")+
+  theme_bw()+
+  labs(x = "Number tested",
+       y = "Count",
+       title = "Bar chart of confirmed malaria cases per month, by age group",
+       fill = NULL) 
+```
+
+This is just an introduction to what you can achieve for ggplot. For further guidance look at the help pages and the cheat-sheet available at [https://www.rstudio.com/resources/cheatsheets](https://www.rstudio.com/resources/cheatsheets).
+
+
+<br>
+
+### Saving plots
+There are a couple of different ways you can save plots in R. Firstly you can save them by opening a `png()`, `jpeg()` or `pdf()` depending on the file type you want to save. These commands contain the output file path and the desired height and width of the figure (optional). It is then followed by the figure, and closing down the file with `dev.off()`.
+
+```{r, eval = FALSE}
+png("outputs/malaria_incidence_plot.png")
+filter(pf_incidence, age_group != 'total') %>% 
+ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
+  geom_bar(stat = "identity", position = "dodge")+
+  theme_bw()+
+  labs(x = "Number tested",
+       y = "Count",
+       title = "Bar chart of confirmed malaria cases per month, by age group",
+       fill = NULL) 
+dev.off()
+```
+
+Another option for saving plots is using `ggsave()`. This takes the file name, including the extension, that you wish to save and the plot. Leaving the plot name empty will default to the last plot created. You can also include commands for the desired height and width of the figure if required. So saving the above plot would entail:
+
+```{r, eval = FALSE}
+filter(pf_incidence, age_group != 'total') %>% 
+ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
+  geom_bar(stat = "identity", position = "dodge")+
+  theme_bw()+
+  labs(x = "Number tested",
+       y = "Count",
+       title = "Bar chart of confirmed malaria cases per month, by age group",
+       fill = NULL) 
+ggsave("outputs/malaria_incidence_plot.png")
+```
+
+<br>
+
+> ### Task 7
+> - Import the `pf_incidence` dataset we created in demo 2. 
+> - Create a box plot of the confirmed malaria cases for children under 5  by month
+> - Using the `pf_incidence` dataset create a stacked bar chart of confirmed > malaria cases in children under 5 and over 5's by month
+>
+>  <details>
+>    <summary markdown="span">Solution</summary>
+>  
+>   ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>   pf_incidence <- read_csv("outputs/pf_incidence.csv") %>% 
+>  mutate(month = month(date_tested, label = TRUE, abbr = TRUE), year = year(date_tested)) 
+> 
+> pf_incidence %>% 
+> filter(age_group == "u5") %>% 
+>  ggplot()+
+>  geom_boxplot(mapping = aes(x = month, y = conf))+
+>  labs(y = "Confirmed Cases")+
+>  theme_bw()
+>  
+>  ggplot(pf_incidence)+
+>  geom_boxplot(mapping = aes(x = month, y = conf, fill = age_group))+
+>  labs(y = "Confirmed Cases under 5")+
+>  theme_bw()
+>  
+>  ```
+> </details>

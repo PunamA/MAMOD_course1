@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Common practises in Data Management</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Before we get Started</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="01_datamanagement.html">Data management</a>
+</li>
+<li>
+  <a href="02_datahandling.html">Data handling and Visualiation in R</a>
+</li>
+<li>
+  <a href="03_QGIS.html">Spatial Data in QGIS</a>
+</li>
+<li>
+  <a href="04_spatial_in_R.html">Spatial Data in R</a>
+</li>
+<li>
+  <a href="05_Intro_to_INLA.html">Introduction to R-INLA</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Common practises in Data Management</h1>
+
+</div>
+
+
+<div id="general-overview-and-learning-objectives"
+class="section level1">
+<h1>1.1 General overview and learning objectives</h1>
+<div id="aim" class="section level2">
+<h2><em>1.1.1 Aim</em></h2>
+<p>This module aims to provide an overview on common practices in
+managing public health data. We will review common health data sources,
+data collection methodologies which may result to different data types,
+then discuss the main steps of the data management cycle from design of
+a study or an information system, collection, extractions, entry,
+manipulation, summarization, analysis, visualization, and interpretation
+and use.</p>
+<p>We will review common practices of data handling using
+<em>Spreadsheet programs</em> e.g., using <em>MSExcel, Calc</em> for
+basic data management such as dealing with missing data, detecting and
+correcting outliers and errors, joining/merging files, summarizing and
+visualization. Discussing their pros and cons, then briefly introduce
+the benefits of using reproducible approaches when managing data.
+Detaials of these approaches and tools will be learnt in other
+Modules.</p>
+<p>The module contains hands-on practicals and class activities in order
+to put the theoretical knowledge into practice.</p>
+</div>
+<div id="time" class="section level2">
+<h2><em>1.1.2 Time</em></h2>
+<p>This section is expected to take a maximum of 2 hours split into
+three steps:</p>
+<ul>
+<li>Presentation of materials from facilitators/trainers - emphasized to
+be interactive;</li>
+<li>Class activities including plenary discussions;</li>
+<li>Individual activities.</li>
+</ul>
+<p>Most activities will be done during the session, however,
+participants are encouraged to do extra practices to improve their
+skills and learning outcomes.</p>
+</div>
+</div>
+<div id="definition-of-terms" class="section level1">
+<h1>1.2 Definition of terms</h1>
+<p>Let’s revisit and refresh on few terms commonly referred to when
+talking about public health and data.</p>
+<p><strong>Health</strong></p>
+<p>The World Health Organization (WHO) defined health in its 1948
+constitution as “a state of complete physical, mental and social
+well-being and not merely the absence of disease or infirmity.” (WHO
+Constitution, 1948)</p>
+<p><strong>Public Health</strong></p>
+<p>The “art and science of <em>preventing disease</em>, prolonging life
+and <em>promoting health</em> through the organized efforts of society”
+(Acheson, 1988; WHO)</p>
+<p>The “the <em>science</em> and art of preventing disease, prolonging
+life, and promoting health through the organized efforts and
+<em>informed choices</em> of society, organizations, public and private
+communities, and individuals.” (CEA Winslow, CDC)</p>
+<p>The revised definition (by CDC) has some additional terms:
+<em>Science</em> and <em>informed choices</em>. Let’s look at few of
+them:</p>
+<p>What is <strong>Science</strong>?</p>
+<p>Several definition exists, a common one includes <em>… the pursuit
+and application of knowledge and understanding of the natural and social
+world following a systematic methodology based on evidence.</em></p>
+<ul>
+<li>Scientific methodology e.g., observation, experimental
+investigation;</li>
+<li>Measurements - identification, description, indicators;</li>
+<li>Data;</li>
+<li>Evidence:</li>
+<li>Theoretical explanation.</li>
+</ul>
+<p>What is an <strong>informed choice</strong>?</p>
+<ul>
+<li>Decisions that are consistent with their goals and values;</li>
+<li>Unbiased;</li>
+<li>Evidence-based information;</li>
+<li>Provide several options.</li>
+</ul>
+<p>Now it unfold to the core components:</p>
+<p><strong>Data</strong></p>
+<p>Facts or collection of facts about something that can be used for
+reasoning, making decision or planning, e.g., for public health. Once
+processed, organised and put into context data can generated information
+that is a great input for decision making process, to draw a conclusion,
+make predictions.</p>
+<p><strong>Public health (surveillance) data</strong></p>
+<p>Data that can be used to evaluate impact or monitor progress e.g., of
+a health program or interventions, give information that help to
+determine appropriate public health interventions, to determine
+populations at risk, where to target interventions, to determine
+success, gaps, challenges, guide public policy and practices.</p>
+<p><strong>Data management</strong></p>
+<p>This refers to the entire process from the time the data is
+captured/collected to the point it is utilized for decision-making
+process.</p>
+<p>See Figure 1.</p>
+<p><img src="images/Data_Management_Flowchart_v3.jpg" width="80%" style="display: block; margin: auto;" /></p>
+<p>Looking at this Figure, we are saying, in other words, Data
+Management is everything that supports a program/project “data
+lifecycle” steps; the architectures, policies, practices and
+procedures.</p>
+<p>We will come back to this later.</p>
+</div>
+<div id="public-health-data" class="section level1">
+<h1>1.3 Public health data</h1>
+<div id="sources" class="section level2">
+<h2><em>1.3.1 Sources</em></h2>
+<p>Public health data may originate from various sources including the
+following:</p>
+<ul>
+<li><em>Routine</em> disease surveillance data;
+<ul>
+<li>Medical/clinical records - diseases/conditions (outpatients,
+admissions), births, deaths that happens in the care delivery facilities
+(in some cases also at community)</li>
+<li>Service data - medicines/supplies available/used, tests/procedures,
+medical devices. These data may be captured electronically or
+paper-based.</li>
+</ul></li>
+<li><em>Research</em> and surveys: e.g., DHS, MIS, MICS, AIS, SPA and
+others;</li>
+<li><em>Administrative</em>, e.g., human resources, finances and other
+logistic data;</li>
+<li><em>Vital statistics</em> - this may overlap with routine data, but
+may include events captured by the vital registration systems happening
+at facilities and communities;</li>
+<li><em>Census</em>; and,</li>
+<li><em>Literature.</em> - gray and published</li>
+</ul>
+<p>No matter where your data comes from, always be sure to check that it
+is of good quality - valid, complete, and clean - before analyzing and
+utilizing.</p>
+</div>
+<div id="usefulness-and-utilization" class="section level2">
+<h2><em>1.3.2 Usefulness and utilization</em></h2>
+<p>Data plays a vital part of health research and practice. Properly
+managed health data will help to provide us with unbiased
+information.</p>
+<p>Where available public health data may be used to understand the
+health status of the population, patterns and trends of diseases, assess
+if the interventions in place are working and guide practical and policy
+decisions.</p>
+<p>Important questions public health can be used to answer include the
+following:</p>
+<ul>
+<li><strong>Who</strong> is mostly affected? e.g., subpopulation?</li>
+<li><strong>Where</strong> is mostly affected? e.g., areas, locations,
+subunits at microlevel (spatial units).</li>
+<li><strong>Why</strong> is mostly affected? <em>how</em> or the
+<em>factors</em> associated to the events</li>
+<li><strong>When</strong> is the most effect? Temporal trend? Seasonal
+patttern?</li>
+<li><strong>At what extent</strong>?</li>
+<li><strong>What direction</strong>? e.g., river flow</li>
+</ul>
+</div>
+<div id="data-and-system-challenges" class="section level2">
+<h2><em>1.3.3 Data and system challenges</em></h2>
+<p>Due to heterogeneity in nature of data journey, sources, methods of
+collection, and volume, public health data encounter a number of
+constraints which may influence its utilization.</p>
+<p>These are sometime refers as Data quality dimensions and may include
+but not limited to the following attributes:</p>
+<ul>
+<li><em>Completeness</em> - captured but not reported;</li>
+<li><em>Timeliness</em> - late reported;</li>
+<li><em>Availability</em> - captured, reported but not accessible for
+use;</li>
+<li><em>Incomplete</em>/poor recording - some important variables or
+attributes not captured;</li>
+<li>Consistency - Always tells the similar fact/story;</li>
+<li>Aggregated - masked important information relevant for decision;
+and</li>
+<li><em>Big data</em> - an <em>ambiguous</em> dimension.</li>
+</ul>
+<p>Lets explore a bit about <strong>Big data</strong>.</p>
+<p>Main characteristics include:</p>
+<ul>
+<li><em>Volume</em>: the amount of data collected at once;</li>
+<li><em>Velocity</em>: the rate at which data comes in - e.g., weekly
+malaria surveillance data;</li>
+<li><em>Variety</em>: many types of data. Ref: Routine surveillance data
+discussed earlier;</li>
+</ul>
+<p>Other features includes <em>Veracity</em> - the quality of the data,
+the accuracy, do we have it all? And lastly, <em>Value</em> - do we have
+the ability to transform this mountains of data into useful information
+for use?</p>
+<p>Take note of these characteristics when discussing a need for
+real-time surveillance data, daily, weekly vs. its management.</p>
+<p>Arguments that it is probably better to have <em>minimal useful
+data</em> in real time and best utilized than <em>lots of data</em> at a
+low speed and poorly utilized. Your choice!</p>
+<p>As the data grow bigger more skills and tools are requires to manage
+it.</p>
+</div>
+</div>
+<div id="data-management-proccess" class="section level1">
+<h1>1.4 Data management proccess</h1>
+<p>Data management is a process with various steps.</p>
+<p>Let’s re-visit the previous graphical presentation of the Data
+Management Cycle</p>
+<p><img src="images/Data_Management_Flowchart_v3.jpg" width="80%" style="display: block; margin: auto;" /></p>
+<p>The steps go from Study design (incl Protocol, tools and databases),
+data collection, cleaning/validation, organizing (creating metadata, new
+variables) and quality control checks, storage, security
+(confidentiality - different datasets for different purposes,
+protection/access, sharing protocols/agreements), data analysis,
+presentation and interpretation of results/information generated from
+data, data use/reuse.</p>
+<p>The main goal of managing your data is to generate information that
+will provide useful and probably sufficient evidence that gives right
+and needed knowledge to the right stakeholders for the purpose of
+answering the research/policy questions or guide decisions needed to
+have an impactiful and effective surveillance system.</p>
+<p>Note:</p>
+<ul>
+<li>Data and Information are used interchangeable - but they dont mean
+the same thing; Information is in most cases derived from Data.</li>
+<li>Data can be reused several times for several purposes. Keep an open
+mind when it comes to data use.</li>
+<li>Variations on skills to analyse and manipulate may hinder this fully
+utilization.</li>
+<li>Integration is important and should be considered:linking and
+combining data from other sources to optimize insights and evidence
+generation.</li>
+<li>Publishing:some data are made accessible to public (at cost or
+freely). Consider this - your data may be useful to several
+stakeholders.</li>
+</ul>
+<div id="data-manipulation-using-spreadsheet" class="section level2">
+<h2><em>1.4.1 Data manipulation using Spreadsheet</em></h2>
+<p>This sub-section will focus on few common practices used duirng data
+manipulation.</p>
+<p>** Reading the data file **</p>
+<blockquote>
+<h3 id="task-1" class="challenge">Task 1</h3>
+<ul>
+<li>Import the <code>routine_data.csv</code> file using the
+<code>read_csv()</code> function</li>
+<li>Explore the data (call the object/name assigned) using functions
+such as <code>str()</code>, <code>head()</code> and
+<code>summary()</code></li>
+<li>Check the records of adm1 and year</li>
+</ul>
+<details>
+<summary>
+Solution
+</summary>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+dat0 &lt;- read_csv(&quot;data/routine_data.csv&quot;)
+str(dat0)</code></pre>
+<pre><code>## spec_tbl_df [1,200 × 17] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ adm1        : chr [1:1200] &quot;West&quot; &quot;West&quot; &quot;West&quot; &quot;West&quot; ...
+##  $ adm2        : chr [1:1200] &quot;Bamakiary&quot; &quot;Bamakiary&quot; &quot;Bamakiary&quot; &quot;Bamakiary&quot; ...
+##  $ hf          : num [1:1200] 6 6 6 6 6 6 6 6 6 6 ...
+##  $ month       : chr [1:1200] &quot;Jan&quot; &quot;Feb&quot; &quot;Mar&quot; &quot;Apr&quot; ...
+##  $ year        : num [1:1200] 2018 2018 2018 2018 2018 ...
+##  $ test_u5     : num [1:1200] 289 178 41 NA 95 108 121 299 323 526 ...
+##  $ test_rdt_u5 : num [1:1200] 279 175 40 129 93 105 118 293 317 514 ...
+##  $ test_mic_u5 : num [1:1200] 127 87 13 49 28 38 46 73 73 76 ...
+##  $ conf_u5     : num [1:1200] 204 92 36 69 64 42 93 175 174 259 ...
+##  $ conf_rdt_u5 : num [1:1200] 201 90 35 68 62 41 87 171 171 252 ...
+##  $ conf_mic_u5 : num [1:1200] 9 4 2 3 4 2 6 6 6 12 ...
+##  $ test_ov5    : num [1:1200] 317 193 45 137 101 115 134 352 394 684 ...
+##  $ test_rdt_ov5: num [1:1200] 137 73 25 66 57 58 66 229 265 540 ...
+##  $ test_mic_ov5: num [1:1200] 63 36 8 25 18 22 25 56 62 80 ...
+##  $ conf_ov5    : num [1:1200] 272 104 47 79 83 49 108 335 391 554 ...
+##  $ conf_rdt_ov5: num [1:1200] 255 97 44 74 77 46 101 321 374 525 ...
+##  $ conf_mic_ov5: num [1:1200] 11 5 2 3 4 2 7 12 14 24 ...
+##  - attr(*, &quot;spec&quot;)=
+##   .. cols(
+##   ..   adm1 = col_character(),
+##   ..   adm2 = col_character(),
+##   ..   hf = col_double(),
+##   ..   month = col_character(),
+##   ..   year = col_double(),
+##   ..   test_u5 = col_double(),
+##   ..   test_rdt_u5 = col_double(),
+##   ..   test_mic_u5 = col_double(),
+##   ..   conf_u5 = col_double(),
+##   ..   conf_rdt_u5 = col_double(),
+##   ..   conf_mic_u5 = col_double(),
+##   ..   test_ov5 = col_double(),
+##   ..   test_rdt_ov5 = col_double(),
+##   ..   test_mic_ov5 = col_double(),
+##   ..   conf_ov5 = col_double(),
+##   ..   conf_rdt_ov5 = col_double(),
+##   ..   conf_mic_ov5 = col_double()
+##   .. )
+##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
+<pre class="r"><code>head(dat0)</code></pre>
+<pre><code>## # A tibble: 6 × 17
+##   adm1  adm2         hf month  year test_u5 test_rdt_u5 test_mic_u5 conf_u5
+##   &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;
+## 1 West  Bamakiary     6 Jan    2018     289         279         127     204
+## 2 West  Bamakiary     6 Feb    2018     178         175          87      92
+## 3 West  Bamakiary     6 Mar    2018      41          40          13      36
+## 4 West  Bamakiary     6 Apr    2018      NA         129          49      69
+## 5 West  Bamakiary     6 May    2018      95          93          28      64
+## 6 West  Bamakiary     6 Jun    2018     108         105          38      42
+## # … with 8 more variables: conf_rdt_u5 &lt;dbl&gt;, conf_mic_u5 &lt;dbl&gt;,
+## #   test_ov5 &lt;dbl&gt;, test_rdt_ov5 &lt;dbl&gt;, test_mic_ov5 &lt;dbl&gt;, conf_ov5 &lt;dbl&gt;,
+## #   conf_rdt_ov5 &lt;dbl&gt;, conf_mic_ov5 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>summary(dat0)</code></pre>
+<pre><code>##      adm1               adm2                 hf            month          
+##  Length:1200        Length:1200        Min.   :  1.00   Length:1200       
+##  Class :character   Class :character   1st Qu.: 25.75   Class :character  
+##  Mode  :character   Mode  :character   Median : 50.50   Mode  :character  
+##                                        Mean   : 50.50                     
+##                                        3rd Qu.: 75.25                     
+##                                        Max.   :100.00                     
+##                                                                           
+##       year         test_u5          test_rdt_u5     test_mic_u5    
+##  Min.   :  18   Min.   :-9999.00   Min.   :  0.0   Min.   :  0.00  
+##  1st Qu.:2018   1st Qu.:   81.25   1st Qu.: 84.0   1st Qu.: 18.00  
+##  Median :2018   Median :  136.00   Median :138.0   Median : 34.00  
+##  Mean   :2008   Mean   :   35.13   Mean   :164.7   Mean   : 47.36  
+##  3rd Qu.:2018   3rd Qu.:  222.00   3rd Qu.:224.5   3rd Qu.: 61.00  
+##  Max.   :3018   Max.   :  702.00   Max.   :702.0   Max.   :381.00  
+##                 NA&#39;s   :22                                         
+##     conf_u5       conf_rdt_u5     conf_mic_u5        test_ov5    
+##  Min.   :  0.0   Min.   :  0.0   Min.   : 0.000   Min.   :  0.0  
+##  1st Qu.: 48.0   1st Qu.: 47.0   1st Qu.: 0.000   1st Qu.: 88.0  
+##  Median : 82.0   Median : 81.0   Median : 1.000   Median :147.0  
+##  Mean   :104.2   Mean   :103.1   Mean   : 2.507   Mean   :180.9  
+##  3rd Qu.:141.0   3rd Qu.:140.0   3rd Qu.: 3.000   3rd Qu.:245.0  
+##  Max.   :552.0   Max.   :551.0   Max.   :51.000   Max.   :831.0  
+##                                                   NA&#39;s   :2      
+##   test_rdt_ov5    test_mic_ov5       conf_ov5      conf_rdt_ov5  
+##  Min.   :  0.0   Min.   :  0.00   Min.   :  0.0   Min.   :  0.0  
+##  1st Qu.: 46.0   1st Qu.: 11.75   1st Qu.: 61.0   1st Qu.: 59.0  
+##  Median : 82.0   Median : 20.50   Median :104.0   Median :100.0  
+##  Mean   :112.1   Mean   : 25.88   Mean   :139.1   Mean   :133.9  
+##  3rd Qu.:147.2   3rd Qu.: 36.00   3rd Qu.:190.2   3rd Qu.:184.0  
+##  Max.   :802.0   Max.   :133.00   Max.   :729.0   Max.   :715.0  
+##                                                                  
+##   conf_mic_ov5   
+##  Min.   : 0.000  
+##  1st Qu.: 1.000  
+##  Median : 2.000  
+##  Mean   : 3.765  
+##  3rd Qu.: 4.000  
+##  Max.   :86.000  
+## </code></pre>
+<pre class="r"><code>with(dat0, table(unique(adm1)))</code></pre>
+<pre><code>## 
+##     central     Central        East    N. Coast North Coast      Plains 
+##           1           1           1           1           1           1 
+##        West 
+##           1</code></pre>
+<pre class="r"><code>with(dat0, table(unique(year)))</code></pre>
+<pre><code>## 
+##   18 2018 3018 
+##    1    1    1</code></pre>
+</details>
+</blockquote>
+<p><strong>Data - routine_data.csv:</strong></p>
+<p>The file <em>routine_data.csv</em> (in Data your folder) contains
+simulated routine malaria cases for a certain <em>Fakeland</em>. Files
+(with extension *.csv) can be opened using MSExcel program. The data
+contains monthly facility-based reported tested and confirmed malaria
+cases for under fives and adults (over 5s) populations for year 2018.
+The file has a total of 1200 observations, with a total of 7 Admin 1 and
+46 Admin2 units, and 100 health facilities.</p>
+<p>** Reviewing and cleaning the data **</p>
+<p>Scanning through the data variables (or checking the output of
+<code>summary()</code> and <code>with(dat0, table(unique(adm1)))</code>)
+we have observed the following:</p>
+<ul>
+<li>Year recorded as 18 (in 12 instances) and 3018 (in 12
+instances);</li>
+<li>Records of the variable <em>test_u5</em> include <em>NA</em> and
+<em>-9999</em></li>
+<li>Names of Admin 1; e.g., <em>“North Coast”</em> recorded as <em>“N.
+Coast”</em>;</li>
+</ul>
+<p>Some of these seems like obvious errors/typos and can be easily
+corrected.</p>
+<p>To do this in a spreadsheet we can apply <em>Find and Replace</em>”*
+or <em>filter</em> options to the data and the variable with mistakes
+(at least to avoid searching the entire file) then do the needed
+corrections.</p>
+<p>Refer to the <em>Module 1 SlideDeck</em> for Details.</p>
+<blockquote>
+<h3 id="task-2" class="challenge">Task 2</h3>
+<ul>
+<li>Import the <code>routine_data.csv</code> file using the
+<code>read_csv()</code> function</li>
+<li>Clean the obvious errors in Adm1 names, year records</li>
+<li>In the variable <em>test_u5</em> set -9999 values to NA</li>
+<li>Convert the variable “month” to an ordered factor</li>
+<li>Export and save the cleaned datafile using the
+<code>write_csv()</code> function</li>
+</ul>
+<details>
+<summary>
+Solution
+</summary>
+<pre class="r"><code>dat0 &lt;- read_csv(&quot;data/routine_data.csv&quot;)
+dat0$month &lt;- factor(dat0$month, levels = month.abb) 
+
+dat1 &lt;- dat0 %&gt;% 
+mutate(adm1 = recode(adm1, &quot;N. Coast&quot; = &quot;North Coast&quot;, &quot;central&quot; = &quot;Central&quot;),
+       year = recode(year, &#39;3018&#39; = 2018, 
+                     &#39;18&#39; = 2018)) %&gt;%  
+  unite(date, year, month, sep = &quot;-&quot;, remove = F) %&gt;% 
+  mutate(date = ymd(parse_date_time(date, &quot;ym&quot;)))
+
+dat1$test_u5[dat1$test_u5 == -9999] &lt;-NA
+
+write_csv(dat1, &quot;data/routine_data_clean.csv&quot;)
+#View(dat1)
+
+# Note
+# There is in R a variable called month.abb</code></pre>
+</details>
+</blockquote>
+<p>** Collapsing data by groups **</p>
+<p>Sometimes you may need to summarise/aggregate your data to specific
+groups or categories of age, sex, adm1, adm2 or monthly to allow yo to
+perform specific tabulations or visualizations.</p>
+<p>In Spreadsheet/MSExcel Pivot Tables can be applied to perform such
+tasks, then save the summarized tables either as separate files or add
+in a new sheet in the existing MSExcel file. Note: the <em>.csv.</em>
+may need to be saves as <em>.xls.</em> to allow adding formulas and more
+sheets</p>
+<p>Refer to the <em>Module 1 SlideDeck</em> for Details.</p>
+<p>** Merging files **</p>
+<p>The file <em>population.csv</em> includes adm2 population statistics
+for Under5s(u5s), adults(ov5) and the all ages(total) for the year 2018.
+We would like to merge this population statistics to the main cleaned
+dataset <em>routine_data_clean.csv</em> or the aggregate dataset
+<em>aggreg_adm2.csv</em> for further manipulation e.g., calculating the
+incidence rates.</p>
+<p>Refer to the <em>Module 1 SlideDeck</em> for Details.</p>
+<p>** Visualization - assessing temporal/monthly trends **</p>
+<p>To be able to assess the monthly or temporal trend of an indicator, a
+subset/summarised table need to be prepared. This process in Spread will
+include combining multiple steps such as Pivot table by month, save the
+table in a separate sheet, make the plot (based on the available
+options).</p>
+<p>In cases where Pivot table seems to be less convenient, another
+software will be used to summarise the data, then move it back to
+MSExcel for plotting.</p>
+<p>There had been instances where the Summary tables are produced
+manually.</p>
+<p>In case several summarizations/visuals are needed, the task has to be
+done repeatedly.</p>
+<p>Refer to the <em>Module 1 SlideDeck</em> for Details.</p>
+<p>** Visualization - assessing spatial patterns **</p>
+<ul>
+<li><p>Some spreadsheet (most updated versions) can be used to generate
+simple maps showing spatial distribution of your indicators. However,
+that requires preparing the data to an exact format needed for the plot
+- hence one has to go through the Pivoting process or other means of
+aggregating the data e.g., at adm1 or adm2 level then generate the
+maps.</p></li>
+<li><p>Tasks takes longer if spatial patterns have to be assessed for
+multiple dimensions e.g., age groups (u5/ov5), annually or
+monthly.</p></li>
+<li><p>Tasks may be impossible if spatial patterns need to be assessed
+at finer resolutions. Processing of shapefiles and polygons is not
+entirely incorporated in Spreadsheet. Other mapping software such as
+ArcGIS or QGIS need to be used.</p></li>
+</ul>
+<p><strong>Data 2:</strong></p>
+<p>The data file <em>hf_servicepopulation.csv</em> (in Data folder)
+contains service population for each of the health facilities (HFs)
+included in the <em>routine_data_clean.csv</em>. The service populations
+were defined based on the villages around the facility and there is no
+overlap. In this country the entire population is at risk of malaria</p>
+<p><em>Class Exercise I</em></p>
+<p>We need to do the following to the Data 2:</p>
+<ol style="list-style-type: decimal">
+<li>Rename the column/variable <sub>popn_hfserv</sub> to
+<sub>hf_popn</sub></li>
+<li>Join Data 1 with Data 2 to get information of Admin1 and Admin2 for
+each of the health facilities.</li>
+<li>Calculate the total population for each of the Admin2 units</li>
+<li>Create a new column/variable with these Admin2 population in Data 2
+name it as <sub>adm2_popn</sub></li>
+<li>Calculate the total population for each of the Admin1 units</li>
+<li>Create a new column/variable with these Admin1 population in Data 2
+name it as <sub>adm1_popn</sub></li>
+<li>Save the new file with name <em>dat_withpopulation.csv</em>.</li>
+</ol>
+<p>In a group of 4 people discuss on how you are going to perform this
+task.</p>
+<p>Note: No limitation on the tools/software to use to implement
+this.</p>
+<p><em>Solution to Exercise I using R scripts</em></p>
+<pre class="r"><code># Join with Data 1 to get the Adm1 and Adm2 for each HF
+dat2 &lt;- dat1 %&gt;% 
+ dplyr::select(adm1, adm2, hf) %&gt;% 
+  left_join(dat2, by = c(&quot;hf&quot;)) %&gt;% 
+              rename(hf_popn = popn_hfserv) ## rename 
+
+dat2 &lt;- distinct(dat2)
+
+sum(dat2$hf_popn)</code></pre>
+<pre><code>## [1] 6227693</code></pre>
+<pre class="r"><code>## get Adm2 population
+dat3 &lt;- dat2 %&gt;% 
+  group_by(adm2) %&gt;% 
+  mutate(adm2_popn = sum(hf_popn, na.rm = TRUE))     
+
+## get Adm1 population
+dat4 &lt;- dat3 %&gt;% 
+  group_by(adm1) %&gt;% 
+  mutate(adm1_popn = sum(hf_popn, na.rm = TRUE))     
+
+write.csv(dat4, &quot;outputs/dat_withpopulation.csv&quot;)                        </code></pre>
+<p><em>Class plenary discussion - Exercise I</em></p>
+<p>What software the participants used to manipulate data</p>
+<ul>
+<li>Lessons</li>
+<li>Experiences/Challenges</li>
+<li>What step was easy to do? Why?</li>
+<li>What step was most difficult to do? Why?</li>
+<li>What step was prone to make errors</li>
+</ul>
+<p><em>Class Exercise II</em></p>
+<p>Using the file <em>dat_withpopulation.csv</em> generated <em>Exercise
+I</em> do the following:</p>
+<ol style="list-style-type: decimal">
+<li>Collapse the data at Admin2 level with these variables</li>
+</ol>
+<ul>
+<li>Tested Under5</li>
+<li>Tested Adults</li>
+<li>Tested All ages</li>
+<li>Positive Under5</li>
+<li>Positive Adults</li>
+<li>Positive All ages</li>
+<li>Population All ages</li>
+</ul>
+<p>2, Calculate Crude Incidence Rates (rates = incidence
+cases/population at risk)</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Save the revised file with name <em>dat_withcrudeinc.csv</em>.</li>
+</ol>
+<p><em>Note: At your own time you may write scripts that repeat the
+exercise separating by diagnostic tests (RDT vs. Microscopy) by Admin2
+and Admin1</em></p>
+<p><em>Solution to Exercise II using R scripts</em></p>
+<pre class="r"><code>## At Adm2 level - Overall
+dat5 &lt;- dat1 %&gt;% 
+      group_by(adm2) %&gt;% 
+  mutate(tested_u5 = sum(test_u5, na.rm = T),
+         tested_ov5 = sum(test_ov5, na.rm = T),
+         tested_all = (tested_u5+tested_ov5),
+         positive_u5 = sum(conf_u5, na.rm = T),
+         positive_ov5 = sum(conf_ov5, na.rm = T),
+         positive_all = (positive_u5+positive_ov5)) %&gt;% 
+     dplyr::select(adm2, tested_u5, tested_ov5, tested_all,positive_u5,positive_ov5,positive_all) %&gt;% 
+  distinct()
+
+popn_data_adm2 &lt;- dat4 %&gt;% 
+   dplyr::select(adm1, adm2, adm2_popn) 
+
+popn_data_adm2 &lt;- distinct(popn_data_adm2)
+
+dat5 &lt;- dat5 %&gt;%
+  left_join(popn_data_adm2, by =c(&quot;adm2&quot;)) %&gt;%
+  mutate(inc_crude = ((positive_all/adm2_popn)*1000)
+  )
+
+write.csv(dat5, &quot;outputs/dat_withcrudeinc_adm2.csv&quot;)                        
+
+## At Adm1 level - Overall
+dat6 &lt;- dat1 %&gt;% 
+      group_by(adm1) %&gt;% 
+  mutate(tested_u5 = sum(test_u5, na.rm = T),
+         tested_ov5 = sum(test_ov5, na.rm = T),
+         tested_all = (tested_u5+tested_ov5),
+         positive_u5 = sum(conf_u5, na.rm = T),
+         positive_ov5 = sum(conf_ov5, na.rm = T),
+         positive_all = (positive_u5+positive_ov5)) %&gt;% 
+     dplyr::select(adm1, tested_u5, tested_ov5, tested_all,positive_u5,positive_ov5,positive_all) %&gt;% 
+  distinct()
+
+popn_data_adm1 &lt;- dat4 %&gt;% 
+   dplyr::select(adm1, adm1_popn) 
+
+popn_data_adm1 &lt;- distinct(popn_data_adm1)
+
+dat6 &lt;- dat6 %&gt;%
+  left_join(popn_data_adm1, by =c(&quot;adm1&quot;)) %&gt;%
+  mutate(inc_crude = ((positive_all/adm1_popn)*1000)
+  )
+
+write.csv(dat6, &quot;outputs/dat_withcrudeinc_adm1.csv&quot;)                        </code></pre>
+<p><em>Class plenary discussion - Exercise II</em></p>
+<p>What software the participants used to manipulate data</p>
+<ul>
+<li>Lessons</li>
+<li>Experiences/Challenges</li>
+<li>What step was easy to do? Why?</li>
+<li>What step was most difficult to do? Why?</li>
+<li>What step was prone to make errors</li>
+</ul>
+<p><strong>Data presentation and visualization</strong> </p>
+<p>We will later learn how to present these Incidence rates using Maps
+at Admin1 and Admin2.</p>
+<p>For now let us review these products:</p>
+<p><strong>Overall pattern</strong></p>
+<p><strong>Figure 1: Crude Incidence rates at Admin1</strong></p>
+<p><img src="outputs/inc.map.adm1.png" width="100%" style="display: block; margin: auto;" />
+</p>
+<p><strong>Table 1: Crude Incidence rates at Admin1</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">adm1</th>
+<th align="right">inc_crude</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">West</td>
+<td align="right">50.16980</td>
+</tr>
+<tr class="even">
+<td align="left">Plains</td>
+<td align="right">39.60549</td>
+</tr>
+<tr class="odd">
+<td align="left">Central</td>
+<td align="right">45.63434</td>
+</tr>
+<tr class="even">
+<td align="left">North Coast</td>
+<td align="right">48.36825</td>
+</tr>
+<tr class="odd">
+<td align="left">East</td>
+<td align="right">47.87803</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Seasonal pattern</strong></p>
+<p><strong>Figure 2: Crude monthly incidence rates at
+Admin2</strong></p>
+<p><img src="outputs/incmonthly.map.adm1.png" width="100%" style="display: block; margin: auto;" />
+</p>
+<p><strong>Table 2: Crude monthly incidence rates at Admin1</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">date</th>
+<th align="left">adm1</th>
+<th align="left">month</th>
+<th align="right">inc_crude</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2018-01-01</td>
+<td align="left">West</td>
+<td align="left">Jan</td>
+<td align="right">25.51014</td>
+</tr>
+<tr class="even">
+<td align="left">2018-02-01</td>
+<td align="left">West</td>
+<td align="left">Feb</td>
+<td align="right">34.42354</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-03-01</td>
+<td align="left">West</td>
+<td align="left">Mar</td>
+<td align="right">29.15572</td>
+</tr>
+<tr class="even">
+<td align="left">2018-04-01</td>
+<td align="left">West</td>
+<td align="left">Apr</td>
+<td align="right">34.37897</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-05-01</td>
+<td align="left">West</td>
+<td align="left">May</td>
+<td align="right">25.88451</td>
+</tr>
+<tr class="even">
+<td align="left">2018-06-01</td>
+<td align="left">West</td>
+<td align="left">Jun</td>
+<td align="right">27.88111</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-01</td>
+<td align="left">West</td>
+<td align="left">Jul</td>
+<td align="right">55.10262</td>
+</tr>
+<tr class="even">
+<td align="left">2018-08-01</td>
+<td align="left">West</td>
+<td align="left">Aug</td>
+<td align="right">91.58516</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-09-01</td>
+<td align="left">West</td>
+<td align="left">Sep</td>
+<td align="right">78.14376</td>
+</tr>
+<tr class="even">
+<td align="left">2018-10-01</td>
+<td align="left">West</td>
+<td align="left">Oct</td>
+<td align="right">67.86661</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-11-01</td>
+<td align="left">West</td>
+<td align="left">Nov</td>
+<td align="right">67.72399</td>
+</tr>
+<tr class="even">
+<td align="left">2018-12-01</td>
+<td align="left">West</td>
+<td align="left">Dec</td>
+<td align="right">64.38147</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-01-01</td>
+<td align="left">Plains</td>
+<td align="left">Jan</td>
+<td align="right">19.80211</td>
+</tr>
+<tr class="even">
+<td align="left">2018-02-01</td>
+<td align="left">Plains</td>
+<td align="left">Feb</td>
+<td align="right">26.62198</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-03-01</td>
+<td align="left">Plains</td>
+<td align="left">Mar</td>
+<td align="right">23.38025</td>
+</tr>
+<tr class="even">
+<td align="left">2018-04-01</td>
+<td align="left">Plains</td>
+<td align="left">Apr</td>
+<td align="right">34.57341</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-05-01</td>
+<td align="left">Plains</td>
+<td align="left">May</td>
+<td align="right">27.40183</td>
+</tr>
+<tr class="even">
+<td align="left">2018-06-01</td>
+<td align="left">Plains</td>
+<td align="left">Jun</td>
+<td align="right">23.94602</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-01</td>
+<td align="left">Plains</td>
+<td align="left">Jul</td>
+<td align="right">44.69618</td>
+</tr>
+<tr class="even">
+<td align="left">2018-08-01</td>
+<td align="left">Plains</td>
+<td align="left">Aug</td>
+<td align="right">52.02067</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-09-01</td>
+<td align="left">Plains</td>
+<td align="left">Sep</td>
+<td align="right">50.44567</td>
+</tr>
+<tr class="even">
+<td align="left">2018-10-01</td>
+<td align="left">Plains</td>
+<td align="left">Oct</td>
+<td align="right">49.48233</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-11-01</td>
+<td align="left">Plains</td>
+<td align="left">Nov</td>
+<td align="right">57.28084</td>
+</tr>
+<tr class="even">
+<td align="left">2018-12-01</td>
+<td align="left">Plains</td>
+<td align="left">Dec</td>
+<td align="right">65.61455</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-01-01</td>
+<td align="left">Central</td>
+<td align="left">Jan</td>
+<td align="right">27.70461</td>
+</tr>
+<tr class="even">
+<td align="left">2018-02-01</td>
+<td align="left">Central</td>
+<td align="left">Feb</td>
+<td align="right">25.57049</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-03-01</td>
+<td align="left">Central</td>
+<td align="left">Mar</td>
+<td align="right">23.74014</td>
+</tr>
+<tr class="even">
+<td align="left">2018-04-01</td>
+<td align="left">Central</td>
+<td align="left">Apr</td>
+<td align="right">26.69208</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-05-01</td>
+<td align="left">Central</td>
+<td align="left">May</td>
+<td align="right">21.77737</td>
+</tr>
+<tr class="even">
+<td align="left">2018-06-01</td>
+<td align="left">Central</td>
+<td align="left">Jun</td>
+<td align="right">23.06251</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-01</td>
+<td align="left">Central</td>
+<td align="left">Jul</td>
+<td align="right">58.80513</td>
+</tr>
+<tr class="even">
+<td align="left">2018-08-01</td>
+<td align="left">Central</td>
+<td align="left">Aug</td>
+<td align="right">62.61383</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-09-01</td>
+<td align="left">Central</td>
+<td align="left">Sep</td>
+<td align="right">76.22079</td>
+</tr>
+<tr class="even">
+<td align="left">2018-10-01</td>
+<td align="left">Central</td>
+<td align="left">Oct</td>
+<td align="right">65.26201</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-11-01</td>
+<td align="left">Central</td>
+<td align="left">Nov</td>
+<td align="right">74.82660</td>
+</tr>
+<tr class="even">
+<td align="left">2018-12-01</td>
+<td align="left">Central</td>
+<td align="left">Dec</td>
+<td align="right">61.33647</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-01-01</td>
+<td align="left">North Coast</td>
+<td align="left">Jan</td>
+<td align="right">24.48840</td>
+</tr>
+<tr class="even">
+<td align="left">2018-02-01</td>
+<td align="left">North Coast</td>
+<td align="left">Feb</td>
+<td align="right">31.05774</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-03-01</td>
+<td align="left">North Coast</td>
+<td align="left">Mar</td>
+<td align="right">21.70229</td>
+</tr>
+<tr class="even">
+<td align="left">2018-04-01</td>
+<td align="left">North Coast</td>
+<td align="left">Apr</td>
+<td align="right">32.20151</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-05-01</td>
+<td align="left">North Coast</td>
+<td align="left">May</td>
+<td align="right">27.25495</td>
+</tr>
+<tr class="even">
+<td align="left">2018-06-01</td>
+<td align="left">North Coast</td>
+<td align="left">Jun</td>
+<td align="right">27.97836</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-01</td>
+<td align="left">North Coast</td>
+<td align="left">Jul</td>
+<td align="right">53.30748</td>
+</tr>
+<tr class="even">
+<td align="left">2018-08-01</td>
+<td align="left">North Coast</td>
+<td align="left">Aug</td>
+<td align="right">62.58472</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-09-01</td>
+<td align="left">North Coast</td>
+<td align="left">Sep</td>
+<td align="right">96.04731</td>
+</tr>
+<tr class="even">
+<td align="left">2018-10-01</td>
+<td align="left">North Coast</td>
+<td align="left">Oct</td>
+<td align="right">69.84815</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-11-01</td>
+<td align="left">North Coast</td>
+<td align="left">Nov</td>
+<td align="right">68.62617</td>
+</tr>
+<tr class="even">
+<td align="left">2018-12-01</td>
+<td align="left">North Coast</td>
+<td align="left">Dec</td>
+<td align="right">65.32195</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-01-01</td>
+<td align="left">East</td>
+<td align="left">Jan</td>
+<td align="right">30.46887</td>
+</tr>
+<tr class="even">
+<td align="left">2018-02-01</td>
+<td align="left">East</td>
+<td align="left">Feb</td>
+<td align="right">27.21693</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-03-01</td>
+<td align="left">East</td>
+<td align="left">Mar</td>
+<td align="right">26.41298</td>
+</tr>
+<tr class="even">
+<td align="left">2018-04-01</td>
+<td align="left">East</td>
+<td align="left">Apr</td>
+<td align="right">27.75892</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-05-01</td>
+<td align="left">East</td>
+<td align="left">May</td>
+<td align="right">25.56386</td>
+</tr>
+<tr class="even">
+<td align="left">2018-06-01</td>
+<td align="left">East</td>
+<td align="left">Jun</td>
+<td align="right">27.40662</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-07-01</td>
+<td align="left">East</td>
+<td align="left">Jul</td>
+<td align="right">56.11402</td>
+</tr>
+<tr class="even">
+<td align="left">2018-08-01</td>
+<td align="left">East</td>
+<td align="left">Aug</td>
+<td align="right">67.73067</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-09-01</td>
+<td align="left">East</td>
+<td align="left">Sep</td>
+<td align="right">90.25939</td>
+</tr>
+<tr class="even">
+<td align="left">2018-10-01</td>
+<td align="left">East</td>
+<td align="left">Oct</td>
+<td align="right">64.07224</td>
+</tr>
+<tr class="odd">
+<td align="left">2018-11-01</td>
+<td align="left">East</td>
+<td align="left">Nov</td>
+<td align="right">69.31148</td>
+</tr>
+<tr class="even">
+<td align="left">2018-12-01</td>
+<td align="left">East</td>
+<td align="left">Dec</td>
+<td align="right">62.22044</td>
+</tr>
+</tbody>
+</table>
+<p><em>Class plenary discussion - Data Presentation</em></p>
+<p>Which of the method would you prefer presenting your data e.g., in a
+report</p>
+<ul>
+<li>Tables only? Why?</li>
+<li>Figures only? Why?</li>
+<li>Both Tables and Figures? Why?</li>
+</ul>
+</div>
+<div id="alternative-software-and-tools-for-managing-public-health-data"
+class="section level2">
+<h2><em>1.4.2 Alternative Software and tools for managing public health
+data</em></h2>
+<p>Alternative up-to-date software (than Spreadsheets) can be used to
+manipulate, analyse, summarization, etc</p>
+<p><img src="images/Popular_software_datamanagement.PNG" width="80%" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Apache Hadoop (Opensource)</li>
+<li>R/RStudio (Opensource)</li>
+<li>Python (Opensource)</li>
+<li>Stata (Paid)</li>
+</ul>
+<p>For making maps</p>
+<ul>
+<li>Quantum GIS, aka QGIS (Opensource)</li>
+<li>Arc GIS (Paid)</li>
+</ul>
+<p>R/RStudio and QGIS will be taught and used entirely from Module 2 of
+this course.</p>
+</div>
+</div>
+<div id="microsoft-excel-for-data-managment" class="section level1">
+<h1>1.5 Microsoft Excel for Data managment</h1>
+<p>A. What is GOOD about it?</p>
+<ul>
+<li>Comes with a lot of beautiful functionalities incl. addons - sort,
+remove duplicates, edit, filter, do math, collapsing, freeze panes, work
+with dates (with tears if you dont know how to do it), changes across
+worksheets, add notes/comments,</li>
+<li>Requires minimal analytically and programming skills</li>
+<li>Quick fix for small datasets</li>
+</ul>
+<p>B. What may NOT be so GOOD about it?</p>
+<ul>
+<li>You have lots of limitations!</li>
+<li>Control of the manipulation is in the User hands - anything
+can/could happen</li>
+<li>Hard to document and keep track of all the changes made - poor
+reproducibility</li>
+<li>Data manipulation processes exploded or not possible when the data
+becomes large, with multiple workbooks, etc</li>
+<li>Not feasible when the data is LARGE</li>
+<li>The software is not open source</li>
+</ul>
+<p>This [<a
+href="https://datacarpentry.org/spreadsheet-ecology-lesson/00-intro/index.html"
+class="uri">https://datacarpentry.org/spreadsheet-ecology-lesson/00-intro/index.html</a>]
+is a free module on how to manage data using spreadsheets - you may
+refer to this for more information or do a self learning.</p>
+<ul>
+<li>Several online tutorials available online to teach you advanced
+concepts to use spreadsheets.</li>
+<li>If you feel comfortable working in Spreadsheets that is completely
+alright.</li>
+<li>If it annoys you that is also alright.</li>
+<li>Alternative software to manage your data in a fancier and succinct
+manner exists.</li>
+</ul>
+</div>
+<div id="conclusion" class="section level1">
+<h1>1.6 Conclusion</h1>
+<ul>
+<li>Generation of best information and evidence from the data (small or
+big) starts from how well it was managed (collected,
+summarized/analyzed, presented).</li>
+<li>Several tool exists. Always! Choose a tool that you are most
+comfortable to work with; less prone to make errors in the process;</li>
+<li>Best tool should allow you or someone else to replicate the task,
+reproduced the outputs without tears.</li>
+<li>Think of your audience when generating outputs from your data -
+literacy, time, and purpose - should be easily communicated, easy to
+interpret to generate the needed knowledge</li>
+<li>Keep data ethics all the time</li>
+</ul>
+<p><strong>Thank you for your participation</strong></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,19 +1,25 @@
 name: "R Markdown Websites Tutorial"
 navbar:
-  title: "HOME"
+  title: "Before we get Started"
   left:
-    - text: "First Observations"
-      href: first_observations.html
-    - text: "Basic Workflow"
-      href: basic_workflow.html
-    - text: "Getting Sophisticated"
-      href: getting_sophisticated.html
-    - text: "Your Turn"
-      href: your_turn.html
+    - text: "Data management"
+      href: 01_datamanagement.html
+    - text: "Data handling and Visualiation in R"
+      href: 02_datahandling.html
+    - text: "Spatial Data in QGIS"
+      href: 03_QGIS.html
+    - text: "Spatial Data in R"
+      href: 04_spatial_in_R.html
+    - text: "Introduction to R-INLA"
+      href: 05_Intro_to_INLA.html
 output_dir: "."
 output:
   html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
     theme: yeti
     highlight: textmate
+    css: style.css
 #    include:
 #      after_body: _footer.html
