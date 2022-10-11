@@ -344,6 +344,7 @@ div.tocify {
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
+<div class="logo"> </div>
 
 <div id="header">
 
@@ -357,8 +358,7 @@ visualisation in R</h1>
 
 <p>This module provides an introduction to R and RStudio. It includes
 hands on teaching for how to handle data in R using key packages such as
-<code>tidyverse</code> <code>sf</code>, <code>sp</code>,
-<code>rgdal</code> and <code>terra</code>.</p>
+tidyverse sf, sp, rgdal and raster.</p>
 <p>In this module we will cover what R is, how to install it on your
 machine and how to interact with the RStudio interface. We will look at
 how to manage your projects in R then introduce basic data management
@@ -372,7 +372,7 @@ acquired skills to clean and process replica DHIS2 routine malaria
 surveillance data.</p>
 <p><br></p>
 <div id="introduction-to-r-and-rstudio" class="section level2">
-<h2>Introduction to R and Rstudio</h2>
+<h2>2.1 Introduction to R and Rstudio</h2>
 <p>R is a popular programming language for data science. It is a
 powerful language which can be used for basic data cleaning and
 analysis, building complex statistical models, creating publication
@@ -391,11 +391,13 @@ projects and building reproducible code.</p>
 href="https://www.r-project.org/">https://www.r-project.org/</a>. Select
 a CRAN mirror in a location close to you from which to download R.
 Follow the prompts to download R for your processing system.</p>
-<p><img src="images/download_R.png" width="100%" style="display: block; margin: auto;" />
-</p>
+<p><br></p>
+<p><img src="images/download_R.png" width="100%" style="display: block; margin: auto;" /></p>
+<p><br></p>
 <p>Rstudio can then be downloaded from the webpage: <a
 href="https://www.rstudio.com/products/rstudio/download">https://www.rstudio.com/products/rstudio/download</a>.
 Select the free desktop version to proceed.</p>
+<p><br></p>
 <p><img src="images/download_Rstudio.png" width="50%" style="display: block; margin: auto;" /></p>
 <p><br></p>
 </div>
@@ -409,6 +411,70 @@ packages and help pages.</p>
 <p>There are two ways we can run R code in RStudio, directly from the
 console, or from an R script. We will start by looking at the console
 where we can write basic code to be run line by line.</p>
+<p><br></p>
+</div>
+<div id="project-management-with-rstudio" class="section level3">
+<h3>Project management with Rstudio</h3>
+<p>In RStudio you can use “projects” to manage your files and code.
+These help by organising everything into a working directory and
+allowing you to easily keep your files, scripts and outputs for a single
+project in one place.</p>
+<p>You can either create a new project from scratch in RStudio, create a
+project from an existing folder containing R code or by cloning a
+version controlled (e.g. Git) repository.</p>
+<p>We will look at how to start a new project in RStudio. To do this we
+go to File &gt; New Project. Select the option to create the project in
+a new directory and give the directory a name and create the
+project.</p>
+<p><br></p>
+<p><img src="images/new_proj.png" width="80%" style="display: block; margin: auto;" /></p>
+<p><br></p>
+<p>You will then see the project appear in the bottom right window. You
+can now navigate your project from this window. You can see the files
+you have saved as part of the project, create new folders, delete, move
+or rename files.</p>
+<p><br></p>
+<p><img src="images/new_proj2.png" width="50%" style="display: block; margin: auto;" /></p>
+<p><br></p>
+<p>In this tutorial we will be working with the R project “NAME OF
+PROJECT” which can be downloaded from “WEBLINK TO DATA”. <br></p>
+</div>
+<div id="data-types-and-structures" class="section level3">
+<h3>Data types and structures</h3>
+<p>We will now introduce you to some of the basic data types in R. There
+are five main types of data in R, these are:</p>
+<ul>
+<li>Characters : “a”, “bananas”</li>
+<li>Numeric: 1 , 2.2321 , 1999</li>
+<li>Integer: 2L, 5L (L tells R to store as integer)</li>
+<li>Logical: True, False</li>
+<li>Complex: 1+4i (I is the imaginary part)</li>
+<li>Factors (categorical data with labels)</li>
+</ul>
+<p>The major data structures in R are:</p>
+<ul>
+<li>Vectors</li>
+<li>Matrices</li>
+<li>Arrays</li>
+<li>Data frames</li>
+<li>Lists</li>
+</ul>
+<p>Vectors are series of values, either numbers, characters or logical
+values (TRUE or FALSE).</p>
+<p>Matrices are 2-dimensional array which can hold numeric, character or
+logical data types. All of the data in a matrix has to be of the same
+type and there is a fixed number of rows and columns.</p>
+<p>A array is of 2 or more dimensions and as with a matrix can hold
+numeric, character or logical data types, with all data being of the
+same type</p>
+<p>Data frames are a selection of equal length vectors grouped together,
+where the vectors can be of different data types. These are the most
+common format used to analyse datasets in and what we will primarily be
+working with in this session.</p>
+<p>Lists are essentially a list of other items, these can be a mixture
+of different data types, for example you can create a list of data
+frames, matrices and vectors. It is useful way of organising and storing
+data.</p>
 <p><br></p>
 </div>
 <div id="basic-expressions" class="section level3">
@@ -465,8 +531,8 @@ country</code></pre>
 <h3>Vectors</h3>
 <p>In R we commonly work with vectors, these are sequences of values.
 Vectors can be numeric or character strings and are created using the
-<code>c()</code> function. Once we have created the vector we can access
-different values of the vector by using square brackets.
+<code>c()</code>, concatenate, function. Once we have created the vector
+we can access different values of the vector by using square brackets.
 <code>[2]</code> will return the second value in the vector.</p>
 <pre class="r"><code>tested &lt;- c(56, 102, 65, 43, 243) 
 tested[2]</code></pre>
@@ -561,76 +627,14 @@ numbers of questions and answers from the R users community.</p>
 <p><br></p>
 </div>
 </div>
-<div id="project-management-with-rstudio" class="section level2">
-<h2>Project management with Rstudio</h2>
-<p>In RStudio you can use “projects” to manage your files and code.
-These help by organising everything into a working directory and
-allowing you to easily keep your files, scripts and outputs for a single
-project in one place.</p>
-<p>You can either create a new project from scratch in RStudio, create a
-project from an existing folder containing R code or by cloning a
-version controlled (e.g. Git) repository.</p>
-<p>We will look at how to start a new project in RStudio. To do this we
-go to File &gt; New Project. Select the option to create the project in
-a new directory and give the directory a name and create the
-project.</p>
-<p><img src="images/new_proj.png" width="80%" style="display: block; margin: auto;" /></p>
-<p>You will then see the project appear in the bottom right window. You
-can now navigate your project from this window. You can see the files
-you have saved as part of the project, create new folders, delete, move
-or rename files.</p>
-<p><img src="images/new_proj2.png" width="50%" style="display: block; margin: auto;" /></p>
-<p><br></p>
-<blockquote>
-<h3 id="task-1">Task 1</h3>
-<ul>
-<li>Open up RStudio and create a new project called
-<strong>MAP_spatial_analysis_course</strong></li>
-<li>Create some folders to organise your work. Create one new folder
-called <em>“scripts”</em> and one called <em>“data”</em>.</li>
-<li>Move the data you have downloaded from XXX to the <em>“data”</em>
-folder</li>
-<li>Open a new script in RStudio, install and load the
-<code>tidyverse</code> package and save the script into the scripts
-folder, calling in <code>session2.R</code></li>
-</ul>
-</blockquote>
-<p><br></p>
-</div>
-<div id="data-structures" class="section level2">
-<h2>Data structures</h2>
-<p>We will now introduce you to some of the basic data types in R, how
-to import data and interrogate it in R Studio. The major data structures
-in R are:</p>
-<ul>
-<li>Vectors</li>
-<li>Factors</li>
-<li>Data frames</li>
-<li>Lists</li>
-<li>Matrices</li>
-</ul>
-<p>We have looked at vectors, which are a series of values, either
-numbers, characters or logical values (TRUE or FALSE). Factors are the
-data type for storing categorical data. Data frames are a selection of
-equal length vectors grouped together, where the vectors can be of
-different data types.</p>
-<p>A matrix is a 2-dimensional array which can hold numeric, character
-or logical data types. All of the data in a matrix has to be of the same
-type and there is a fixed number of rows and columns.</p>
-<p>Lists are essentially a list of other items, these can be a mixture
-of different data types, for example you can create a list of data
-frames, matrices and vectors. It is useful way of organising and storing
-data.</p>
-<p>Data frames are the most common format used to analyse datasets in R.
-In this section we will work with data frames, and introduce
-factors.</p>
-<p><br></p>
+<div id="importing-and-exploring-data-in-r" class="section level2">
+<h2>2.2 Importing and exploring data in R</h2>
 <div id="importing-data" class="section level3">
 <h3>Importing data</h3>
 <p>R has the functionality to import various types of data. One of the
 most common file types we work with are <code>.csv</code> files, but we
 can also import <code>.dta</code> files and <code>.xlsx</code> files
-amongst others.</p>
+among others.</p>
 <p>We can import .csv files into RStudio using the base function
 <code>read.csv()</code>. In this function we insert the file path to the
 data we wish to import. Note that as we have set up a project, this is
@@ -836,22 +840,33 @@ table(routine_data$month)</code></pre>
 <pre><code>## 
 ## Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec 
 ## 100 100 100 100 100 100 100 100 100 100 100 100</code></pre>
+<p>With months we can also achieve this using the helpful specification
+‘month.abb’ to tell R we have abbreviated months, rather than listing
+these out everythime</p>
+<pre class="r"><code>routine_data$month &lt;- factor(routine_data$month,
+                        levels = month.abb)</code></pre>
 <p><br></p>
 <blockquote>
-<h3 id="task-2" class="challenge">Task 2</h3>
+<h3 id="task-1" class="challenge">Task 1</h3>
 <ul>
+<li>Open the R project “NAME OF PROJECT HERE”, donwloaded from “WEBLINK
+HERE”</li>
+<li>Open a new script and save it in the project folder “scripts”</li>
+<li>Install and load the tidyverse packages</li>
 <li>Import the <code>routine_data.csv</code> file using the
 <code>read_csv()</code> function, setting -9999 values to NA, call the
-object <code>routine_data</code></li>
+object “routine_data”</li>
 <li>Explore the data using functions such as <code>str()</code>,
 <code>head()</code> and <code>summary()</code></li>
-<li>Convert the variable <code>month</code> to an ordered factor</li>
+<li>Convert the variable “month” to an ordered factor</li>
 </ul>
 <details>
 <summary>
 Solution
 </summary>
-<pre class="r"><code> routine_data &lt;- read_csv(&quot;data/routine_data.csv&quot;)
+<pre class="r"><code> install.packages(&quot;tidyverse&quot;)
+ library(tidyverse)
+ routine_data &lt;- read_csv(&quot;data/routine_data.csv&quot;)
  str(routine_data)
  head(routine_data)
  summary(routine_data)
@@ -861,8 +876,9 @@ Solution
 <p><br></p>
 </div>
 </div>
-<div id="exploring-data-frames" class="section level2">
-<h2>Exploring data frames</h2>
+<div id="basic-data-cleaning-and-manipulation-in-tidyverse"
+class="section level2">
+<h2>2.3 Basic data cleaning and manipulation in Tidyverse</h2>
 <p>In this section we introduce you to the <code>tidyverse</code>
 packages and show how these functions can be used to explore, manipulate
 and analyse data.</p>
@@ -881,9 +897,13 @@ tidyverse:</p>
 <li>filter</li>
 <li>rename</li>
 <li>mutate</li>
-<li>group_by</li>
-<li>summarise</li>
+<li>drop_na</li>
+<li>arrange and relocate</li>
+<li>group_by and summarise</li>
 </ul>
+<p>Additionally, we will cover working with dates in the “lubridate”
+package and using pipes to combined comands in a clean, stepwise
+manner</p>
 <p>We will continue this investigation using the
 <code>routine_data.csv</code> dataset we imported into R in the previous
 section.</p>
@@ -904,12 +924,7 @@ information.</p>
 ##  3 West  Bamakiary     6  2018 Mar        41      36
 ##  4 West  Bamakiary     6  2018 Apr        NA      69
 ##  5 West  Bamakiary     6  2018 May        95      64
-##  6 West  Bamakiary     6  2018 Jun       108      42
-##  7 West  Bamakiary     6  2018 Jul       121      93
-##  8 West  Bamakiary     6  2018 Aug       299     175
-##  9 West  Bamakiary     6  2018 Sep       323     174
-## 10 West  Bamakiary     6  2018 Oct       526     259
-## # … with 1,190 more rows</code></pre>
+....</code></pre>
 <p>This function can also be used to remove variables from a dataset by
 using a minus sign before the variables. This means that the same
 results could be achieved with the following code.</p>
@@ -924,12 +939,7 @@ results could be achieved with the following code.</p>
 ##  3 West  Bamakiary     6 Mar    2018      41      36       45       47
 ##  4 West  Bamakiary     6 Apr    2018      NA      69      137       79
 ##  5 West  Bamakiary     6 May    2018      95      64      101       83
-##  6 West  Bamakiary     6 Jun    2018     108      42      115       49
-##  7 West  Bamakiary     6 Jul    2018     121      93      134      108
-##  8 West  Bamakiary     6 Aug    2018     299     175      352      335
-##  9 West  Bamakiary     6 Sep    2018     323     174      394      391
-## 10 West  Bamakiary     6 Oct    2018     526     259      684      554
-## # … with 1,190 more rows</code></pre>
+....</code></pre>
 <p>If we want to assign this to a new object, or replace the existing
 object, we can do so using the <code>&lt;-</code> operator.</p>
 <pre class="r"><code>routine_data &lt;- select(routine_data, adm1, adm2, hf, year, month, test_u5, conf_u5)</code></pre>
@@ -973,12 +983,7 @@ required.</p>
 ##  3 West  Bamakiary     6  2018 Mar        41      36
 ##  4 West  Bamakiary     6  2018 Apr        NA      69
 ##  5 West  Bamakiary     6  2018 May        95      64
-##  6 West  Bamakiary     6  2018 Jun       108      42
-##  7 West  Bamakiary     6  2018 Jul       121      93
-##  8 West  Bamakiary     6  2018 Aug       299     175
-##  9 West  Bamakiary     6  2018 Sep       323     174
-## 10 West  Bamakiary     6  2018 Oct       526     259
-## # … with 254 more rows</code></pre>
+....</code></pre>
 <pre class="r"><code>filter(routine_data, 
        test_u5 &gt;500)</code></pre>
 <pre><code>## # A tibble: 19 × 7
@@ -989,20 +994,7 @@ required.</p>
 ##  3 North Coast Buseli         25  2018 Dec       552     374
 ##  4 N. Coast    Buseli         57  2018 Sep       632     388
 ##  5 West        Cadagudeey     58  2018 Aug       588     339
-##  6 East        Gakingo         2  2018 Aug       538     451
-##  7 East        Galkashiikh     5  2018 Sep       608     514
-##  8 East        Galkashiikh    85  2018 Dec       587     477
-##  9 West        Kidobar        95  2018 Nov       502     378
-## 10 West        Kokam          30  2018 Sep       702     441
-## 11 North Coast Lalaba         47  2018 Nov       661     475
-## 12 North Coast Lalaba         53  2018 Jul       564     365
-## 13 North Coast Lalaba         53  2018 Nov       619     415
-## 14 Central     Laoye          37  2018 Oct       656     337
-## 15 East        Mabangata      74  2018 Sep       558     552
-## 16 Central     Namaba         83  2018 Nov       501     302
-## 17 Central     Niaya          73  2018 Jul       543     355
-## 18 Central     Siago          87  2018 Jul       566     420
-## 19 Central     Siago          87  2018 Aug       522     159</code></pre>
+....</code></pre>
 <pre class="r"><code>filter(routine_data, 
        (adm1 == &quot;West&quot; | adm1 == &quot;Central&quot;) &amp;
        test_u5 &gt;=500)</code></pre>
@@ -1014,11 +1006,7 @@ required.</p>
 ##  3 West    Cadagudeey    58  2018 Aug       588     339
 ##  4 West    Kidobar       95  2018 Nov       502     378
 ##  5 West    Kokam         30  2018 Sep       702     441
-##  6 Central Laoye         37  2018 Oct       656     337
-##  7 Central Namaba        83  2018 Nov       501     302
-##  8 Central Niaya         73  2018 Jul       543     355
-##  9 Central Siago         87  2018 Jul       566     420
-## 10 Central Siago         87  2018 Aug       522     159</code></pre>
+....</code></pre>
 <p>We may want to use the <code>filter</code> function to identify
 erroneous data in our dataset, for example, we can identify situations
 where the number of people confirmed with malaria is higher than the
@@ -1033,20 +1021,7 @@ number tested.</p>
 ##  3 North Coast Buseli       98  2018 Jun        24      86
 ##  4 West        Cakure       81  2018 Sep        67     249
 ##  5 Plains      Caya         71  2018 Mar        22      85
-##  6 Plains      Caya         71  2018 Oct        81      84
-##  7 North Coast Lalaba       15  2018 Jan        78      80
-##  8 North Coast Lalaba       53  2018 Dec        85      87
-##  9 Central     Laoye         1  2018 Nov        58     190
-## 10 East        Marandre     36  2018 Dec        27     106
-## 11 North Coast Mbidima      38  2018 Oct        26     109
-## 12 North Coast Mbidima      84  2018 Jun         8      30
-## 13 Central     Mbono        64  2018 Oct        17      57
-## 14 Central     Niaya        88  2018 Dec        49     176
-## 15 Plains      Rumoni       69  2018 Sep        26     104
-## 16 Central     Yagoloko     28  2018 Nov        50     158
-## 17 North Coast Yumka        55  2018 Oct        33     134
-## 18 North Coast Yumka       100  2018 May         9      35
-## 19 Plains      Zikishi      31  2018 Jul       308     310</code></pre>
+....</code></pre>
 <p><br></p>
 </div>
 <div id="rename" class="section level3">
@@ -1068,12 +1043,7 @@ object “routine_data” with this we would simply write:</p>
 ##  3 West  Bamakiary     6  2018 Mar        41          36
 ##  4 West  Bamakiary     6  2018 Apr        NA          69
 ##  5 West  Bamakiary     6  2018 May        95          64
-##  6 West  Bamakiary     6  2018 Jun       108          42
-##  7 West  Bamakiary     6  2018 Jul       121          93
-##  8 West  Bamakiary     6  2018 Aug       299         175
-##  9 West  Bamakiary     6  2018 Sep       323         174
-## 10 West  Bamakiary     6  2018 Oct       526         259
-## # … with 1,190 more rows</code></pre>
+....</code></pre>
 <p><br></p>
 </div>
 <div id="mutate" class="section level3">
@@ -1093,12 +1063,7 @@ we could write:</p>
 ##  3 West  Bamakiary     6  2018 Mar        41      36            0.878
 ##  4 West  Bamakiary     6  2018 Apr        NA      69           NA    
 ##  5 West  Bamakiary     6  2018 May        95      64            0.674
-##  6 West  Bamakiary     6  2018 Jun       108      42            0.389
-##  7 West  Bamakiary     6  2018 Jul       121      93            0.769
-##  8 West  Bamakiary     6  2018 Aug       299     175            0.585
-##  9 West  Bamakiary     6  2018 Sep       323     174            0.539
-## 10 West  Bamakiary     6  2018 Oct       526     259            0.492
-## # … with 1,190 more rows</code></pre>
+....</code></pre>
 <p>We can also use <code>mutate()</code> to alter existing variables
 within the data frame. Say we noticed that there was an error in the
 admin 1 name where in some instance “North Coast” was entered as “N.
@@ -1155,9 +1120,9 @@ the current date and time.</p>
 <pre class="r"><code>library(lubridate)
 
 today()</code></pre>
-<pre><code>## [1] &quot;2022-10-02&quot;</code></pre>
+<pre><code>## [1] &quot;2022-10-11&quot;</code></pre>
 <pre class="r"><code>now()</code></pre>
-<pre><code>## [1] &quot;2022-10-02 23:22:35 AWST&quot;</code></pre>
+<pre><code>## [1] &quot;2022-10-11 12:35:14 AWST&quot;</code></pre>
 <p>In our routine_data dataset we have a variable of month and year,
 from these we want to create one variable for date. We can do this using
 the <code>make_date()</code> function. This function expects inputs for
@@ -1197,12 +1162,7 @@ undertaken in the order they appear in the command.</p>
 ##  3 Central     Mbono          99  2018 May         0       0 2018-05-01 
 ##  4 East        Galkashiikh    85  2018 Feb         7       5 2018-02-01 
 ##  5 N. Coast    Buseli         57  2018 Apr         8       9 2018-04-01 
-##  6 North Coast Bwiziwo        79  2018 Feb         8       4 2018-02-01 
-##  7 North Coast Mbidima        84  2018 Jun         8      30 2018-06-01 
-##  8 East        Gakingo        67  2018 Apr         9       4 2018-04-01 
-##  9 North Coast Yumka         100  2018 May         9      35 2018-05-01 
-## 10 East        Lamanya         7  2018 May        10       8 2018-05-01 
-## # … with 1,153 more rows</code></pre>
+....</code></pre>
 <pre class="r"><code>arrange(routine_data, desc(test_u5))</code></pre>
 <pre><code>## # A tibble: 1,163 × 8
 ##    adm1        adm2           hf  year month test_u5 conf_u5 date_tested
@@ -1212,12 +1172,7 @@ undertaken in the order they appear in the command.</p>
 ##  3 Central     Laoye          37  2018 Oct       656     337 2018-10-01 
 ##  4 N. Coast    Buseli         57  2018 Sep       632     388 2018-09-01 
 ##  5 North Coast Lalaba         53  2018 Nov       619     415 2018-11-01 
-##  6 East        Galkashiikh     5  2018 Sep       608     514 2018-09-01 
-##  7 West        Cadagudeey     58  2018 Aug       588     339 2018-08-01 
-##  8 East        Galkashiikh    85  2018 Dec       587     477 2018-12-01 
-##  9 Central     Siago          87  2018 Jul       566     420 2018-07-01 
-## 10 North Coast Lalaba         53  2018 Jul       564     365 2018-07-01 
-## # … with 1,153 more rows</code></pre>
+....</code></pre>
 <pre class="r"><code>arrange(routine_data, adm1, hf, date_tested)</code></pre>
 <pre><code>## # A tibble: 1,163 × 8
 ##    adm1    adm2        hf  year month test_u5 conf_u5 date_tested
@@ -1227,12 +1182,7 @@ undertaken in the order they appear in the command.</p>
 ##  3 central Yagoloko     3  2018 Mar        94      49 2018-03-01 
 ##  4 central Yagoloko     3  2018 Apr       104      77 2018-04-01 
 ##  5 central Yagoloko     3  2018 May        86      62 2018-05-01 
-##  6 central Yagoloko     3  2018 Jun       241      63 2018-06-01 
-##  7 central Yagoloko     3  2018 Jul       194      91 2018-07-01 
-##  8 central Yagoloko     3  2018 Aug       434     217 2018-08-01 
-##  9 central Yagoloko     3  2018 Sep       332     153 2018-09-01 
-## 10 central Yagoloko     3  2018 Oct       146      70 2018-10-01 
-## # … with 1,153 more rows</code></pre>
+....</code></pre>
 <p>We can change the order that columns appear in the dataset using the
 <code>relocate()</code> function. This takes the first argument as the
 data frame, the second as the column(s) you wish to move, and then where
@@ -1246,12 +1196,7 @@ you want to over them to.</p>
 ##  3 2018-03-01  West  Bamakiary     6  2018 Mar        41      36
 ##  4 2018-05-01  West  Bamakiary     6  2018 May        95      64
 ##  5 2018-06-01  West  Bamakiary     6  2018 Jun       108      42
-##  6 2018-07-01  West  Bamakiary     6  2018 Jul       121      93
-##  7 2018-08-01  West  Bamakiary     6  2018 Aug       299     175
-##  8 2018-09-01  West  Bamakiary     6  2018 Sep       323     174
-##  9 2018-10-01  West  Bamakiary     6  2018 Oct       526     259
-## 10 2018-11-01  West  Bamakiary     6  2018 Nov       343     251
-## # … with 1,153 more rows</code></pre>
+....</code></pre>
 <p><br></p>
 </div>
 <div id="summarising-data" class="section level3">
@@ -1282,12 +1227,7 @@ numbers of times that combination of variables appears.</p>
 ##  3 central Mar       3
 ##  4 central Apr       3
 ##  5 central May       3
-##  6 central Jun       2
-##  7 central Jul       3
-##  8 central Aug       2
-##  9 central Sep       3
-## 10 central Oct       2
-## # … with 73 more rows</code></pre>
+....</code></pre>
 <p>If we want to summarise numerical variables we can use the function
 <code>summarise()</code>. This is used in conjunction with other
 mathematical functions such as <code>sum()</code>, <code>mean()</code>,
@@ -1369,17 +1309,14 @@ frame is being used.</p>
 ## 5 West               44577          28304</code></pre>
 <p><br></p>
 <blockquote>
-<h3 id="task-3" class="challenge">Task 3</h3>
-<p>Using the “routine_data” dataset we imported in the last task:</p>
-<ul>
-<li>Select the variables for location, date and the number of people
-tested and confirmed cases for children over 5 only (suffix “_ov5”)</li>
-<li>Identify and remove any missing data, or unrealistic values (e.g
-confirmed cases higher than those tested)</li>
-<li>Identify any errors in year variable and correct them</li>
-<li>Create a date variable called <code>date_tested</code> using the
-<code>lubridate</code> package</li>
-</ul>
+<h3 id="task-2" class="challenge">Task 2</h3>
+<p>Using the “routine_data” dataset we imported in the last task: -
+Select the variables for location, date and the number of people tested
+and confirmed cases for children over 5 only (suffix “_ov5”) - Identify
+and remove any missing data, or unrealistic values (e.g confirmed cases
+higher than those tested) - Identify any errors in year variable and
+correct them - Create a date variable called “date_tested” using the
+<code>lubridate</code> package</p>
 <details>
 <summary>
 Solution
@@ -1418,9 +1355,7 @@ clean_routine_data &lt;- routine_data %&gt;%
                           adm1 == &#39;central&#39;~&#39;Central&#39;,
                           TRUE~adm1),
          month = factor(month,
-                        levels = 
-                          c(&quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;, &quot;Apr&quot;, &quot;May&quot;, &quot;Jun&quot;, 
-                            &quot;Jul&quot;, &quot;Aug&quot;, &quot;Sep&quot;, &quot;Oct&quot;, &quot;Nov&quot;, &quot;Dec&quot;)),
+                        levels = month.abb),
          year = case_when(year == 3018 ~ 2018,
                           year == 18 ~ 2018,
                           TRUE ~ year),
@@ -1451,9 +1386,9 @@ head(clean_routine_data)</code></pre>
 </div>
 </div>
 <div id="advanced-manipulation-of-data-frames" class="section level2">
-<h2>Advanced manipulation of data frames</h2>
-<p>In this section we are building on the what we have introduced in the
-previous section and introducing some more advanced functions for data
+<h2>2.4 Advanced manipulation of data frames</h2>
+<p>In this section we are building on the what we have introduced in
+section 2.3 and introducing some more advanced functions for data
 manipulation. We will be using the “clean_routine_data” dataset we just
 created.</p>
 <p><br></p>
@@ -1520,13 +1455,7 @@ with the values you want to reshape.</p>
 ##  2 Central Buoadara 2018-02-01         106      50       56
 ##  3 Central Buoadara 2018-03-01          75      32       43
 ##  4 Central Buoadara 2018-04-01         107      43       64
-##  5 Central Buoadara 2018-05-01          68      28       40
-##  6 Central Buoadara 2018-06-01         188      81      107
-##  7 Central Buoadara 2018-07-01         572     283      289
-##  8 Central Buoadara 2018-08-01         406     156      250
-##  9 Central Buoadara 2018-09-01         925     392      533
-## 10 Central Buoadara 2018-10-01         387     178      209
-## # … with 526 more rows</code></pre>
+....</code></pre>
 <p><br></p>
 </div>
 <div id="joining-data-frames" class="section level3">
@@ -1617,7 +1546,7 @@ tested %&gt;% inner_join(positive,
 </div>
 </div>
 <div id="writing-data" class="section level2">
-<h2>Writing data</h2>
+<h2>2.5 Writing data</h2>
 <p>Once you have finished working on your data there are multiple ways
 you can save your work in R.</p>
 <p>One of the basic ones is to save your dataset as a csv. This is
@@ -1631,14 +1560,14 @@ the <code>pf_incidence</code> data frame we created in this module.</p>
 <p>Similarly to importing data, we can use the base R functions of
 <code>write.csv()</code>, or preferably the <code>tidyverse</code>
 option if <code>write_csv()</code></p>
+<p><br></p>
 <pre class="r"><code>write_csv(clean_routine_data, &quot;outputs/clean_routine_data&quot;)
 write_dta(clean_routine_data, &quot;outputs/clean_routine_data.dta&quot;)
 
 saveRDS(clean_routine_data, &quot;outputs/clean_routine_data.RDS&quot;)
 save(clean_routine_data, population, &quot;outputs/clean_data.R&quot;)</code></pre>
-<p><br></p>
 <blockquote>
-<h3 id="task-4" class="challenge">Task 4</h3>
+<h3 id="task-3" class="challenge">Task 3</h3>
 <ul>
 <li>Import a clean version of the <code>routine_data.csv</code>, setting
 -9999 values to NA</li>
@@ -1703,8 +1632,8 @@ write_csv(pf_incidence_national, &#39;outputs/pf_incidence_national.csv&#39;)</c
 <p><br></p>
 </div>
 </div>
-<div id="data-visualization" class="section level2">
-<h2>Data visualization</h2>
+<div id="introduction-to-visualization" class="section level2">
+<h2>2.6 Introduction to visualization</h2>
 <p>In this section we will introduce data visualisation using the
 popular <code>ggplot</code> package. This package contains functions to
 build a range of different plots, from scatter plots and line graphs, to
@@ -1713,7 +1642,6 @@ to build on plots and adjust the visualisations to your desired output,
 making publication quality plots.</p>
 <p>The data we will be using to create our plots is the dataset for the
 incidence of malaria created from our routine data.</p>
-<p><br></p>
 <div id="basic-plotting" class="section level3">
 <h3>Basic plotting</h3>
 <p>We will start by showing you how to build a basic plot with the
@@ -1735,11 +1663,10 @@ filter the <code>pf_incidence_national</code> data frame for
 <code>age_group == "total"</code>.</p>
 <pre class="r"><code>total_incidence &lt;- 
   filter(pf_incidence_national, age_group == &#39;total&#39;)</code></pre>
-<p>We then start with the ggplot command. We want to use the NGA dataset
-and wish to plot the year on the x-axis and the incidence on the y-axis
-so the command is as follows:</p>
+<p>We then start with the ggplot command. We want to use the total
+incidence dataset and wish to plot the year on the x-axis and the
+incidence on the y-axis so the command is as follows:</p>
 <pre class="r"><code>ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))</code></pre>
-<p><br></p>
 </div>
 <div id="scatter-plots-line-graphs" class="section level3">
 <h3>Scatter plots &amp; line graphs</h3>
@@ -1749,13 +1676,13 @@ using <code>geom_point()</code>. We add layers to the ggplot object
 using the <code>+</code> operator.</p>
 <pre class="r"><code>ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
   geom_point()</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-66-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-68-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>We can then control how the points look by adding commands to the
 <code>geom_point()</code> function, such as the size, colour and
 transparency (alpha) of the points.</p>
 <pre class="r"><code>ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
   geom_point(size=5, colour = &quot;blue&quot;, alpha = 0.5)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-67-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-69-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>We can also change the type of the point by using the
 <code>shape =</code> command.</p>
 <pre class="r"><code>ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
@@ -1763,7 +1690,7 @@ transparency (alpha) of the points.</p>
 
 # Available shapes (don&#39;t run)
 shapes</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-69-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-69-2.png" width="50%" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-71-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-71-2.png" width="50%" /></p>
 <p>The general structure of the <code>ggplot()</code> command remains
 similar for different plots.This means that it is easy to change the
 type of an established plot, or create a different plot using a similar
@@ -1778,7 +1705,7 @@ ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
 # Smoothed line of fit
 ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
   geom_smooth(colour = &quot;yellow&quot;)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-70-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-70-2.png" width="50%" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-72-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-72-2.png" width="50%" /></p>
 <p>The size, colour and alpha commands are similarly used to control the
 appearance of the line but instead of using <code>shape =</code> to
 control the appearance of the points we can change the style of the line
@@ -1788,20 +1715,19 @@ in a line plot by specifying <code>linetype =</code></p>
 
 # Available line types (not run)
 lty</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-72-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-72-2.png" width="50%" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-74-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-74-2.png" width="50%" /></p>
 <p>Additionally, you can layer the types of plots together,
 e.g. plotting the points and lines on the same graph.</p>
 <pre class="r"><code>ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
   geom_line(size=1, colour = &quot;red&quot;, alpha = 0.5)+
   geom_point(size=5, colour = &#39;blue&#39;, shape = 18)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-73-1.png" width="60%" style="display: block; margin: auto;" /></p>
-<p><br></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-75-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <blockquote>
-<h3 id="task-5">Task 5</h3>
+<h3 id="task-4" class="challenge">Task 4</h3>
 <ul>
 <li>Import the dataset <code>pf_incidence_national</code> we created in
-the demo from &gt; the data folder and filter to just contain data for
-under 5’s</li>
+the demo from the data folder and filter to just contain data for under
+5’s</li>
 <li>Create a line graph plotting the incidence of malaria (y-axis) by
 date (x-axis)</li>
 <li>Change this to be a green dotted line and increase the line
@@ -1815,8 +1741,7 @@ Solution
   filter(age_group==&quot;u5&quot;) 
   
   ggplot(pf_incidence_national)+
-  geom_line(mapping = aes(x = date_tested, y = incidence), color =  &#39;green&#39;, size = 2)+
-  theme_bw()</code></pre>
+  geom_line(mapping = aes(x = date_tested, y = incidence), color =  &#39;green&#39;, size = 2)</code></pre>
 </details>
 </blockquote>
 <p><br></p>
@@ -1834,7 +1759,7 @@ or the dark theme: <code>theme_dark()</code>.</p>
        y = &quot;Incidence/100,000/month&quot;,
        title = &quot;Malaria incidence in 2018&quot;)+
   theme_bw()</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-75-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-77-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>We can control the x and y axis limits by using <code>xlim()</code>
 or <code>ylim()</code>. As our x-axis is a date we can control this
 using the command <code>scale_x_date()</code>. Otherwise if this was a
@@ -1858,7 +1783,7 @@ ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
   theme_bw()+
   scale_x_date(limit=c(as.Date(&quot;2018-01-01&quot;),as.Date(&quot;2018-06-01&quot;)),
                date_breaks = &quot;1 month&quot;, date_labels = &quot;%b&quot;)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-76-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-76-2.png" width="50%" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-78-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-78-2.png" width="50%" /></p>
 <p>Furthermore, we can control the text of the axis and title within the
 <code>theme()</code> command. <code>theme()</code> provides a large
 amount of control over the appearance of the plot. Common examples of
@@ -1876,8 +1801,7 @@ option <code>angle =</code>, changing the font size using
         axis.title.x = element_text(size = 14,face = &#39;bold&#39;),
         axis.title.y = element_text(size = 14,face = &#39;bold&#39;),
         title = element_text(size = 16,face = &#39;bold&#39;))</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-77-1.png" width="60%" style="display: block; margin: auto;" /></p>
-<p><br></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-79-1.png" width="60%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="subgroups-and-facets" class="section level3">
 <h3>Subgroups and facets</h3>
@@ -1899,7 +1823,7 @@ plot.</p>
        title = &quot;Malaria incidence in 2018&quot;,
        colour = &#39;Age group&#39;)+
   theme_bw()</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-78-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-80-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>We can control the colours in the plots by using the
 <code>scale_color_manual()</code> function, and passing it the colours
 you wish to use. You can use either the names of colours or the HEX
@@ -1916,7 +1840,7 @@ the <code>legend.position = "bottom"</code> command within
   theme_bw()+
   theme(legend.position = &#39;bottom&#39;)+
     scale_colour_manual(values = c(&#39;pink&#39;, &#39;yellow&#39;, &#39;purple&#39;))</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-79-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-81-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>Another way to look at multiple data trends in one plot is to uses
 facets. This creates separate plots for each “facet”, as part of the
 overall plot.</p>
@@ -1927,7 +1851,7 @@ overall plot.</p>
        title = &quot;Malaria incidence in 2018&quot;)+
   theme_bw()+
   facet_wrap(~age_group)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-80-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-82-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>There are various options in <code>facet_wrap()</code>. If you have
 largely varying scales between the facets you are plotting, you can plot
 these on different scales using either <code>free_y = TRUE</code>, or
@@ -1943,10 +1867,10 @@ as <code>nrow = 2, ncol = 3</code> or
        title = &quot;Malaria incidence in 2018&quot;)+
   theme_bw()+
   facet_wrap(~age_group, scales = &#39;free_y&#39;, nrow = 3)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-81-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-83-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p><br></p>
 <blockquote>
-<h3 id="task-6">Task 6</h3>
+<h3 id="task-5" class="challenge">Task 5</h3>
 <ul>
 <li>Using the <code>pf_incidence_national</code> dataset create scatter
 plots the number of confirmed malaria cases(y-axis) by date tested
@@ -1983,7 +1907,7 @@ our plot of incidence by year based on the total population we can add
        y = &quot;Incidence/100,000/month&quot;,
        title = &quot;Malaria incidence in 2018&quot;)+
   theme_bw()</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-83-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-85-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>There are then a few options for how we can control the colour scale
 of a continuous variable. Firstly we can use the
 <code>scale_colour_gradient()</code> command to specify the low and high
@@ -2010,7 +1934,7 @@ ggplot(total_incidence, aes(x = date_tested, y = incidence, colour = pop))+
        title = &quot;Malaria incidence in 2018&quot;)+
   theme_bw()+
   scale_colour_distiller(palette = &#39;Greens&#39;)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-84-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-84-2.png" width="50%" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-86-1.png" width="50%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-86-2.png" width="50%" /></p>
 <p>An additional option for- continuous colour scales are the viridis
 scales. These are well designed colour scales which are excellent for
 graphs and maps. They are colourful, appear uniform in both colour and
@@ -2044,7 +1968,7 @@ ggplot(total_incidence, aes(x = date_tested, y = incidence, colour = pop))+
        title = &quot;Malaria incidence in 2018&quot;)+
   theme_bw()+
   scale_colour_viridis_c(option = &#39;inferno&#39;, direction = -1)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-85-1.png" width="33%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-85-2.png" width="33%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-85-3.png" width="33%" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-87-1.png" width="33%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-87-2.png" width="33%" /><img src="02_datahandling_files/figure-html/unnamed-chunk-87-3.png" width="33%" /></p>
 <p>Finally, we can use ggplot to have plot different data on different
 layers of the plot. We do this by moving the <code>data =</code> and
 <code>mapping =</code> arguments from the <code>ggpplot()</code> to the
@@ -2061,8 +1985,7 @@ smoothed mean line for all of the data.</p>
        title = &quot;Malaria incidence in 2018&quot;,
        colour = &#39;Age group&#39;)+
   theme_bw()</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-86-1.png" width="60%" style="display: block; margin: auto;" /></p>
-<p><br></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-88-1.png" width="60%" style="display: block; margin: auto;" /></p>
 </div>
 <div id="box-plots-bar-charts-and-histograms" class="section level3">
 <h3>Box plots, bar charts and histograms</h3>
@@ -2092,7 +2015,7 @@ date.</p>
        y = &quot;Number of cases&quot;,
        title = &quot;Number of malaria cases by month&quot;)+
   theme_bw()</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-87-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-89-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>Histograms are created using the <code>geom_histogram()</code>
 function. This splits the data into bins using <code>stat_bins()</code>
 and counts the number of occurrences in each bin. You can control the
@@ -2107,7 +2030,7 @@ additional options already discussed.</p>
   labs(x = &quot;Number tested&quot;,
        y = &quot;Count&quot;,
        title = &quot;Histogram of malaria tests conducted&quot;)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-88-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-90-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>For bar plots the <code>geom_bar()</code>function is used. The
 default transformation is to count the number of rows for each category,
 <code>stat = "bin"</code>. There are other transformations we can use,
@@ -2122,7 +2045,7 @@ number of malaria tests conducted each month in our routine data.</p>
        y = &quot;Count&quot;,
        title = &quot;Bar chart of malaria tests conducted per month&quot;) +
   theme_bw()</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-89-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-91-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>If we want to display different subgroups of data, such as number of
 tests by age group, on a bar plot we can either create a stacked bar
 plot with different colours representing the subgroups by using the
@@ -2138,7 +2061,7 @@ ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
        y = &quot;Count&quot;,
        title = &quot;Bar chart of confirmed malaria cases per month, by age group&quot;,
        fill = NULL)</code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-90-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-92-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Side by side bar chart
 filter(pf_incidence, age_group != &#39;total&#39;) %&gt;% 
 ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
@@ -2148,12 +2071,11 @@ ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
        y = &quot;Count&quot;,
        title = &quot;Bar chart of confirmed malaria cases per month, by age group&quot;,
        fill = NULL) </code></pre>
-<p><img src="02_datahandling_files/figure-html/unnamed-chunk-91-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="02_datahandling_files/figure-html/unnamed-chunk-93-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>This is just an introduction to what you can achieve for ggplot. For
 further guidance look at the help pages and the cheat-sheet available at
 <a
 href="https://www.rstudio.com/resources/cheatsheets">https://www.rstudio.com/resources/cheatsheets</a>.</p>
-<p><br></p>
 </div>
 <div id="saving-plots" class="section level3">
 <h3>Saving plots</h3>
@@ -2189,7 +2111,7 @@ ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
 ggsave(&quot;outputs/malaria_incidence_plot.png&quot;)</code></pre>
 <p><br></p>
 <blockquote>
-<h3 id="task-7">Task 7</h3>
+<h3 id="task-6" class="challenge">Task 6</h3>
 <ul>
 <li>Import the <code>pf_incidence</code> dataset we created in demo
 2.</li>
@@ -2271,7 +2193,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3,h4",
+      selectors: "h1,h2,h3",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {

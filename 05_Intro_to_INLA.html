@@ -11,7 +11,7 @@
 
 
 
-<title>Introduction to INLA for Geostatistical modelling</title>
+<title>Introduction to INLA for geospatial modelling</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -344,12 +344,13 @@ div.tocify {
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
+<div class="logo"> </div>
 
 <div id="header">
 
 
 
-<h1 class="title toc-ignore">Introduction to INLA for Geostatistical
+<h1 class="title toc-ignore">Introduction to INLA for geospatial
 modelling</h1>
 
 </div>
@@ -378,18 +379,12 @@ underlying the SPDE models, please see
 &amp; Rue 2015</a></p>
 <div id="data" class="section level3">
 <h3>1. Data</h3>
-<p>We recommend downloading the Rproject file from <a
-href="https://github.com/PunamA/BDI_INLA"
-class="uri">https://github.com/PunamA/BDI_INLA</a>. First, download the
-zip file. Unzip and click the <code>BDI_INLA.Rproj</code> file. We
-recommend you to use the <code>Intro_to_INLA_students.R</code> Script.
-In case you want to get further details (or answers to any coding
-questions), we have provided you with our instructor script as well.</p>
+<p>All data for this session will be available on your USB in the
+<code>INLA</code> folder it should include:</p>
 <p><strong>Malaria prevalence data</strong>: Open-access malaria data
 hosted by the <a href=https://malariaatlas.org/pr-survey-data/>Malaria
-Atlas Project</a> accessed using the malariaAtlas R package. We are
-using Madagascar for this example. (Note: we have pulled the latest MIS
-for Madagascar 2021)</p>
+Atlas Project</a>. We are using Madagascar for this example. (Note: we
+have pulled the latest MIS for Madagascar 2021)</p>
 <p><strong>Covariate data</strong>: a suite of satellite imagery
 provided by MAP has been cleaned and processed for this tutorial. The
 data is available upon
@@ -399,7 +394,9 @@ data cleaning and the preparation work please run the R-Script
 <p>For this tutorial, you do not need to run the preparation work
 script. The cleaned version of the data is available in
 <code>input/MDG_clean.Rdata</code></p>
-<pre class="r"><code>load(&#39;INLA/input/MDG_clean.Rdata&#39;)</code></pre>
+<pre class="r"><code>#load it properly without showing these results
+load(&#39;INLA/input/MDG_clean.Rdata&#39;)</code></pre>
+<pre class="r"><code>load(&#39;input/MDG_clean.Rdata&#39;)</code></pre>
 </div>
 <div id="model-description" class="section level3">
 <h3>2. Model Description</h3>
@@ -502,7 +499,7 @@ mesh2 &lt;- inla.mesh.2d(loc = coords, boundary = bdry, max.edge=c(0.5, 1),
 mesh3 &lt;- inla.mesh.2d(loc = coords, boundary = bdry, max.edge=c(0.5,1), 
                       offset = c(0.5, 1),
                       cutoff = 0.3)</code></pre>
-<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-6-1.png" width="1440" /></p>
+<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-7-1.png" width="1440" /></p>
 <p>At this point, i would encourage you to try play with different
 values for each argument and observe the differences between the
 generated meshes.</p>
@@ -514,7 +511,7 @@ times), which can be done as follows:</p>
 mesh4 &lt;- inla.mesh.2d(boundary = non_convex_bdry, max.edge=c(0.5,1), 
                       offset = c(0.5, 1),
                       cutoff = 0.3)</code></pre>
-<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <p>The non-convex hull provides a mesh different from what we have seen
 previously. There are certain situations where it can be useful; for
 example when one wishes to model separate islands from the mainland. For
@@ -614,11 +611,11 @@ summaries of the parameters of interest: the fixed effects (intercept
 and Elevation) and hyper parameters (spatial field parameters).</p>
 <pre class="r"><code>model0$summary.fix</code></pre>
 <pre><code>##                 mean        sd 0.025quant   0.5quant 0.975quant mode
-## Intercept -4.1925391 0.4792175 -5.2287279 -4.1606873 -3.3377428   NA
-## Elevation -0.1039843 0.2372550 -0.5772613 -0.1014392  0.3548892   NA
+## Intercept -4.1930495 0.4798630 -5.2344687 -4.1604371 -3.3386709   NA
+## Elevation -0.1041667 0.2372625 -0.5774949 -0.1016143  0.3547005   NA
 ##                    kld
-## Intercept 1.071925e-06
-## Elevation 8.263443e-07</code></pre>
+## Intercept 1.054793e-06
+## Elevation 8.258019e-07</code></pre>
 <pre class="r"><code>model0$summary.hyperpar</code></pre>
 <pre><code>##                               mean        sd 0.025quant  0.5quant 0.975quant
 ## Theta1 for spatial.field -3.504250 0.1858234 -3.8808978 -3.500097  -3.148912
@@ -656,46 +653,9 @@ model0.res$summary.log.range.nominal</code></pre>
 ## variance.nominal.1 0.01845864</code></pre>
 <p>the <code>do.tranf = TRUE</code> makes sure that marginals are
 calculated in the same scale as the data.</p>
-</div>
-</div>
-<div id="model-selection" class="section level3">
-<h3>5. Model Selection</h3>
-<p>There is a rich literature on variable selection in the field of
-statistics. A discussion of this topic would go beyond the scope of this
-tutorial. However, we show some ways to select variables using R-INLA
-built-in functions. Mainly we will be focus on metrics that we can
-include in R-INLA using <code>control.compute</code> function. In this
-function, one can extract several metrics helpful to select variables,
-including DIC, CPO/PIT, and WAIC. In the following example, we will
-focus on WAIC, but one can similarly extract DIC and CPO/PIT
-metrics.</p>
-<pre class="r"><code>###model selection with WAIC (other criteria can be used)
-for(i in 1:6){
-  
-  f1 &lt;- as.formula(paste0(&quot;y ~ -1 + Intercept + f(spatial.field, model=spde) + &quot;, paste0(colnames(covs_df)[1:i], collapse = &quot; + &quot;)))
-  
-  model1&lt;-inla(f1, data=inla.stack.data(stk,spde=spde),family= &#39;binomial&#39;, 
-               Ntrials = n,
-               control.predictor=list(A=inla.stack.A(stk),compute=TRUE),
-               control.compute = list(dic = TRUE, cpo=TRUE, waic = TRUE)) #verbose=TRUE,
-  
-model_selection &lt;- if(i==1){rbind(c(model = paste(colnames(covs_df)[1:i]),waic = model1$waic$waic))}else{rbind(model_selection,c(model = paste(colnames(covs_df)[1:i],collapse = &quot; + &quot;),waic = model1$waic$waic))
-  }
-
-}
-
-model_selection</code></pre>
-<pre><code>##      model                                                   waic              
-## [1,] &quot;Access_hf&quot;                                             &quot;1054.50620436521&quot;
-## [2,] &quot;Access_hf + Access&quot;                                    &quot;1055.70793396951&quot;
-## [3,] &quot;Access_hf + Access + Elevation&quot;                        &quot;1052.71484455224&quot;
-## [4,] &quot;Access_hf + Access + Elevation + EVI&quot;                  &quot;1053.73525565254&quot;
-## [5,] &quot;Access_hf + Access + Elevation + EVI + LST_day&quot;        &quot;1054.38561913125&quot;
-## [6,] &quot;Access_hf + Access + Elevation + EVI + LST_day + Rain&quot; &quot;1054.93797729388&quot;</code></pre>
-<p>Which model would you choose? It seems that Model 4 has the lowest
-WAIC. Therefore, we select Model 3.</p>
+<p>Now let’s fit a model using all covariates:</p>
 <pre class="r"><code>#refit for best model:
-formula&lt;-y ~ -1 + Intercept + f(spatial.field, model=spde) + Access_hf + Access + Elevation 
+formula&lt;-y ~ -1 + Intercept + f(spatial.field, model=spde) + Access_hf + Access + Elevation + EVI + LST_day + Rain
 
 model1&lt;-inla(formula, data=inla.stack.data(stk,spde=spde),family= &#39;binomial&#39;, 
              Ntrials = n,
@@ -704,16 +664,19 @@ model1&lt;-inla(formula, data=inla.stack.data(stk,spde=spde),family= &#39;binomi
              verbose = FALSE) </code></pre>
 <p>At this point, try exploring <code>model1</code> using the code for
 <em>INLA results</em>. Is there anything new or interesting?</p>
-<p>Now let’s look at the results of our analysis. The posterior
-(marginal) distribution of the fixed and hyper parameters will provide
-key insight into the effect of the covariates and the structure of the
-spatial field, respectively.</p>
+<p>Let’s look at the results of our analysis. The posterior (marginal)
+distribution of the fixed and hyper parameters will provide key insight
+into the effect of the covariates and the structure of the spatial
+field, respectively.</p>
 <pre class="r"><code>##observe the plots for fixed parameters
-par(mfrow=c(2,3))
+par(mfrow=c(2,4))
 plot(model1$marginals.fixed$Intercept, ty = &quot;l&quot;, xlab = expression(beta[0]), ylab = &quot;Density&quot;) 
 plot(model1$marginals.fixed$Access_hf, ty = &quot;l&quot;, xlab = expression(beta[Access_hf]), ylab = &quot;Density&quot;) 
 plot(model1$marginals.fixed$Access, ty = &quot;l&quot;, xlab = expression(beta[Access]), ylab = &quot;Density&quot;) 
-plot(model1$marginals.fixed$Elevation, ty = &quot;l&quot;, xlab = expression(beta[Elevation]), ylab = &quot;Density&quot;) </code></pre>
+plot(model1$marginals.fixed$Elevation, ty = &quot;l&quot;, xlab = expression(beta[Elevation]), ylab = &quot;Density&quot;) 
+plot(model1$marginals.fixed$EVI, ty = &quot;l&quot;, xlab = expression(beta[EVI]), ylab = &quot;Density&quot;) 
+plot(model1$marginals.fixed$LST_day, ty = &quot;l&quot;, xlab = expression(beta[LST_day]), ylab = &quot;Density&quot;) 
+plot(model1$marginals.fixed$Rain, ty = &quot;l&quot;, xlab = expression(beta[Rain]), ylab = &quot;Density&quot;) </code></pre>
 <p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <pre class="r"><code>#observe the plots for hyper parameters
 par(mfrow=c(1,3))
@@ -734,8 +697,9 @@ grid.arrange(levelplot(g.mean, scales=list(draw=F), xlab=&#39;&#39;, ylab=&#39;&
              levelplot(g.sd, scal=list(draw=F), xla=&#39;&#39;, yla=&#39;&#39;, main=&#39;sd&#39; ,col.regions = heat.colors(16)), nrow=1)</code></pre>
 <p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 </div>
+</div>
 <div id="model-prediction" class="section level3">
-<h3>6. Model Prediction</h3>
+<h3>5. Model Prediction</h3>
 <p>Finally, we would like to calculate a prediction of the expected
 malaria prevalence on a dense grid in Madagascar. There are two methods
 we would like to show you; a) predicting within the “inla” function to
@@ -752,6 +716,14 @@ reference.coordinates &lt;- coordinates(reference.image)[in.country,]
 pred.points &lt;- SpatialPoints(reference.coordinates, proj4string = crs(MDG_shp))
 covs &lt;- list.files(&#39;INLA/covariates/&#39;, pattern = &quot;.tif$&quot;,full.names = T)[1:3] %&gt;% stack()
 pred.covs &lt;- raster::extract(covs, pred.points, df=T)</code></pre>
+<pre class="r"><code>reference.image &lt;- raster(&#39;covariates/Access.tif&#39;)
+in.country &lt;- which(!is.na(getValues(reference.image)))
+reference.coordinates &lt;- coordinates(reference.image)[in.country,]
+
+#make these into points and extract covariates for prediction grid
+pred.points &lt;- SpatialPoints(reference.coordinates, proj4string = crs(MDG_shp))
+covs &lt;- list.files(&#39;covariates/&#39;, pattern = &quot;.tif$&quot;,full.names = T)[1:3] %&gt;% stack()
+pred.covs &lt;- raster::extract(covs, pred.points, df=T)</code></pre>
 <p>we will also need to remake the observation A matrix for the
 prediction coordinates.</p>
 <pre class="r"><code>#remake the A matrix for prediction
@@ -760,7 +732,7 @@ dim(Aprediction)</code></pre>
 <pre><code>## [1] 29350   573</code></pre>
 <div id="prediction-within-the-inla-fitting-function"
 class="section level4">
-<h4>6.1 Prediction within the “inla” fitting function</h4>
+<h4>5.1 Prediction within the “inla” fitting function</h4>
 <p>To predict within the “inla” fitting function, we will need to create
 an inla stack for prediction. Note that for the response in the
 prediction stack we will set it to <em>y=NA</em>. Lastly, we join the
@@ -808,11 +780,11 @@ z &lt;- as.matrix(p.pred)
 pr.mdg.in&lt;-rasterize(x, reference.image, field=z, fun=&#39;last&#39;, background=NA)
 par(mfrow=c(1,1))
 plot(pr.mdg.in, main = &#39;Prediction using INLA&#39;)</code></pre>
-<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
 <div id="prediction-outside-the-inla-fitting-function"
 class="section level4">
-<h4>6.2 Prediction outside the “inla” fitting function</h4>
+<h4>5.2 Prediction outside the “inla” fitting function</h4>
 <p>A more optimised method for prediction would be to reconstruct the
 algebra outside the “inla” fitting function and use the posterior means
 for the parameters from the model fit.</p>
@@ -848,13 +820,13 @@ z &lt;- as.matrix(results)
 pr.mdg.out &lt;- rasterFromXYZ(cbind(x, z))
 
 plot(pr.mdg.out, main = &#39;Prediction outside INLA&#39;)</code></pre>
-<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <p>You will notice the maps look very similar which expected, as these
 two ways of making predictions are identical.</p>
 </div>
 </div>
 <div id="model-validation" class="section level3">
-<h3>7. Model Validation</h3>
+<h3>6. Model Validation</h3>
 <p>It is important to assess how does the model perform when we have new
 data. There are various approaches to assess the predictive performance
 of models. Here, we focus on one cross-validation approach that can be
@@ -879,7 +851,7 @@ test$positive &lt;- NA  #make the y values for test NA
 #lastly, create the training and testing coordinates
 train_coords &lt;- coords[train_ind,]
 test_coords &lt;- coords[-train_ind,]</code></pre>
-<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-32-1.png" width="1440" /></p>
+<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-33-1.png" width="1440" /></p>
 <p>Next, we create the A matrix for training and testing data. Note: we
 are using the same mesh3 and spde that we have made in section 4.1 and
 4.2 respectively</p>
@@ -928,10 +900,53 @@ index.pred &lt;- inla.stack.index(stk.full, &quot;pred&quot;)$data
 post.mean.logit &lt;- p.res$summary.linear.predictor[index.pred,&#39;mean&#39;] #the posterior is in logit form
 pred &lt;- exp(post.mean.logit)/(1 + exp(post.mean.logit))
 obs &lt;- test$pf_pr #this is the number pos/number examined</code></pre>
-<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
-<pre><code>## [1] 0.8972337</code></pre>
-<p>It seems that the prediction model we have fit is not very good. The
-correlation is very low. How would you improve this model?</p>
+<p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<pre><code>## [1] 0.8971442</code></pre>
+<p>The validation plot shows that the model fits pretty well. But it is
+important to remember that this isn’t always the case. How would you
+improve this model?</p>
+</div>
+<div id="optional-extra" class="section level3">
+<h3>Optional Extra</h3>
+<div id="model-selection" class="section level4">
+<h4>Model Selection</h4>
+<p>There is a rich literature on variable selection in the field of
+statistics. A discussion of this topic would go beyond the scope of this
+tutorial. However, we show some ways to select variables using R-INLA
+built-in functions. Mainly we will be focus on metrics that we can
+include in R-INLA using <code>control.compute</code> function. In this
+function, one can extract several metrics helpful to select variables,
+including DIC, CPO/PIT, and WAIC. In the following example, we will
+focus on WAIC, but one can similarly extract DIC and CPO/PIT
+metrics.</p>
+<pre class="r"><code>###model selection with WAIC (other criteria can be used)
+for(i in 1:6){
+  
+  f1 &lt;- as.formula(paste0(&quot;y ~ -1 + Intercept + f(spatial.field, model=spde) + &quot;, paste0(colnames(covs_df)[1:i], collapse = &quot; + &quot;)))
+  
+  model1&lt;-inla(f1, data=inla.stack.data(stk,spde=spde),family= &#39;binomial&#39;, 
+               Ntrials = n,
+               control.predictor=list(A=inla.stack.A(stk),compute=TRUE),
+               control.compute = list(dic = TRUE, cpo=TRUE, waic = TRUE)) #verbose=TRUE,
+  
+model_selection &lt;- if(i==1){rbind(c(model = paste(colnames(covs_df)[1:i]),waic = model1$waic$waic))}else{rbind(model_selection,c(model = paste(colnames(covs_df)[1:i],collapse = &quot; + &quot;),waic = model1$waic$waic))
+  }
+
+}
+
+model_selection</code></pre>
+<pre><code>##      model                                                   waic              
+## [1,] &quot;Access_hf&quot;                                             &quot;1054.47299180584&quot;
+## [2,] &quot;Access_hf + Access&quot;                                    &quot;1055.6185979606&quot; 
+## [3,] &quot;Access_hf + Access + Elevation&quot;                        &quot;1052.80136676832&quot;
+## [4,] &quot;Access_hf + Access + Elevation + EVI&quot;                  &quot;1053.75212137318&quot;
+## [5,] &quot;Access_hf + Access + Elevation + EVI + LST_day&quot;        &quot;1054.51093927369&quot;
+## [6,] &quot;Access_hf + Access + Elevation + EVI + LST_day + Rain&quot; &quot;1055.22566583566&quot;</code></pre>
+<p>Which model would you choose?</p>
+</div>
+</div>
+<div id="additional-information" class="section level3">
+<h3>Additional Information</h3>
 <p>If you’d like some hints, please see the paper from Su Kang:</p>
 <p><em>(Su Yun Kang, Katherine E. Battle, Harry S. Gibson, Arsène
 Ratsimbasoa, Milijaona Randrianarivelojosia, Stéphanie Ramboarina, Peter
