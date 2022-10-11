@@ -525,17 +525,31 @@ automatically notify you of new versions every once in a while.</p>
 contain useful R code written by other people. We will use the packages
 <code>tidyverse</code>, <code>sf</code> and <code>terra</code> mainly
 for this workshop.</p>
-<p>To try to install these packages, open RStudio and copy and paste the
-following command into the console window (look for a blinking cursor on
-the bottom left), then press the <kbd>Enter</kbd> (Windows and Linux) or
-<kbd>Return</kbd> (MacOS) to execute the command.</p>
+<p>To try to install these packages, open RStudio. If this is your first
+time opening it you may be prompted to set a CRAN mirror - select any
+country or even the R global cran. This step is important because <a
+href="https://cran.r-project.org/#:~:text=CRAN%20is%20a%20network%20of,you%20to%20minimize%20network%20load.">CRAN</a>
+aka <em>Comprehensive R Archive Network</em> is where R stores many
+useful packages that we may use. If you forgot to set this up or wish to
+change yours you can go to <code>Tools</code> -&gt;
+<code>Global Options</code> -&gt; <code>Packages</code>, you will have a
+screen that looks like this:</p>
+<p><img src="images/cran.png" width="50%" /></p>
+<p>You can change CRAN by clicking the <code>change...</code> button.
+Additionally, make sure that the section circled in red in the image
+above is not selected</p>
+<p>Next, copy and paste the following command into the console window
+(look for a blinking cursor on the bottom left), then press the
+<kbd>Enter</kbd> (Windows and Linux) or <kbd>Return</kbd> (MacOS) to
+execute the command.</p>
 <pre class="r"><code>list.of.packages &lt;- c(&quot;tidyverse&quot;, &quot;sf&quot;, &quot;terra&quot;, &quot;rgdal&quot;, &quot;sp&quot;, &quot;raster&quot;, &quot;scico&quot;, &quot;RColorBrewer&quot;, &quot;viridis&quot;, &quot;viridisLite&quot;, &quot;ggplot2&quot;, &quot;tidyr&quot;, &quot;dplyr&quot;, &quot;readxl&quot;)
 new.packages &lt;- list.of.packages[!(list.of.packages %in% installed.packages()[,&quot;Package&quot;])]
 if(length(new.packages)) install.packages(new.packages)</code></pre>
 <p>Alternatively, you can install the packages using RStudio’s graphical
 user interface by going to <code>Tools &gt; Install Packages</code> and
 typing the names of the packages separated by a comma.</p>
-<p>R tries to download and install the packages on your machine. When
+<p>R tries to download and install the packages on your machine.
+Tidyverse is a group of packages so it can take some time to load. When
 the installation has finished, you can try to load the packages by
 pasting the following code into the console:</p>
 <pre class="r"><code>library(tidyverse)
@@ -544,6 +558,20 @@ library(terra)
 library(rgdal)</code></pre>
 <p>If you do not see an error like
 <code>there is no package called ‘...’</code> you are good to go!</p>
+<p>Also note that when you load a package like tidyverse in for the
+first time you may see such test in your console:</p>
+<p><img src="images/load_tidyverse.png" width="50%" /></p>
+<p>This text is simply telling you what packages have loaded under
+tidyverse and also telling you that there were function in base R that
+had the same names as those in tidyverse and they have been
+‘over-written’ by the tidyverse ones. Additionally some of you may see
+some warning signs:</p>
+<p><img src="images/warnings.png" width="50%" /></p>
+<p><code>Warnings</code> are normally ok to ignore. Usually when you see
+a warning in R, it will still process the command you’ve entered, and
+just wants to draw your attention that later on you may have issues
+because of the text in the warning. Please ignore any warnings you may
+see.</p>
 <p><br></p>
 </div>
 <div id="updating-r-packages" class="section level3">
