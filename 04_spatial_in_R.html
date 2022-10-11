@@ -356,35 +356,36 @@ div.tocify {
 
 
 <p><br></p>
+<p>Before you begin, this module expects students to have some basic
+knowledge of R and GIS.</p>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>This module will follow a similar structure to Module 4, however, in
-these lessons, we aim to equip students with skills to manage, analyse
-and present spatial data using R software. For more details on practical
-tips for QGIS please refer to module 4.</p>
+<p>This module will follow a similar structure to previous QGIS session,
+however, in these lessons, we aim to equip students with skills to
+manage, analyse and present spatial data using R software.</p>
 <p><br></p>
 <div id="objectives-of-tutorial" class="section level3">
 <h3>Objectives of tutorial</h3>
 <ul>
 <li>Vector data
 <ul>
-<li>Introduction to sp and sf packages</li>
+<li>Introduction to <code>sp</code> and <code>sf</code> packages</li>
 <li>Importing shapefiles into R (Spatial points and polygons)</li>
 <li>Joining data to shapefiles</li>
 <li>Writing shapefiles out in R</li>
 </ul></li>
 <li>Raster data
 <ul>
-<li>Introduction to the terra package</li>
+<li>Introduction to the <code>terra</code> package</li>
 <li>Importing rasters into R</li>
-<li>Plotting, reprojecting and manipulating Rasters in R</li>
+<li>Plotting, reprojecting and manipulating rasters in R</li>
 <li>Extracting data from rasters</li>
 <li>Writing rasters out in R</li>
 </ul></li>
 <li>Creating publication quality maps
 <ul>
-<li>Using ggplot</li>
-<li>Using tmap</li>
+<li>Using <code>ggplot2</code></li>
+<li>Using <code>tmap</code></li>
 </ul></li>
 <li>Resources for advanced interactive maps with leaflet</li>
 </ul>
@@ -393,12 +394,14 @@ tips for QGIS please refer to module 4.</p>
 </div>
 <div id="vector-data-in-r" class="section level2">
 <h2>Vector data in R</h2>
-<p><br> ### Introduction to sp and sf packages The <code>sp</code>
-package (spatial) provides classes and methods for spatial (vector)
-data; the classes document where the spatial location information
-resides, for 2D or 3D data. Utility functions are provided, e.g. for
-plotting data as maps, spatial selection, as well as methods for
-retrieving coordinates, for subsetting, print, summary, etc.</p>
+<div id="introduction-to-sp-and-sf-packages" class="section level3">
+<h3>Introduction to sp and sf packages</h3>
+<p>The <code>sp</code> package (spatial) provides classes and methods
+for spatial (vector) data; the classes document where the spatial
+location information resides, for 2D or 3D data. Utility functions are
+provided, e.g. for plotting data as maps, spatial selection, as well as
+methods for retrieving coordinates, for subsetting, print, summary,
+etc.</p>
 <p>The <code>sf</code> package (simple features = points, lines,
 polygons and their respective ‘multi’ versions) is the new kid on the
 block with further functions to work with simple features, a
@@ -434,6 +437,7 @@ packages <code>sp</code>, <code>rgeos</code> and the vector parts of
 <code>rgdal</code> packages. It also connects nicely to tidyverse learnt
 in previous modules.</p>
 <p><br></p>
+</div>
 <div id="importing-spatial-data-into-r-spatial-points-and-polygons"
 class="section level3">
 <h3>Importing spatial data into R (Spatial points and polygons)</h3>
@@ -441,20 +445,15 @@ class="section level3">
 library</p>
 <pre class="r"><code>library(sf)</code></pre>
 <pre><code>## Linking to GEOS 3.10.2, GDAL 3.4.2, PROJ 8.2.1; sf_use_s2() is TRUE</code></pre>
-<pre class="r"><code>library(terra)</code></pre>
-<pre><code>## terra 1.5.21</code></pre>
-<pre><code>## 
-## Attaching package: &#39;terra&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     src</code></pre>
-<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
-## 
-##     extract</code></pre>
-<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
-## 
-##     arrow</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+## ✔ tibble  3.1.7     ✔ dplyr   1.0.9
+## ✔ tidyr   1.2.0     ✔ stringr 1.4.0
+## ✔ readr   2.1.2     ✔ forcats 0.5.1</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <p><br></p>
 <div id="shapefiles" class="section level4">
 <h4>Shapefiles</h4>
@@ -583,12 +582,22 @@ reset it using <code>st_as_sf()</code></p>
 <pre class="r"><code>st_write(annual_data_sf, &quot;outputs/annual_admin_routine_data.shp&quot;)</code></pre>
 <p><br></p>
 <blockquote>
-<h3 id="task-1">Task 1</h3>
+<h3 id="task-1" class="challenge">Task 1</h3>
 <ul>
-<li>Load in the data for fakeland admin units</li>
-<li>What type of spatial data is this shapefile?</li>
+<li>Load in the shapefile called “fakeland_task”</li>
+<li>How many polygons are in the shapefile?</li>
 <li>What projection is this shapefile in?</li>
+<li>Change the projection to be in WGS 84</li>
 </ul>
+<details>
+<summary>
+Solution
+</summary>
+<pre class="r"><code> fakeland &lt;- st_read(&quot;shapefiles/fakeland_task.shp&quot;)
+ fakeland
+ st_crs(fakeland)
+ fakeland &lt;- st_transform(fakeland, 4326)</code></pre>
+</details>
 </blockquote>
 <p><br></p>
 </div>
@@ -600,6 +609,18 @@ reset it using <code>st_as_sf()</code></p>
 replaced by the <code>terra</code> package. We can start by loading the
 package in R.</p>
 <pre class="r"><code>library(terra)</code></pre>
+<pre><code>## terra 1.5.21</code></pre>
+<pre><code>## 
+## Attaching package: &#39;terra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     src</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     extract</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     arrow</code></pre>
 <p>In terra we deal with rasters as a class of data called “SpatRaster”.
 This is a multi-layered feature which stores the parameters to describe
 the raster, including then number or rows and columns, the spatial
@@ -623,7 +644,7 @@ population</code></pre>
 <p>We can view the raster simply by using the <code>plot()</code>
 function.</p>
 <pre class="r"><code>plot(population)</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-5-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-6-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>We can also use this function to read in a stack of multiple rasters.
 In the raster folder you will find a series of rasters with the prefix
 “GPMM”, these are the monthly rainfall at a 5km resolution for Fakeland.
@@ -634,7 +655,7 @@ in as a raster stack using <code>rast()</code>.</p>
 GPMM &lt;- rast(file.names)
 
 plot(GPMM)</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-6-1.png" width="60%" style="display: block; margin: auto;" />
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-7-1.png" width="60%" style="display: block; margin: auto;" />
 Lets rename the rasters in the stack to make the names more meaningful.
 We can also use the index number to extract a single layer. We can
 select one raster in the stack by using the numerical index. So this
@@ -643,16 +664,19 @@ would give us the monthly rainfall raster for June.</p>
                   &#39;GPMM_Jul&#39;, &#39;GPMM_Aug&#39;, &#39;GPMM_Sep&#39;, &#39;GPMM_Oct&#39;, &#39;GPMM_Nov&#39;, &#39;GPMM_Dec&#39;)
 
 plot(GPMM[[6]])</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-7-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-8-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p><br></p>
 </div>
 <div id="plotting-reprojecting-and-manipulating-rasters-in-r"
 class="section level3">
 <h3>Plotting, reprojecting and manipulating Rasters in R</h3>
-<p><br> #### Plotting rasters We can quickly summarise the data from
-rasters in plots such as histograms.</p>
+<p><br></p>
+<div id="plotting-rasters" class="section level4">
+<h4>Plotting rasters</h4>
+<p>We can quickly summarise the data from rasters in plots such as
+histograms.</p>
 <pre class="r"><code>hist(log(population)) #plotting the log of the population due to the scale</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-8-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-9-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p>Additionally we can also use <code>ggplot</code> to visualise
 rasters, giving us more control over the appearance of the plot. First
 you need to convert the raster to a data frame, then it can be plotted
@@ -666,8 +690,9 @@ ggplot()+
   scale_fill_viridis_c()+
   labs(fill = &quot;Population&quot;)+
   theme_bw()</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-9-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-10-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <p><br></p>
+</div>
 <div id="reprojecting-rasters" class="section level4">
 <h4>Reprojecting rasters</h4>
 <p>As with the shapefiles it is important to know and control the
@@ -690,7 +715,7 @@ the raster to that.</p>
 <pre><code>## SpatExtent : -1.5, 5, 7, 10.5 (xmin, xmax, ymin, ymax)</code></pre>
 <pre class="r"><code>pop1 &lt;- crop(population, c(-1,2,9,10))   # c(xmin, xmax, ymin, ymax)
 plot(pop1)</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-11-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-12-1.png" width="60%" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Get the extend of the &quot;West&quot; region of fakeland
 e &lt;- filter(fakeland, adm1 == &#39;West&#39;) %&gt;% 
   ext()
@@ -708,7 +733,7 @@ m &lt;- filter(fakeland, adm1 == &#39;West&#39;)
 West_pop &lt;-  mask(West_pop, vect(m))
 
 plot(West_pop)</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><br></p>
 </div>
 </div>
@@ -798,14 +823,29 @@ head(fakeland)</code></pre>
 <pre class="r"><code>writeRaster(West_pop, &quot;rasters/West_adm1_population.tif&quot;)</code></pre>
 <p><br></p>
 <blockquote>
-<h3 id="task-2">Task 2</h3>
+<h3 id="task-2" class="challenge">Task 2</h3>
 <ul>
-<li>Import the fakeland shapefile, ensure the projection is &gt; in
-“4326” (WGS84)</li>
-<li>Import the raster “ihme_corrected_worldpop_All_Ages_3_2018”</li>
-<li>Find the mean population of the cells in each admin 2 district of
-fakeland</li>
+<li>Using the “fakelands_task” shapefile from task 1, ensure the
+projection is in “4326” (WGS84)</li>
+<li>Import the raster of rainfall for April
+“GPMM.IMerg.V06B.MM_Total.2018.04.Data.5km”</li>
+<li>Extract the vaules from the raster based on the polygons in your
+shapefile</li>
+<li>Calculate the mean rainfall for each polygon in the shapefile</li>
 </ul>
+<details>
+<summary>
+Solution
+</summary>
+<pre class="r"><code> fakeland &lt;- st_read(&quot;shapefiles/fakeland_task.shp&quot;)
+ fakeland &lt;- st_transform(fakeland, 4326)
+ GPMM_Apr &lt;- rast(&quot;rasters/GPMM.IMerg.V06B.MM_Total.2018.04.Data.5km.tif&quot;)
+ names(GPMM_Apr) &lt;- &#39;GPMM_Apr&#39;
+ fakeland_rain &lt;- extract(GPMM_Apr, fakeland) %&gt;% 
+                     group_by(ID) %&gt;% 
+                     summarise(mean_rainfall = mean(GPMM_Apr, na.rm = T)) %&gt;% 
+                     mutate(adm1 = fakeland$adm1)</code></pre>
+</details>
 </blockquote>
 <p><br></p>
 </div>
@@ -850,8 +890,6 @@ section we’ll explore some popular ways of making chloropleth maps in R.
 Although not designed as a full-scale GIS application, R (especially
 when combined with its vast ecosystem of packages) provides a powerful,
 endlessly customisable, tool for spatial visualisation.</p>
-<!-- With the demo we have created a dataset with annual incidence at admin 2 level  to be used for plotting. I you plan to do monthly maps or ones with different indicators then we can just change this demo section to show them making the data we need -->
-<!-- Also we did have this section on plotting shapefiles in R put in early but i thought that may be duplicating what you will be doing. If you do want this intriduced earlier the we can put this back in after joining shapefiles otherwise use/delete this as needed -->
 <p><br></p>
 <div id="plotting-spatial-data-using-base-r" class="section level3">
 <h3>Plotting spatial data using base R</h3>
@@ -866,14 +904,14 @@ above, by admin2 unit:</p>
 
 
 plot(fakeland_annual[&quot;API&quot;])</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>By default R will place the legend wherever it thinks ‘best’, but you
 can specify location with the additional argument <code>key.pos</code>
 (1 for below; 2 left; 3 above and 4 to the right).
 <code>key.width</code> and <code>key.length</code> allow you to control
 the dimensions of the legend.</p>
 <pre class="r"><code>plot(fakeland_annual[&quot;API&quot;], key.pos = 1)</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Notice that by default the colour ramp is discrete. You can tune the
 colour breaks using either or both of <code>breaks</code> and
 <code>nbreaks</code>. <code>nbreaks</code> defines the number of breaks,
@@ -900,7 +938,7 @@ plot(fakeland_annual[&quot;API&quot;],
      main = &quot;API, Fakeland 20XX&quot;,
      axes = F,
      logz = T)</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><br></p>
 </div>
 <div id="plotting-shapefiles-using-ggplot2" class="section level3">
@@ -926,7 +964,7 @@ any aesthetics.</p>
 <pre class="r"><code>ggplot(fakeland) + 
   geom_sf() + # as we&#39;ve called ggplot using an sf object as the data argument, geom_sf can figure it out itself
   coord_sf()  # deals with map projection </code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p><code>geom_sf</code> is a bit different to the <code>ggplot2</code>
 geometries you met earlier: it requires a new aesthetic,
 <code>geometry</code>. The good news is you often don’t need to worry
@@ -957,7 +995,7 @@ we’ll log-transform the colour-scale. Let’s decide on some breaks:</p>
   theme_void() +
   theme(plot.title = element_text(face = &quot;bold&quot;, hjust = 0.5),
         legend.position = &quot;bottom&quot;, legend.key.width = unit(2,&quot;cm&quot;), legend.text=element_text(size=12)) </code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Compare this to the base R map we made – our colour scale is now
 continuous, but otherwise the plots are almost identical.</p>
 <p>Breaking down the code we used to produce it:</p>
@@ -1052,7 +1090,7 @@ fakeland_hf_points &lt;- fakeland_hf_points %&gt;%
   theme(plot.title = element_text(face = &quot;bold&quot;, hjust = 0.5),
         legend.position = &quot;right&quot;, legend.key.width = unit(0.5,&quot;cm&quot;), 
         legend.key.height = unit(0.75,&quot;cm&quot;), legend.text=element_text(size=12)) </code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Try moving the <code>geom_sf(data = fakeland_hf_points...)</code>
 call to above the <code>geom_sf(data = fakeland_annual...)</code> call:
 does the map still look how you wanted it to?</p>
@@ -1099,7 +1137,7 @@ ggplot(admin0_regional) +
   geom_sf() +
   geom_text(data = country_central_points, aes(x = X, y = Y, label = cntry_n)) +
   theme_void()</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>So we can see that Fakeland is bordered by four countries – Florin,
 Bartovia, Genovia and Maldonia – with a coast to the south. We probably
 don’t want to show this entire region in our base-map. We can reduce
@@ -1128,7 +1166,7 @@ ggplot(admin0_regional) +
         panel.grid.major = element_line(color = &quot;aliceblue&quot;), 
         panel.background = element_rect(fill = &quot;aliceblue&quot;),
         panel.border = element_rect(colour = &quot;black&quot;, fill=NA, size=5))</code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Finally, let’s pull this all together. We may wish to plot out a
 number of metrics for Fakeland on this plot, so let’s save this basemap
 as an R object we can call, without having to copy and paste all that
@@ -1148,8 +1186,8 @@ data layer.</p>
 <p><br></p>
 </div>
 </div>
-<div id="demo-2" class="section level3">
-<h3>Demo 2</h3>
+<div id="demo" class="section level3">
+<h3>Demo</h3>
 <pre class="r"><code>basemap + 
   geom_sf(data = fakeland_annual, aes(fill = API), colour = &quot;grey50&quot;, size = 0.2) + 
   scico::scale_fill_scico(palette = &quot;nuuk&quot;, trans = &quot;log&quot;, breaks = my_breaks) +
@@ -1160,36 +1198,7 @@ data layer.</p>
   theme(plot.title = element_text(face = &quot;bold&quot;, hjust = 0.5),
         legend.position = &quot;right&quot;, legend.key.width = unit(0.5,&quot;cm&quot;), 
         legend.key.height = unit(0.75,&quot;cm&quot;), legend.text=element_text(size=12)) </code></pre>
-<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p><br></p>
-</div>
-<div id="final-thoughts" class="section level3">
-<h3>Final thoughts</h3>
-<ul>
-<li></li>
-</ul>
-<!-- ### Plotting shapefiles in R -->
-<!-- So we've loaded spatial data in R, but what we would like to do here is make plots of them. Luckily, `sf` package connects nicely to `ggplot` so that can makes maps with the ggplot functions using `geom_sf()`. -->
-<!-- ```{r fakeland map} -->
-<!-- ggplot(annual_data_sf)+ -->
-<!--   geom_sf()+ -->
-<!--   theme_bw() -->
-<!-- ``` -->
-<!-- We can even add multiple layers ontop of each other -->
-<!-- ```{r fakland+hfs} -->
-<!-- ggplot()+ -->
-<!--   geom_sf(fakeland, mapping = aes(geometry = geometry))+  # we must include mapping() when loading data directly in geom_sf(), if we don't have any additional info we can simply load the geometry column -->
-<!-- geom_sf(fakeland_hf_points, mapping = aes(geometry = geometry))+ -->
-<!--   theme_bw() -->
-<!-- ``` -->
-<!-- As we have joined our annual routine surveillance data to the shapefile we can also plot aspects of our data linked to the shapefile. (Creating maps in R will be covered further later in this session) -->
-<!-- ```{r plot data} -->
-<!-- ggplot(annual_data_sf)+ -->
-<!--   geom_sf(mapping = aes(fill = conf))+ -->
-<!--   scale_fill_viridis_c() + # to use color blind friendly continuous color palette -->
-<!--   labs( fill = "Confirmed cases")+ -->
-<!--   theme_bw() -->
-<!-- ``` -->
+<p><img src="04_spatial_in_R_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 
