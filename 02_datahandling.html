@@ -372,13 +372,13 @@ acquired skills to clean and process replica DHIS2 routine malaria
 surveillance data.</p>
 <p><br></p>
 <div id="introduction-to-r-and-rstudio" class="section level2">
-<h2>2.1 Introduction to R and Rstudio</h2>
+<h2>Introduction to R and Rstudio</h2>
 <p>R is a popular programming language for data science. It is a
 powerful language which can be used for basic data cleaning and
 analysis, building complex statistical models, creating publication
-quality visualisations, as well building interactive tools and websites.
-R is an open source software with numerous people contributing packages
-to improve it”s functionality.</p>
+quality visualisations, as well as building interactive tools and
+websites. R is an open source software with numerous people contributing
+packages to improve it’s functionality.</p>
 <p>We will be using R to run all of the code in this module. To improve
 ease of use we will run this through the RStudio interface. RStudio is
 an integrated development environment (IDE) from which we can run R.
@@ -416,9 +416,9 @@ where we can write basic code to be run line by line.</p>
 <div id="project-management-with-rstudio" class="section level3">
 <h3>Project management with Rstudio</h3>
 <p>In RStudio you can use “projects” to manage your files and code.
-These help by organising everything into a working directory and
-allowing you to easily keep your files, scripts and outputs for a single
-project in one place.</p>
+These help to organise everything into a working directory and allow you
+to easily keep your files, scripts and outputs for a single project in
+one place.</p>
 <p>You can either create a new project from scratch in RStudio, create a
 project from an existing folder containing R code or by cloning a
 version controlled (e.g. Git) repository.</p>
@@ -466,7 +466,7 @@ logical data types. All of the data in a matrix has to be of the same
 type and there is a fixed number of rows and columns.</p>
 <p>A array is of 2 or more dimensions and as with a matrix can hold
 numeric, character or logical data types, with all data being of the
-same type</p>
+same type.</p>
 <p>Data frames are a selection of equal length vectors grouped together,
 where the vectors can be of different data types. These are the most
 common format used to analyse datasets in and what we will primarily be
@@ -509,7 +509,7 @@ confirmed positive.</p>
 <pre class="r"><code>positive &lt;- 80
 positive / tested  ## Proportion of people tested confirmed positive</code></pre>
 <pre><code>## [1] 0.6666667</code></pre>
-<p>If we then received updated information that 160 people were tested,
+<p>If we then receive updated information that 160 people were tested,
 not 120, we can update the value for tested and recalculate the
 proportion of positive cases.</p>
 <pre class="r"><code>tested &lt;- 160    
@@ -590,7 +590,7 @@ contain a wide range of functions.</p>
 Archive Network” and it stores up-to-date versions of code and
 documentation for R. Packages from CRAN can be installed directly from
 RStudio. For this module we will primarily be using the
-<code>tidyverse</code> group of packages. First we need to install the
+<code>tidyverse</code> group of packages. Firstly we need to install the
 packages, then we need to load it into R to be able to use the
 functions. At the top of most R scripts you will find code for the
 packages being used in that script.</p>
@@ -628,7 +628,7 @@ numbers of questions and answers from the R users community.</p>
 </div>
 </div>
 <div id="importing-and-exploring-data-in-r" class="section level2">
-<h2>2.2 Importing and exploring data in R</h2>
+<h2>Importing and exploring data in R</h2>
 <div id="importing-data" class="section level3">
 <h3>Importing data</h3>
 <p>R has the functionality to import various types of data. One of the
@@ -643,10 +643,10 @@ We can assign the imported dataset to an object, here called
 “routine_data”, using the <code>&lt;-</code> operator to store it in our
 environment.</p>
 <p>For this module we are using a dataset called “routine_data”. This is
-an fake dataset of malaria routine case reporting and contains variables
+a fake dataset of malaria routine case reporting and contains variables
 for the numbers of malaria tests performed and the numbers of confirmed
-cases. Data are reported by health facility for children under and over
-the age of 5 seperately.</p>
+cases. Data are reported by health facilities for children under and
+over the age of 5 seperately.</p>
 <pre class="r"><code>routine_data &lt;- read.csv(&quot;data/routine_data.csv&quot;) </code></pre>
 <p>Other data types can easily be read into R using different packages
 available. Stata files (.dta) can be read in using the
@@ -666,7 +666,7 @@ into R, there is the alternative <code>read_csv()</code> function (note
 the underscore). This is part of the <code>tidyverse</code> group of
 packages and is often a better option for reading in CSV files. This
 function is quicker, it reads the data in as a tibble instead of a data
-frame and allows for non standard variable namesm amongst other
+frame and allows for non standard variable names among other
 benefits.</p>
 <pre class="r"><code>routine_data &lt;- read_csv(&quot;data/routine_data.csv&quot;) </code></pre>
 <pre><code>## Rows: 1200 Columns: 17
@@ -692,7 +692,7 @@ clicking on it in the global environment window or by typing the command
 <code>View(routine_data)</code> which opens up a window displaying the
 data. Alternatively, we may just want to look at a few rows. We can do
 this by using the <code>head()</code> function, which shows us the first
-n rows of data</p>
+rows of data</p>
 <pre class="r"><code>head(routine_data, 5)</code></pre>
 <pre><code>## # A tibble: 5 × 17
 ##   adm1  adm2         hf month  year test_u5 test_rdt_u5 test_mic_u5 conf_u5
@@ -752,7 +752,7 @@ and “method” are character strings, whilst “year”, “tested” and
 ##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
 <p>As we did with the vector, we can extract parts of the data frame
 using indices. For a data frame we can select the nth row, or the nth
-column using square brackets (note where the comma is paced).</p>
+column using square brackets (note where the comma is placed).</p>
 <pre class="r"><code>routine_data[,1]  # First column</code></pre>
 <pre><code>## # A tibble: 1,200 × 1
 ##    adm1 
@@ -842,14 +842,14 @@ table(routine_data$month)</code></pre>
 ## 100 100 100 100 100 100 100 100 100 100 100 100</code></pre>
 <p>With months we can also achieve this using the helpful specification
 ‘month.abb’ to tell R we have abbreviated months, rather than listing
-these out everythime</p>
+these out everytime</p>
 <pre class="r"><code>routine_data$month &lt;- factor(routine_data$month,
                         levels = month.abb)</code></pre>
 <p><br></p>
 <blockquote>
 <h3 id="task-1" class="challenge">Task 1</h3>
 <ul>
-<li>Open the R project “NAME OF PROJECT HERE”, donwloaded from “WEBLINK
+<li>Open the R project “NAME OF PROJECT HERE”, downloaded from “WEBLINK
 HERE”</li>
 <li>Open a new script and save it in the project folder “scripts”</li>
 <li>Install and load the tidyverse packages</li>
@@ -878,7 +878,7 @@ Solution
 </div>
 <div id="basic-data-cleaning-and-manipulation-in-tidyverse"
 class="section level2">
-<h2>2.3 Basic data cleaning and manipulation in Tidyverse</h2>
+<h2>Basic data cleaning and manipulation in Tidyverse</h2>
 <p>In this section we introduce you to the <code>tidyverse</code>
 packages and show how these functions can be used to explore, manipulate
 and analyse data.</p>
@@ -902,7 +902,7 @@ tidyverse:</p>
 <li>group_by and summarise</li>
 </ul>
 <p>Additionally, we will cover working with dates in the “lubridate”
-package and using pipes to combined comands in a clean, stepwise
+package and using pipes to combined commands in a clean, stepwise
 manner</p>
 <p>We will continue this investigation using the
 <code>routine_data.csv</code> dataset we imported into R in the previous
@@ -1026,7 +1026,7 @@ number tested.</p>
 </div>
 <div id="rename" class="section level3">
 <h3>Rename</h3>
-<p>There may be situations when we want to rename variables in a data
+<p>There may be situations where we want to rename variables in a data
 frame to make it more comprehensive and easier to process. This can
 easily be done using the function <code>rename()</code>. We pass to this
 function the data frame we are working with, the new name we want the
@@ -1072,7 +1072,7 @@ function with an <code>ifelse</code> statement. The first command of the
 <code>ifelse()</code> statement is the condition which has to be met,
 here <code>adm1 == "N. Coast"</code>; the second command is what you
 wish to replace the variable with if this condition is met; the third
-part is what the variable should be else this condition is not met.</p>
+part is what the variable should be if this condition is not met.</p>
 <pre class="r"><code>table(routine_data$adm1)
 
 mutate(routine_data,
@@ -1098,8 +1098,8 @@ work for filtering data to remove all missing values for the number of
 people tested for malaria:</p>
 <pre class="r"><code>filter(routine_data, test_u5 !=NA)</code></pre>
 <p>However, this does not work as R has a special way of dealing with
-missing values. We use the <code>is.na()</code> command, which checks fo
-<code>NA</code> values. As with the equals command, if we want the
+missing values. We use the <code>is.na()</code> command, which checks
+for <code>NA</code> values. As with the equals command, if we want the
 reverse of this, i.e. “not NA” we can use <code>!is.na()</code>. So the
 code to remove missing values would be:</p>
 <pre class="r"><code>filter(routine_data, !is.na(test_u5))</code></pre>
@@ -1113,16 +1113,16 @@ you are dropping NA values.</p>
 <div id="dates" class="section level3">
 <h3>Dates</h3>
 <p>Dates in R tidyverse are managed using the <code>lubridate</code>.
-This makes working with dates and times in R far easy allowing for
+This makes working with dates and times in R far easier, allowing for
 various formats and calculations with dates. In the
 <code>lubridate</code> package we can use the following functions to get
 the current date and time.</p>
 <pre class="r"><code>library(lubridate)
 
 today()</code></pre>
-<pre><code>## [1] &quot;2022-10-11&quot;</code></pre>
+<pre><code>## [1] &quot;2022-10-12&quot;</code></pre>
 <pre class="r"><code>now()</code></pre>
-<pre><code>## [1] &quot;2022-10-11 12:35:14 AWST&quot;</code></pre>
+<pre><code>## [1] &quot;2022-10-12 18:05:53 AWST&quot;</code></pre>
 <p>In our routine_data dataset we have a variable of month and year,
 from these we want to create one variable for date. We can do this using
 the <code>make_date()</code> function. This function expects inputs for
@@ -1186,7 +1186,7 @@ undertaken in the order they appear in the command.</p>
 <p>We can change the order that columns appear in the dataset using the
 <code>relocate()</code> function. This takes the first argument as the
 data frame, the second as the column(s) you wish to move, and then where
-you want to over them to.</p>
+you want to move them to.</p>
 <pre class="r"><code>relocate(routine_data, date_tested, .before = adm1)</code></pre>
 <pre><code>## # A tibble: 1,163 × 8
 ##    date_tested adm1  adm2         hf  year month test_u5 conf_u5
@@ -1282,7 +1282,7 @@ mean(tested)        # Basic command</code></pre>
 <pre><code>## [1] 101.8</code></pre>
 <p>This means that using our “routine_data” dataset we can link some of
 the commands we have introduced today together. We can read in our
-dataset, select the variables we want to keep, filter our dataest, and
+dataset, select the variables we want to keep, filter our dataset, and
 edit/create variables in one chunk of piped code. Note that as we are
 using the pipe operator we no longer need to tell each command what data
 frame is being used.</p>
@@ -1386,11 +1386,10 @@ head(clean_routine_data)</code></pre>
 </div>
 </div>
 <div id="advanced-manipulation-of-data-frames" class="section level2">
-<h2>2.4 Advanced manipulation of data frames</h2>
-<p>In this section we are building on the what we have introduced in
-section 2.3 and introducing some more advanced functions for data
-manipulation. We will be using the “clean_routine_data” dataset we just
-created.</p>
+<h2>Advanced manipulation of data frames</h2>
+<p>In this section we are building on what we have introduced in section
+2.3 and introducing some more advanced functions for data manipulation.
+We will be using the “clean_routine_data” dataset we just created.</p>
 <p><br></p>
 <div id="reshshaping-data" class="section level3">
 <h3>Reshshaping data</h3>
@@ -1402,10 +1401,10 @@ the ease of reshaping data in R.</p>
 a long one, decreasing the number of columns and increasing the number
 of rows. Datasets are often created in a wide format, but for analysis a
 long format is often preferable, especially for data visualisations.</p>
-<p>To reshape the data long we need to pass the argument the columns
-which are being pivoted, a name for the new column to identify the
-columns being reshaped, and a name for the values of the columns being
-reshaped. We can also combine this with helper functions such as
+<p>To reshape the data to long we need to pass the argument for the
+columns which are being pivoted, a name for the new column to identify
+the columns being reshaped, and a name for the values of the columns
+being reshaped. We can also combine this with helper functions such as
 <code>starts_with()</code> to help identify the columns to reshape.</p>
 <p>Lets look at an example using the confirmed malaria cases from our
 “clean_routine_data” dataset. Here we are taking all of the columns
@@ -1470,10 +1469,10 @@ and y</li>
 <li><code>right_join()</code>: includes all rows in y</li>
 <li><code>full_join()</code>: includes all rows in x or y</li>
 </ul>
-<p>To run the command you need to pass it the data frames you wish to
-join and the variable(s) you wish to join by. If there are matching
-variables in the data frames these will be detected and you do not need
-to specify them.</p>
+<p>To run the command you need to pass it through the data frames you
+wish to join and the variable(s) you wish to join by. If there are
+matching variables in the data frames these will be detected and you do
+not need to specify them.</p>
 <p>If we have two data frames with varying numbers of rows, we can
 investigate the outcomes of using the different join commands. Firstly,
 we create two data frames of different lengths, <code>tested</code>, and
@@ -1546,7 +1545,7 @@ tested %&gt;% inner_join(positive,
 </div>
 </div>
 <div id="writing-data" class="section level2">
-<h2>2.5 Writing data</h2>
+<h2>Writing data</h2>
 <p>Once you have finished working on your data there are multiple ways
 you can save your work in R.</p>
 <p>One of the basic ones is to save your dataset as a csv. This is
@@ -1557,9 +1556,9 @@ may also want to save your data as a Stata (dta) file.</p>
 whilst RData can store multiple objects.</p>
 <p>Here, we can select which format we want to save the data in and save
 the <code>pf_incidence</code> data frame we created in this module.</p>
-<p>Similarly to importing data, we can use the base R functions of
+<p>Similar to importing data, we can use the base R functions of
 <code>write.csv()</code>, or preferably the <code>tidyverse</code>
-option if <code>write_csv()</code></p>
+option. <code>write_csv()</code></p>
 <p><br></p>
 <pre class="r"><code>write_csv(clean_routine_data, &quot;outputs/clean_routine_data&quot;)
 write_dta(clean_routine_data, &quot;outputs/clean_routine_data.dta&quot;)
@@ -1603,7 +1602,7 @@ Solution
 <h3>Demo 2</h3>
 <p>In this demo we will link together what we have learnt to create a
 dataset of the total number of confirmed cases, population and malaria
-incidence by month, and district. Then another dataset aggergated for
+incidence by month, and district. Then another dataset aggregated for
 the whole country.</p>
 <pre class="r"><code># Import the population dataset
 pop &lt;- read_csv(&#39;data/population.csv&#39;)
@@ -1633,7 +1632,7 @@ write_csv(pf_incidence_national, &#39;outputs/pf_incidence_national.csv&#39;)</c
 </div>
 </div>
 <div id="introduction-to-visualization" class="section level2">
-<h2>2.6 Introduction to visualization</h2>
+<h2>Introduction to visualization</h2>
 <p>In this section we will introduce data visualisation using the
 popular <code>ggplot</code> package. This package contains functions to
 build a range of different plots, from scatter plots and line graphs, to
@@ -1805,8 +1804,8 @@ option <code>angle =</code>, changing the font size using
 </div>
 <div id="subgroups-and-facets" class="section level3">
 <h3>Subgroups and facets</h3>
-<p>We will now look visualising multiple data trends, for example if you
-had incidence data for multiple countries there are various ways you
+<p>We will now look at visualising multiple data trends, for example if
+you had incidence data for multiple countries there are various ways you
 could show this data. Here we will use the dataset
 <code>pf_incidence_national.csv</code> we imported earlier, with
 incidence for different age groups.</p>
@@ -1995,7 +1994,7 @@ data and incorporating statistical transformations.</p>
 variables. For example, in this dataset we have the number of confirmed
 malaria cases in different districts for each month. In
 <code>ggplot</code> we can use box plots to easiy summarise and
-visualise these data.</p>
+visualise this data.</p>
 <p>As in the previous section, we provide ggplot() with the x and y
 variables in the <code>aes()</code> argument and R will calculate the
 size of the boxes and whiskers. Similarly, you can control the colour of

@@ -361,8 +361,8 @@ modelling</h1>
 <a href= https://docs.google.com/presentation/d/1KRrZjiBx_UKETtN-EyEQxMWXAOUxlaMdTzqpPSPMxPc/edit#slide=id.g33fbbb4edf_0_14>HERE</a></p>
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>In this workshop we will be taking through an example of how to use
-the SPDE model using the R-INLA package. We will analyse parasite
+<p>In this workshop we will be taking you through an example of how to
+use the SPDE model using the R-INLA package. We will analyse parasite
 prevalence data from Madagascar. The topics we will cover include:</p>
 <ul>
 <li>How to create a mesh for the continuously indexed spatial
@@ -476,7 +476,7 @@ island boundary, but this isn’t necessary.</p>
 bdry &lt;- inla.sp2segment(MDG_shp)
 bdry$loc &lt;- inla.mesh.map(bdry$loc)</code></pre>
 <p>Next we construct the mesh using <code>coords</code>. There are
-mutliple arguments that are required to build the mesh:</p>
+mutiple arguments that are required to build the mesh:</p>
 <p><code>max.edge</code> is the largest allowed triangle length; the
 lower the number the higher the resolution
 <code>max.edge = c(inside the boundary triangle, outside the boundary triangle)</code>.</p>
@@ -500,7 +500,7 @@ mesh3 &lt;- inla.mesh.2d(loc = coords, boundary = bdry, max.edge=c(0.5,1),
                       offset = c(0.5, 1),
                       cutoff = 0.3)</code></pre>
 <p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-7-1.png" width="1440" /></p>
-<p>At this point, i would encourage you to try play with different
+<p>At this point, I would encourage you to try play with different
 values for each argument and observe the differences between the
 generated meshes.</p>
 <p><em>the non-convex hull approach:</em> we might want to use a mesh
@@ -590,7 +590,7 @@ logit(p(s_i)) = \beta_0 + \beta_1Elevation + \psi(s_i)
 <p>which translates to:</p>
 <pre class="r"><code>formula0&lt;-y ~ -1 + Intercept + Elevation + f(spatial.field, model=spde) </code></pre>
 <p>Note that to include the default ‘Intercept’ you can use +1. Some
-people prefer to not do this so they use -1 to exclude it and modify the
+people prefer not to do this so they use -1 to exclude it and modify the
 data stack to include an intercept value in the effects list (just like
 us).</p>
 <p>Once the formula is created we can fit the model</p>
@@ -611,11 +611,11 @@ summaries of the parameters of interest: the fixed effects (intercept
 and Elevation) and hyper parameters (spatial field parameters).</p>
 <pre class="r"><code>model0$summary.fix</code></pre>
 <pre><code>##                 mean        sd 0.025quant   0.5quant 0.975quant mode
-## Intercept -4.1930495 0.4798630 -5.2344687 -4.1604371 -3.3386709   NA
-## Elevation -0.1041667 0.2372625 -0.5774949 -0.1016143  0.3547005   NA
+## Intercept -4.1905706 0.4793417 -5.2307123 -4.1580179 -3.3372370   NA
+## Elevation -0.1036724 0.2371193 -0.5767491 -0.1011129  0.3548953   NA
 ##                    kld
-## Intercept 1.054793e-06
-## Elevation 8.258019e-07</code></pre>
+## Intercept 1.122245e-06
+## Elevation 8.251176e-07</code></pre>
 <pre class="r"><code>model0$summary.hyperpar</code></pre>
 <pre><code>##                               mean        sd 0.025quant  0.5quant 0.975quant
 ## Theta1 for spatial.field -3.504250 0.1858234 -3.8808978 -3.500097  -3.148912
@@ -704,7 +704,7 @@ grid.arrange(levelplot(g.mean, scales=list(draw=F), xlab=&#39;&#39;, ylab=&#39;&
 malaria prevalence on a dense grid in Madagascar. There are two methods
 we would like to show you; a) predicting within the “inla” function to
 fit the model; b) outside the “inla” function to fit the model. Option
-a) has the advantage to make the code more compact; however, if may
+a) has the advantage to make the code more compact; however, it may
 drastically increase the computational costs compared to option b).</p>
 <p>In order to do either, we first need to create the grid to do the
 prediction on.</p>
@@ -901,7 +901,7 @@ post.mean.logit &lt;- p.res$summary.linear.predictor[index.pred,&#39;mean&#39;] 
 pred &lt;- exp(post.mean.logit)/(1 + exp(post.mean.logit))
 obs &lt;- test$pf_pr #this is the number pos/number examined</code></pre>
 <p><img src="05_Intro_to_INLA_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
-<pre><code>## [1] 0.8971442</code></pre>
+<pre><code>## [1] 0.897013</code></pre>
 <p>The validation plot shows that the model fits pretty well. But it is
 important to remember that this isn’t always the case. How would you
 improve this model?</p>
@@ -936,12 +936,12 @@ model_selection &lt;- if(i==1){rbind(c(model = paste(colnames(covs_df)[1:i]),wai
 
 model_selection</code></pre>
 <pre><code>##      model                                                   waic              
-## [1,] &quot;Access_hf&quot;                                             &quot;1054.47299180584&quot;
-## [2,] &quot;Access_hf + Access&quot;                                    &quot;1055.6185979606&quot; 
-## [3,] &quot;Access_hf + Access + Elevation&quot;                        &quot;1052.80136676832&quot;
-## [4,] &quot;Access_hf + Access + Elevation + EVI&quot;                  &quot;1053.75212137318&quot;
-## [5,] &quot;Access_hf + Access + Elevation + EVI + LST_day&quot;        &quot;1054.51093927369&quot;
-## [6,] &quot;Access_hf + Access + Elevation + EVI + LST_day + Rain&quot; &quot;1055.22566583566&quot;</code></pre>
+## [1,] &quot;Access_hf&quot;                                             &quot;1054.57885404465&quot;
+## [2,] &quot;Access_hf + Access&quot;                                    &quot;1055.68193613824&quot;
+## [3,] &quot;Access_hf + Access + Elevation&quot;                        &quot;1052.68117886346&quot;
+## [4,] &quot;Access_hf + Access + Elevation + EVI&quot;                  &quot;1053.77441900123&quot;
+## [5,] &quot;Access_hf + Access + Elevation + EVI + LST_day&quot;        &quot;1054.60900165982&quot;
+## [6,] &quot;Access_hf + Access + Elevation + EVI + LST_day + Rain&quot; &quot;1055.22261702688&quot;</code></pre>
 <p>Which model would you choose?</p>
 </div>
 </div>
