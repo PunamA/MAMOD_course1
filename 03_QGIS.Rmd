@@ -1,7 +1,7 @@
 ---
 title: "Spatial data handling in QGIS"
+output: html_document
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -12,15 +12,16 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::include_graphics("images/banner.png")
 ```
 
+---
 
 # Overview 
 
 
-In this sessions students will learn the to manage and present spatial data using Geographical Information System (GIS) software. Session 1 introduces students to QGIS with session 2 replicating many of the exercises in R. Both QGIS and R software are free and open-source. 
+In this session students will learn how to manage and present spatial data using Geographical Information System (GIS) software. Session 1 introduces students to QGIS with session 2 replicating many of the exercises in R. Both QGIS and R software are free and open-source. 
 
 QGIS is a popular alternative to paid GIS software and provides an interface with other open source GIS such as SAGA and GRASS. It has a large user base and extensive support options with easily accessible tutorials, user guides and forums. Similar to R there are numerous volunteers contributing to the development of QGIS with "Plugins" available for tools to improve functionality. GIS specific software such as QGIS predominantly use a graphical user interface (GUI) - aka pointing and clicking - and so are thought to be more user friendly.  While a little advanced for this module it should be noted that you can run R commands in QGIS and also access QGIS processing functions from R. 
 
-This tutorial will give step by step instructions that the students can use to follow along with the instructor. 
+This tutorial will give step by step instructions that you can use to follow along with the instructor. 
 
 \vspace{15pt}
 \renewcommand\contentsname{}
@@ -30,15 +31,17 @@ This tutorial will give step by step instructions that the students can use to f
 \vspace{25pt}
 \hrule
 
+---
+
 ## Objectives of tutorial  
 
 - To become familiar with QGIS 
 - Adding vector and raster data to your QGIS project
 - Explore vector attributes 
 - Adding tabular data and joining vector data 
-- Creating maps in print composer 
+- Creating maps for publications and reports 
 
-<br>
+---
 
 ## QGIS Interface 
 
@@ -46,9 +49,9 @@ On opening QGIS from your computer familiarize yourself with the QGIS interface.
 
 1. Menu Bar: Provides access to various QGIS features using a standard hierarchical menu.
 2. Tool Bar: Provides access to most of the functions as the menus, plus additional tools for interacting with the map.
-3. Browser panel: Used to locate, inspect and add data to you project. You are able to browse you own computer and additional resources
+3. Browser panel: Used to locate, inspect and add data to your project. You are able to browse you own computer and additional resources
 4. Map View or Map canvas: The map displayed in this window will depend on the vector and raster layers you have chosen to load. Here you can interact with the map - move the maps, zoom in/out, select features etc 
-5. Layers list: lists the layers that have are available in the current project. Hovering over layers will give some basic information. Layers can be toggled on/off here and right clicking on a layer will give several additional options explored later in the tutorial. 
+5. Layers list: lists the layers that are available in the current project. Hovering over layers will give some basic information. Layers can be toggled on/off here and right clicking on a layer will give several additional options explored later in the tutorial. 
 6. Status bar:  The status bar shows you your current position in map coordinates as the mouse pointer is moved across the map view.
 7. Processing toolbox: This panel may not be visible when first opening QGIS. It contains many analytic tools used when delving deeper into GIS analysis
 
@@ -59,7 +62,7 @@ Panels can be added and removed from the drop down ***menu bar > View > Panels**
 knitr::include_graphics("images/qgis_open.png")
 ```
 
-<br>
+---
 
 ## Polygon shapefile components 
 
@@ -78,13 +81,14 @@ knitr::include_graphics("images/fak_hds.png")
 
 A detailed description of shapefile components can be found [here](https://www.esri.com/content/dam/esrisites/sitecore-archive/Files/Pdfs/library/whitepapers/pdfs/shapefile.pdf)
 
-<br>
+
+---
 
 # Adding layers 
 
 There are multiple ways of adding layers to your QGIS project. The numbered bullet points below outline a few options. Try them out after class and see which you prefer. For now we will follow option 1. Note that you should always add the .shp file of the shapefile components.  
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -94,10 +98,10 @@ There are multiple ways of adding layers to your QGIS project. The numbered bull
 knitr::include_graphics("images/add_layer.png")
 ```
 
-From the popup window click the three dots (indicated <span style="color:red">1</span> below) and navigate to the files you wish to add. 
-Click add <span style="color:red">(2)</span> - this will add the shapefiles to QGIS and then you can close the pop-up window <span style="color:red">(3)</span>. 
+2. From the popup window click the three dots (indicated <span style="color:red">1</span> below) and navigate to the files you wish to add. 
+3.Click add <span style="color:red">(2)</span> - this will add the shapefiles to QGIS and then you can close the pop-up window <span style="color:red">(3)</span>. 
 
-You may have noticed that there are many different types of layers to add. We use "Add Vector Layer" is for lines and polygons. Later in the tutorial we will also add point data as well as non-geographic tabular data (Delimited text) and raster data.
+You may have noticed in the left hand panel that there are many different types of data that can be added to the project. We use "Add Vector Layer" this is for lines and polygons. Later in the tutorial we will also add point data as well as non-geographic tabular data (Delimited text) and raster data.
    
 
 ```{r add_l2, echo=FALSE, fig.cap="", out.width = '100%', fig.align = 'center'}
@@ -112,9 +116,7 @@ knitr::include_graphics("images/add_layer2.png")
 **Try these options after class:**
 
 2. On the toolbar click the “Open data source manager” icon ![](images/open_data.png). The popup window will be the same as option one and so you will follow the same steps, just make sure "vector" is selected on the left hand side. 
-
-3. From the "Browser panel" navigate to the folder the files where the files are located and to add double click on them.  
-
+3. From the "Browser panel" navigate to the folder where the files are located and to add double click on them.  
 4. Finally you can simply drag and drop files directly from your computer folder into the map canvas or layers list 
 
 # Exploring the shapefile 
@@ -122,7 +124,7 @@ knitr::include_graphics("images/add_layer2.png")
 
 You should now see the Fakeland health districts on your map canvas with each district boundary being represented by a different polygon. Note that when adding layers QGIS will randomly assign colors and your map will be a different color. We will show you how this can be changed shortly but first you can explore the shapefile. 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -147,12 +149,29 @@ knitr::include_graphics("images/zoom_layer.png")
 </p></span>
 </div>
 
+# Checking and setting layer CRS 
+
+1. You can check the layer CRS by hovering your marker over the FAK_HDs layer
+2. Right-click on the layer and go to the "Layer CRS" option. Here you will see the layer CRS at the top and some options to change the setting. 
+3. Select "Set layer CRS"
+
+```{r cc1, echo=FALSE, fig.cap="", out.width = '70%', fig.align = 'center'}
+knitr::include_graphics("images/crs_1.png")
+```
+
+4. If you are using a specific CRS you can search for it in the "filter" box. You can also browse the different CRS in the "Predefined Coordinate Reference System" menu. If you select one information about that CRS will be displayed at the bottom. 
+5. We will be using the WGS 84 - EPSG: 4326 CRS. If your layer is not yet set simply select this CRS and click OK. 
+
+
+```{r cc2, echo=FALSE, fig.cap="", out.width = '70%', fig.align = 'center'}
+knitr::include_graphics("images/crs_2.png")
+```
 
 # The attribute table 
 
-Information regarding the features can be found in the attribute table. 
+Information regarding the features can be found in the attribute table. The attribute table is a tabular data set containing all the non-geographical  information about each feature.  In this example each health district is a "feature" (represented by rows in the table) and they have a number of attributes (columns) or variables linked to that health district.  Currently the attribute table contains basic information on the names of the health districts and what regions they are in - but attribute tables can also store numerical data needed for mapping populations and disease burden. 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -164,12 +183,14 @@ Information regarding the features can be found in the attribute table.
 knitr::include_graphics("images/att_table2.png")
 ```
 
+</p>
+</p></span>
+</div>
 
-**Next section can be cut if time is an issue**
 
-4. It is also possible to search and select features in the attribute table. Let's select all the Admin 1 units named "East". At the top of the attribute table there is a tool bar - click on the filter by form icon ![](images/filter.png)<span style="color:red">(1)</span>. 
+4. It is also possible to search and select features in the attribute table. Let's select all the Admin 2 units named in the Admin 1 region "East". At the top of the attribute table there is a tool bar - click on the filter by form icon ![](images/filter.png)<span style="color:red">(1)</span>. 
 5. In the box next to Adm1 <span style="color:red">(2)</span> type "East". 
-6. The drop-down menu <span style="color:red">(3)</span> should currently be set on "Contains" - change this to "equals to". Note that "equals to" gives an exact name match. Selecting "Contains" would return any name with east in it such as "North east", "South East" etc
+6. The drop-down menu <span style="color:red">(3)</span> should currently be set on "Contains". Note the other options - "equals to" for example gives an exact name match. Selecting "Contains" returns any name with east in it such as "North east", "South East". In our case we only have one name with "east" so either "contains" or "equals to" will work.
 7. Click on "select features" <span style="color:red">(4)</span> and look at the map to see what has been selected. 
 
 ```{r cont, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
@@ -178,27 +199,24 @@ knitr::include_graphics("images/contains.png")
 
 8. We can return to the table view for the attribute table by clicking the table view icon ![](images/table_view.png)in the bottom right hand corner of the attribute table window. 
 9. We can then click the symbol ![](images/to_top.png) to move all the features we selected to the top of the attribute table. If we look at the Admin1 that have been selected we can see East has been selected
-10. You can also zoom in on the area you selected by clicking on  "Zoom to Features" <span style="color:red">(3)</span> 
+10. You can also zoom in on the area you selected by clicking on  "Zoom to Features" 
 
-</p>
-</p></span>
-</div>
 
 In the previous example we selected features based on a single condition (Adm1). However it is possible to select based on multiple conditions. There are many available tools in the attribute table - for example it is possible to edit the data here and produce new fields with the field calculator.  We will not go through examples here but for further reading please see: [here](https://docs.qgis.org/3.22/en/docs/user_manual/working_with_vector/attribute_table.html?highlight=attribute%20table)
 
-<br>
+---
 
 ## Why use selection tools?
 
 The selection of features is a key skill when working in QGIS -  it is essentially used to subset data. For most operations in QGIS there will be a "Use only selected features" tickbox that will apply the operation to your selected subset. Note - there are also certain processing tools that will only apply to the selected features (and apply to all features if none selected) so you have to be aware of your current selection. The toolbar provides a variety of options for selection:
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
-1. We will conduct a basic selection useing the select features tool ![](images/select_sh.png). First click on the icon
+1. We will conduct  basic selection using the select features tool ![](images/select_sh.png). First click on the icon
 2. On the map canvas you can click on individual features to select them. To select multiple features you can hold down the "ctrl" button on your keyboard. You can also click and drag a selection rectangle that will select all features that it touches. Note that the features you select will also be highlighted in the attribute table. 
-3. Finally the simplest way to un-select features is to use the select tool ![](images/select_sh.png) and click the white space off to the side of the shapefiles 
+3. Finally the simplest way to un-select features is to use the select tool ![](images/select_sh.png) and click the white space off to the side of the shapefiles. 
 
 ```{r select, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
 knitr::include_graphics("images/select.png")
@@ -212,12 +230,12 @@ knitr::include_graphics("images/select.png")
 
 ##  Symbology
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
 
-1. To change color of the map either:
+1. To change the color of the map either:
       - Double click on the layer in layers panel <span style="color:red">1</span>
       - OR right click with cursor on the layer and select “properties”
 
@@ -237,13 +255,20 @@ knitr::include_graphics("images/props.png")
 </div>
 
 
-<br>
+---
 
 # Adding Point data 
 
-Point data is a very common form of data used in health surveillance and research. In the following example the points represent individual health facilities.
+Point data is a very common form of data used in health surveillance and research. In the following example the points represent individual health facilities. In contrast to the polygon shapefiles we explored above, point data can be stored in a single spreadsheet file that contains latitude and longitude coordinates for each point. Note that QGIS can only read delimited text files - the most common form being comma-separated vales (.CSV) files. ***If you are working with an excel spreadsheet you must first save it as a cvs before you can load it into QGIS. Further note that Mac users may need to specifically save it as a Windows CSV file*** 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+
+```{r point_ex, echo=FALSE, fig.cap="", out.width = '60%', fig.align = 'center'}
+knitr::include_graphics("images/excel_point.png")
+```
+
+
+
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -265,26 +290,12 @@ knitr::include_graphics("images/point1.png")
 </div>
 
 
-
 You will now see the points added to map canvas and Each point is a different health facility. Like with the polygon shapefile we can open the attribute table ![](images/att_table.png) to see what data is available for each health facility. 
 
-We can explore the malaria data with visualizations.
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
-<span>
-<p style='margin-left:1em;'>
+##  Point Symbology
 
-1.  We outlined how to do this with the admin units could be colored to represent malaria burden - follow the same process for the points.  
-2. It is also possible represent the malaria case load by changing the size of the points - hint try changing the "methods" drop-down when in the graduated symbology window **need to include malaria data in points dataset**
-
-</p>
-</p></span>
-</div>
-
-
-##  Symbology
-
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -307,26 +318,22 @@ knitr::include_graphics("images/point2.png")
 </div>
 
 
-<br>
-***Bad points optional extra***
-<br>
-
 
 ## Optional Extra - Labeling 
 
  It is also possible to add labels to the map. 
 
 
-1.  As before open the properties window.
+1.  As before, open the properties window.
 2.  Under the symbology symbol click on labels.
 3.  Select "Single Labels" from the first dropdown menu. 
-4.  From the "Value" drop-down select which attribute you want to label the polygons with. For now select "hf". This is the unique health facility id number. 
+4.  From the "Value" drop-down select which attribute you want to label the polygons with. For now select "hf". This is the unique health facility ID number. 
 5. Click "Apply" and "OK" 
 6. There are many other style choices for text font, size, color, positioning etc that can be explored here - try a few of them. Note that labeling maps can often lead to busy/cluttered hard to read maps so unless absolutely necessary minimize labeling to main points of interest.  
 7. To remove the labels select "no labels" from the original drop-down menu. 
 
 
-```{r lab, echo=FALSE, fig.align = 'center', fig.cap="", out.width = '90%'}
+```{r lab, echo=FALSE, fig.align = 'center', fig.cap="", out.width = '80%'}
 knitr::include_graphics("images/labels.png")
 ```
 
@@ -335,15 +342,18 @@ knitr::include_graphics("images/labels.png")
 knitr::include_graphics("images/map_labels.png")
 ```
 
-<br>
+
+---
 
 # Layer visibility
+
+
 
 If you are new to GIS you may be wondering why we keep referring to the data as "Layers". Maps are often built up from several data sources and types and they have to be layered/stacked in a certain way so that each component can be visualized.
 
 In QGIS the order you see the layers in the layers panel represents the order you will see them on the map canvas (the layers at the top of the list you will see first).  You can rearrange the order of the layers by clicking and dragging. 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -360,11 +370,21 @@ knitr::include_graphics("images/layer_pan.png")
 
 You will notice that the point data must be on top to the polygon data for it to be visible. Currently we only have two visible layers but maps may contain many layers if there are new shapefiles for roads, waterways, railways, buildings etc. 
 
-<br>
+***Layer demonstration - adding admin1, admin0 and lines***
+
+In the animation below you will see that there are several layers in the layer panel. Initially the FAK_roads and the hf_gps points are below the FAK_HDs - they have to be moved above the FAK_HDs layer to be visible. Note also that the layers are being turned on with the tickboxes in the layers panel 
+
+```{r testing, fig.cap=""}
+knitr::include_graphics("images/vid1.gif")
+```
+
+
+
+---
 
 # Saving a project 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -375,7 +395,7 @@ You will notice that the point data must be on top to the polygon data for it to
 </p></span>
 </div>
 
-It is important to note that QGIS does not store any data and so when reopening a project QGIS follows the links you provided earlier. If the location of the shapefiles and/or data changes QGIS will be unable to open them.
+It is important to note that QGIS does not store any data and so when reopening a project QGIS follows the file paths to the data you provided earlier. If the location of the shapefiles and/or data changes QGIS will be unable to open them. QGIS will maintain any changes to symbology. 
 
 The project can be reopened from the folder where it was saved or alternatively simply open QGIS and you will see links to previous QGIS projects 
 
@@ -386,37 +406,34 @@ We regularly work with data that is yet to be linked with a geometry, for exampl
 
 To join the two data types of data they must have a key shared value (e.g. Admin unit name) and we can conduct what is called an "Attribute Join". We will walk through this below.
 
-An alternative join is the "Spatial join" and can be conducted if both data types are geolocated (for example the tabular data may have GPS locations). This means that a key variable isn’t necessary. You can try a spatial join in the optional extras section. 
+An alternative join is the "Spatial join" and can be conducted if both data types are geolocated (for example the tabular data may have GPS locations). This means that a key variable isn’t necessary.  
 
 
 ## Addtion of tabular data (no geography)
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
 1. First we have to add the tabular data. From the menu bar, click “Add Layer” and then click “Add Delimited Text Layer”. 
 
-```{r csv1, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
+```{r csv1, echo=FALSE, fig.cap="", out.width = '100%', fig.align = 'center'}
 knitr::include_graphics("images/loadcsv.png")
 ```
 
 
-2. Click browser (three black dots) <span style="color:red">1</span> and select the file "annual_admin_data" from the folder Module_4/data/" **Update file path when known**. 
+2. Click browser (three black dots) <span style="color:red">1</span> and select the file "annual_admin_data" from the /data folder for this session. 
 3. In the window that pops up, choose “CSV” under “File Format” <span style="color:red">2</span>, “First record has field names” under “Record and fields Options” <span style="color:red">3</span> and “No geometry (attribute only table)” under “Geometry Definitions” <span style="color:red">4</span>. Note the difference to when we loaded the health facility point data
 4. Then click “Add” and “Close” <span style="color:red">5</span>.
 
 
-```{r csv2, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
+```{r csv2, echo=FALSE, fig.cap="", out.width = '100%', fig.align = 'center'}
 knitr::include_graphics("images/add_csv.png")
 ```
 
-</p>
-</p></span>
-</div>
 
 
-You will now see  that annual_admin_data has been added to the "Layers panel". Take a look at the data by opening the attribute table ![](images/att_table.png). This is an example malaria surveillance dataset. For each Admin 2 unit of Fakland, it outlines the number of malaria tests and confirmed positive results.  The results are broken down by type of test (RDT or Microscopy) and age range of the patients under 5yrs (u5) or over 5yrs (ov5)
+You will now see  that annual_admin_data has been added to the "Layers panel". Take a look at the data by opening the attribute table ![](images/att_table.png). This is an example malaria surveillance dataset. For each Admin 2 unit of Fakeland, it outlines the number of malaria tests and confirmed positive results.  The results are broken down by type of test (RDT or Microscopy) and age range of the patients under 5yrs (u5) or over 5yrs (ov5)
 
 ```{r csv3, echo=FALSE, fig.cap="", out.width = '50%', fig.align = 'center'}
 knitr::include_graphics("images/csv.png")
@@ -428,11 +445,16 @@ knitr::include_graphics("images/ann_att.png")
 
 Currently the data is not associated with any geometry so it will not be displayed on the map canvas. We will now join it to the existing Fakeland admin units. 
 
+</p>
+</p></span>
+</div>
+
+
 ### Attribute join 
 
-As we have tabular data with no geometry we will have to go with the attribute join. This process will take the tabular data and add it to the attribute table of the shapefile. Before we go onto show you how we do this in practice can you identify the key attributes that we will use to join the data? What attributes do the tabular data and shapefiles have in common?
+We have tabular data with no geometry we will have to use attribute join to link it to the existing health district shapefiles. This process will take the tabular data and add it to the attribute table of the shapefile. Before we go onto show you how we do this in practice can you identify the key attributes that we will use to join the data? What attributes do the tabular data and shapefiles have in common?
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -448,7 +470,7 @@ As we have tabular data with no geometry we will have to go with the attribute j
 knitr::include_graphics("images/att_join.png")
 ```
 
-Now open the attribute table of the FAK_HDs layer - what do you see? The annual_admin_data malaria data are now included in the FAK_HDs shapfile. 
+Now open the attribute table of the FAK_HDs layer - what do you see? The annual_admin_data malaria data are now included in the FAK_HDs shapefile. 
 
 </p>
 </p></span>
@@ -456,9 +478,7 @@ Now open the attribute table of the FAK_HDs layer - what do you see? The annual_
 
 
 
-Data sets and shapefiles can then be joined based on attributes such as the name of the administration unit. Note that joining by name can commonly cause errors because differences in spelling, use of capitals or punctuation the names will not be matched - they must be exactly the same.  Data must be clean beforehand but it is also common to join by standardized administrative codes that are less prone to error. 
-
-If you want to know how to conduct a spatial join see the "Optional Extras" at the end of the tutorial 
+Data sets and shapefiles can then be joined based on attributes such as the name of the administration unit. Note that joining by name can commonly cause errors because if there are differences in spelling, use of capitals or punctuation the names will not be matched - they must be exactly the same.  Data must be clean beforehand but it is also common to join by standardized administrative codes that are less prone to error. 
 
 
 # Raster data & Zonal statistics  
@@ -467,7 +487,7 @@ If you want to know how to conduct a spatial join see the "Optional Extras" at t
 
 We will now see how to load raster data. We will be using a population raster that gives an all age population count for each 5x5km pixel. 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -485,13 +505,12 @@ The population raster will appear on the map canvas. It may have covered up the 
 
 By clicking on the small arrow next to the raster on the layer panel you can see the minimum value and maximum values. What can we say about the distribution of the population from this raster? Where are the areas of high and low population density?
 
-Unlike shapefiles there is no attribute table connected to a raster. You can identify the value of an individual raster pixel by clicking the identification icon ![](images/id_icon.png) and selecting an area of the raster. Currently it is difficult to identify variation in population as most of the raster looks black with few lighter coloured pixels. We can modify the appearance by adjusting the symbology.
+Unlike shapefiles there is no attribute table connected to a raster. You can identify the value of an individual raster pixel by clicking the identification icon ![](images/id_icon.png) and selecting an area of the raster. Currently it is difficult to identify variation in population as most of the raster looks black with a few lighter coloured pixels. We can modify the appearance by adjusting the symbology.
 
 </p>
 </p></span>
 </div>
 
-***too much symbology nonsense - also I don't tend to change rasters anyway - cut next section or keep it as optional***
 
 The steps to change symbology in  a raster layer are different from those explained for vector layer.
 
@@ -506,7 +525,7 @@ knitr::include_graphics("images/symb_raster.png")
 ```
 
 
-Why do you think we selected "Quantile" instead of  "Continuous" from the mode drop-down? How has this changed the appearance of the raster? Re-open the Sybmology panel and adjust the number of classes - how does this change the appearance of the map. Note that you can manually adjust the values associated with each level if needed.
+Why do you think we selected "Quantile" instead of "Continuous" from the mode drop-down? How has this changed the appearance of the raster? Re-open the Sybmology panel and adjust the number of classes - how does this change the appearance of the map. Note that you can manually adjust the values associated with each level if needed.
 
 
 ```{r rast2, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
@@ -518,7 +537,7 @@ knitr::include_graphics("images/rast_2.png")
 
 We now have a layer of administrative units and a population raster. Using these two pieces we can calculate the population in each administrative unit - this is know as calculating the zonal statistics. 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -526,7 +545,7 @@ We now have a layer of administrative units and a population raster. Using these
 2. In this panel type “zonal” in the search window and double-click “Zonal statistics”.
 
 
-```{r zs, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
+```{r zs, echo=FALSE, fig.cap="", out.width = '95%', fig.align = 'center'}
 knitr::include_graphics("images/zone.png")
 ```
 
@@ -537,7 +556,7 @@ knitr::include_graphics("images/zone.png")
 6. Run and close the window.
 
 
-```{r zs2, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
+```{r zs2, echo=FALSE, fig.cap="", out.width = '80%', fig.align = 'center'}
 knitr::include_graphics("images/zone_2.png")
 ```
 
@@ -550,15 +569,19 @@ knitr::include_graphics("images/zone_3.png")
 
 9. The zonal statistics layer is temporary and will need to be saved as a shapefile for future use. Right-click on “Zonal_Statistics”, then "Export" and click “Save Feature As”. 
 
-```{r zs4, echo=FALSE, fig.cap="", out.width = '100%', fig.align = 'center'}
+```{r zs4, echo=FALSE, fig.cap="", out.width = '70%', fig.align = 'center'}
 knitr::include_graphics("images/zone_4.png")
 ```
 
-Navigate to the Shapefile folder, give the file name as “FAK_HDs_with_pop” and click Save. Then click Ok.
+```{r zs5, echo=FALSE, fig.cap="", out.width = '50%', fig.align = 'center'}
+knitr::include_graphics("images/zone_5.png")
+```
 
-This will again create a new layer. You can remove the “Zonal_Statistics” from the layer pane by right-clicking and selecting remove layer 
 
-```{r z, echo=FALSE, fig.cap="", out.width = '60%', fig.align = 'center'}
+10. Navigate to the output folder, give the file name as “FAK_HDs_with_pop” and click Save. Then click Ok.
+11. This will again create a new layer. You can remove the “Zonal_Statistics” from the layer pane by right-clicking and selecting remove layer 
+
+```{r z, echo=FALSE, fig.cap="", out.width = '50%', fig.align = 'center'}
 knitr::include_graphics("images/rm_l.png")
 ```
 
@@ -567,21 +590,20 @@ knitr::include_graphics("images/rm_l.png")
 </div>
 
 
-
-## Field calculator **potential pre-calculate API for mapping if we need to save time** 
+## Field calculator 
 
 We now have population counts and confirmed malaria for each administration unit. Using these two pieces of information we can calculate the Annual Parasite Index (API) that will give a more standardised comparison between administration units. API (per 1000 people) = Number of cases / population * 1000
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
 1. Open the attribute table of the "FAK_HDS_with_pop" layer ![](images/att_table.png)
 2. Select field calculator ![](images/field_calc.png)from the attribute table menu bar
 3. In the field calculator pop-up window fill in the "output field name" with "api" and select the output type. In this case it will be a decimal number.
-4. In the expression box you can write the expression you want to carry out. Just type the field names however if you forget what they are called you can use the "fields and values" dropdown menu on the right. As you can see they are many other tools here we can use for calculation 
+4. In the expression box you can write the expression you want to carry out. Just type the field names however if you forget what they are called you can use the "fields and values" dropdown menu on the right. As you can see they are many other tools here we can use for calculation. 
 5. When you are happy your formula is correct click OK. 
-6. Navigate to the final column on the right of your attribute table - you should see a column for "api" has been added 
+6. Navigate to the final column on the right of your attribute table - you should see a column for "api" has been added. 
 
 ```{r fc2, echo=FALSE, fig.cap="", out.width = '80%', fig.align = 'center'}
 knitr::include_graphics("images/field_calc2.png")
@@ -602,7 +624,7 @@ knitr::include_graphics("images/field_calc3.png")
 
 We will now explore some ways to visualize the data that has been joined. 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -632,14 +654,14 @@ We can now see each Admin 2 unit has been colored based on the settings we just 
 
 
 
-# Exporting maps  
+# From data to publishable maps  
 
 ## Print layout (previously print composer) 
 
 This session takes you through how to generate and export maps for reporting, publications and presentations. QGIS uses the print layout tool (know as print composer in earlier QGIS versions).
 
 
-<div class="warning" style='padding:0.1em; background-color:#E9D8FD; color:#69337A'>
+<div class="warning" style='padding:0.1em; background-color:#fee6ce; color:#404040'>
 <span>
 <p style='margin-left:1em;'>
 
@@ -665,7 +687,7 @@ knitr::include_graphics("images/fak_print.png")
 
 7. Our map is looking a little bare - we can now add features that will give the map some context. Let's first add a legend. Click on the legend icon on the left ![](images/leg.png) and then click and drag on the map where you want the legend.
 
-8. You will see all the items from the Layers panel in the legend - even those that are not visible in the map! We have to clean up the legend and remove labels. In the "Items list" make sure the legend is selected. From there go to the item properties and tick the check box "Only show items inside linked map". This should reduce the legend down to the layers you can see.
+8. You will see all the items from the Layers panel in the legend - even those that are not visible on the map! We have to clean up the legend and remove labels. In the "Items list" make sure the legend is selected. From there go to the item properties and tick the check box "Only show items inside linked map". This should reduce the legend down to the layers you can see.
 
 ```{r leg2, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
 knitr::include_graphics("images/leg2.png")
@@ -677,14 +699,14 @@ knitr::include_graphics("images/leg2.png")
 knitr::include_graphics("images/leg_remove.png")
 ```
 
-10. The legend uses the names of layers but these are not always informative. You can change these simply by double clicking on the label in the "Legend Items" panel. Try changeing the FAK_HDs label to something like "Number of confirmed malaria cases" 
+10. The legend uses the names of layers but these are not always informative. You can change these simply by double clicking on the label in the "Legend Items" panel. Try changing the FAK_HDs label to something like "Number of confirmed malaria cases" 
 
 11. It should be noted that if you change the layers in the main QGIS project it will be reflected in the print composer. Let's try this out - return to the main QGIS project window (do not close the print window). 
 
 12. Change the color scale of the the FAK_HDs layer then return to the print window. Has the map changed? It may take a moment or you may need to move the map slightly with ![](images/move.png)  so that it updates
 
 
-13. The map is starting to look better - try adding a North Arrow ![](images/north.png) and a Scale Bar ![](images/scale.png). Each item on the map has customization options that can be accessed fron the "Item properties" tab - try a few of them out. 
+13. The map is starting to look better - try adding a North Arrow ![](images/north.png) and a Scale Bar ![](images/scale.png). Each item on the map has customization options that can be accessed from the "Item properties" tab - try a few of them out. 
 
 14. Have you added a scale bar? Try to zoom in or out of the map with ![](images/move.png) and see what happens to the scale bar. 
 
@@ -697,23 +719,23 @@ knitr::include_graphics("images/text_box.png")
 
 16. Once you are happy with an item it is advisable to lock it into place. This will stop any accidental moving/zooming. From the items list - check the box next to "Map 1" with the little lock symbol. 
 
-17. The previous step is mainly used to prevent unwanted moment. We can also lock-in the color symbology so that if you make changes to main map canvas the print layout remains the same. In the "Item properties" of the "Map 1"  check the tickbox for "lock layers" and "lock styles for layers".
+17. The previous step is mainly used to prevent unwanted movement. We can also lock-in the color symbology so that if you make changes to the main map canvas the print layout remains the same. In the "Item properties" of the "Map 1"  check the tickbox for "lock layers" and "lock styles for layers".
 
 
 ```{r lock, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
 knitr::include_graphics("images/lock.png")
 ```
 
-18. Return to the main QGIS project and change the color scheme again. What has happens in the print composer now?  
+18. Return to the main QGIS project and change the color scheme again. What has happened in the print composer now?  
 
-18. There are many different items that can be added to you map such as arrows and tables - find out more [here](https://docs.qgis.org/3.22/en/docs/user_manual/print_composer/composer_items/index.html)
+19. There are many different items that can be added to your map such as arrows and tables - find out more [here](https://docs.qgis.org/3.22/en/docs/user_manual/print_composer/composer_items/index.html)
 
 ## Exporting maps 
 
 The final step is exporting the map so that it can be used in a report or publication. 
 
 1. To export the map, go to “Layout” and select “Export as image” (note that you can also choose pdf)
-2. Choose an appropriate name for the file save in the output folder.
+2. Choose an appropriate name for the file and save in the output folder.
 3. You will be prompted to pick a resolutions - 300 dpi is acceptable for most publications
 4. Open you map from the folder - how does it look? 
 
@@ -721,56 +743,41 @@ The final step is exporting the map so that it can be used in a report or public
 </p></span>
 </div>
 
-## What makes a good map?
-
-Added this section after review - it is not complete but I think important. 
-
-In this tutorial we have focused on the technical requirements for creating maps with QGIS however this is just the first step in creating and informative map. Things to consider when map making:
-
-1. Color. https://colorbrewer2.org/
-
-2. Number of bins/categories 
-
-3. Balance of bins 
-
-4. Missleading maps
-
-Ref? 
 
 ## Help and self learning available for QGIS
 
-
-https://www.qgistutorials.com/en/
+There are many very useful sources of help for QGIS. A good place to start is the official QGIS documentation where you will find a detailed description of QGIS and be able to search topics that you may need help in. The training manual that includes easy to follow lessons
 
 https://docs.qgis.org/3.22/en/docs/
-
 https://docs.qgis.org/3.22/en/docs/training_manual/foreword/index.html
 
-https://colorbrewer2.org/
+A series of tutorials and tips have been put together by contributors on the following website. https://www.qgistutorials.com/en/. The tutorials have been translated to many different languages. 
 
-<br>
+If either of the these two options can not help you can ask specific questions on the https://gis.stackexchange.com/
 
-# Optional Extras (not sure if this is needed? needs updated if remaining)
+
+---
+
+# Optional Extras
 
 We are nearing the end of the tutorial - below are a few optional extras you can try if you have time or want to do further study. The options are:
 
 1. Editing the attribute table 
 2. Points in polygon  
-3. How to do a spatial join 
-4. How to include popular background rasters such as Openstreetmap and Google maps 
-5. How to access open source spatial data 
+3. How to access open source spatial data 
+4. Plugins - Adding basemaps example 
 
-<br>
+---
 
 ## Attribute table editing 
 
-There are times we may identify errors in the attribute table and may need to correct them. There may also be unwanted columns that you want to tidy up. In the FAK_HDs_with_pop shapefiels we do not have a use for the Pop_count and it can get confused with Pop_sum so it may be best to remove it. 
+There are times we may identify errors in the attribute table and may need to correct them. There may also be unwanted columns that you want to tidy up. In the FAK_HDs_with_pop shapefields we do not have a use for the Pop_count and it can get confused with Pop_sum so it may be best to remove it. 
 
-1. Ooen the FAK_HDs_with_pop attribute table but right-clicking and selecting ![](images/att_table.png)
+1. Open the FAK_HDs_with_pop attribute table by right-clicking and selecting ![](images/att_table.png)
 2.From the attribute table window select the toggle edit icon ![](images/tog_edit.png) from the top left corner - this allows edits to occur. 
 3. To delete a column we can then click on the ![](images/del_col.png) symbol and simply scroll down and select the column to be deleted.
-4. While we have editing turned on you can also try to click individual cells of the attribute table. You will be given the option to change the cell contents and is a way to fix and small errors in your dataset. 
-5. To turn of editing click the toggle symbol again  ![](images/tog_edit.png). You will be prompted to save or discard your changes - if you are happy click save. Now with the editing turned off try and select the cell contents - you will see it is no longer possible. 
+4. While we have editing turned on you can also try to click individual cells of the attribute table. You will be given the option to change the cell contents and is a way to fix any small errors in your dataset. 
+5. To turn off editing click the toggle symbol again  ![](images/tog_edit.png). You will be prompted to save or discard your changes - if you are happy click save. Now with the editing turned off try and select the cell contents - you will see it is no longer possible. 
 
 QGIS has many other data cleaning and manipulation functions that can be explored. That said it is not a strength of QGIS and so it can be preferable to clean data in excel or R before using in QGIS.
 
@@ -798,76 +805,6 @@ knitr::include_graphics("images/pnp2.png")
 ```
 
 
-## Spatial Join 
-
-If we have two layers both with geometry we can combine their attributes with a spatial join. 
-
-1. The the processing toolbox type "join". You will see a option to "Join attribute by location" - double click on this
-
-```{r sp, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
-knitr::include_graphics("images/sp_join.png")
-```
-
-2. Let's join the heath facility data to the Burkina Faso admin units - remember from the work earlier that there are multiple health facilities in some admin units but none in others so it is not just a matter of joining table columns. In the first dropdown menu "Join to features in" select the "BFA_HDs" layer. In the "By comparing to" menu select the point layer for the health facilities "annual_hf_data_with_coords". 
-
-3. In the "Features they" tickbox - keep the default selection of "intersect". This essentially means you are going to join any point that is in or touching a polygon. For more infoirmation on the different options see:  https://docs.qgis.org/3.22/en/docs/user_manual/processing_algs/qgis/vectorgeneral.html#join-attributes-by-location
-
-4. Finally select the "Join Type" - "Create seperate feature for each matching feature (one to many)" 
-
-5. Click "Run"
-
-```{r sp2, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
-knitr::include_graphics("images/sp_join2.png")
-```
-
-6. A temporary layer named "Joined Layer" will be created. Open the attribute table of that layer - what do you see? How many features are there and how does that compare to the BFA_HDs and Health facility point layers? Notice that for the Administrative areas that contain more that on Health Facility there are now multiple rows of data. For the administrative areas that do not have a health facility the fields joind from the point layer remain NULL
-
-```{r sp3, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
-knitr::include_graphics("images/sp_join3.png")
-```
-
-
-## Basemaps
-
-1. Background rasters can be added from "XYZ Tiles" in the Browser panel 
-2. OpenStreetMap will be available - just double click it to add to your layers list an map canvas
-
-```{r xyz, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
-knitr::include_graphics("images/xyz.png")
-```
-
-
-3. While it is recommended to create your own maps or use opensource options like OpenStreetMap - Google basemaps are also available. To do this you need to right-click on "XYZ Tiles" and select "New Connection"
-
-```{r xyz2, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
-knitr::include_graphics("images/xyz2.png")
-```
-
-4. In the pop up window copy and paste the URL of the layer you want (see below). Give it an appropriate name and click OK.
-
-5. Note that if you intend to use OpenStreetMaps or Google Maps for any publication they have to be appropriately acknowledged 
-
-The available Google Maps basemaps are:
-
-Roadmap
-http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z} 
-
-Terrain
-http://mt0.google.com/vt/lyrs=p&hl=en&x={x}&y={y}&z={z}
-
-Altered roadmap
-http://mt0.google.com/vt/lyrs=r&hl=en&x={x}&y={y}&z={z}
-
-Satellite only
-http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}
-
-Terrain only
-http://mt0.google.com/vt/lyrs=t&hl=en&x={x}&y={y}&z={z}
-
-Hybrid
-http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}
-
-
 
 ## Open source spatial data 
 
@@ -890,6 +827,32 @@ From the [Free GIS Data website](http://freegisdata.rtwilson.com/) we can also o
 
 
 
+## Plugins 
 
+QGIS plugins offer additional functionality to the core QGIS software - much like packages in R. Many popular plugins have been encorporated into QGIS but there are still over 1000 additional plugins available. Here we will look at how we can access the plugins and highlight some of the more popular plugins. 
+
+1. From the menu bar select "Plugins" and then "Manage and Install plugins"
+
+```{r plug, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
+knitr::include_graphics("images/plug_1.png")
+```
+
+2. The popup window should list the available plugins. In the search bar we will look for "quickmapservices" - this is a popular plugin to access basemaps from Open Street Map, Google etc
+
+```{r plug2, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
+knitr::include_graphics("images/plug_2.png")
+```
+
+3. When you have found the plugin click install. Some plugins will appear in the menu bar but many will appear in the toolbar. For quick map services the tool icon is ![](images/qms.png). CLick the icon and click OSM (open street map). The OSM basemap will appear on your map and in  the layers list. Now you know where Fakeland is!
+
+```{r plug3, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
+knitr::include_graphics("images/plug_3.png")
+```
+
+4. To find other popular base maps you can search the quick map services plugin, again from the ![](images/qms.png) select search QMS. A search panel will appear and looks for other basemaps such a Google or basemaps with satellite imagery 
+
+```{r plug4, echo=FALSE, fig.cap="", out.width = '90%', fig.align = 'center'}
+knitr::include_graphics("images/plug_4.png")
+```
 
 

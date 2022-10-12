@@ -3,34 +3,48 @@ title: "Introduction to data handling and visualisation in R"
 output:
   html_document:
     toc: true
-    toc_depth: 4
+    toc_depth: 3
     toc_float: true
 ---
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(gridExtra)
+library(base)
+```
 
-This module provides an introduction to R and RStudio. It includes hands on teaching for how to handle data in R using key packages such as `tidyverse` `sf`, `sp`, `rgdal` and `terra`.
+```{r, include=FALSE}
+# save the built-in output hook
+hook_output <- knitr::knit_hooks$get("output")
+
+# set a new output hook to truncate text output
+knitr::knit_hooks$set(output = function(x, options) {
+  if (!is.null(n <- options$out.lines)) {
+    x <- xfun::split_lines(x)
+    if (length(x) > n) {
+      # truncate the output
+      x <- c(head(x, n), "....\n")
+    }
+    x <- paste(x, collapse = "\n")
+  }
+  hook_output(x, options)
+})
+```
+
+This module provides an introduction to R and RStudio. It includes hands on teaching for how to handle data in R using key packages such as tidyverse sf, sp, rgdal and raster.
 
 In this module we will cover what R is, how to install it on your machine and how to interact with the RStudio interface. We will look at how to manage your projects in R then introduce basic data management and processing. This will then be expanded on and you will learn about data manipulation and key functions used to clean and investigate your data. We will introduce the ggplot package and explore how this can be used to produce high quality data visualisations. Finally we will cover how to save your data. 
 
 The teaching is followed by a practical session implementing the acquired skills to clean and process replica DHIS2 routine malaria surveillance data.
 
-\vspace{15pt}
-\renewcommand\contentsname{}
-\setcounter{tocdepth}{2}
-\hrule
-\tableofcontents
-\vspace{25pt}
-\hrule
-
 <br>
 
 ## Introduction to R and Rstudio
-R is a popular programming language for data science. It is a powerful language which can be used for basic data cleaning and analysis, building complex statistical models, creating publication quality visualisations, as well building interactive tools and websites. R is an open source software with numerous people contributing packages to improve it"s functionality. 
+R is a popular programming language for data science. It is a powerful language which can be used for basic data cleaning and analysis, building complex statistical models, creating publication quality visualisations, as well as building interactive tools and websites. R is an open source software with numerous people contributing packages to improve it's functionality. 
 
 We will be using R to run all of the code in this module. To improve ease of use we will run this through the RStudio interface. RStudio is an integrated development environment (IDE) from which we can run R. This is more user friendly and has large functionality for organising projects and building reproducible code.
 
@@ -39,14 +53,18 @@ We will be using R to run all of the code in this module. To improve ease of use
 ### Installing R and RStudio
 Firstly to install R go to the R-project webpage: [https://www.r-project.org/](https://www.r-project.org/). Select a CRAN mirror in a location close to you from which to download R. Follow the prompts to download R for your processing system.  
  
+<br>
+
 ```{r, echo=FALSE, out.width="100%"}
 knitr::include_graphics("images/download_R.png")
 ```
-\vspace{10pt}
+
+<br>
 
 Rstudio can then be downloaded from the webpage: [https://www.rstudio.com/products/rstudio/download](https://www.rstudio.com/products/rstudio/download). Select the free desktop version to proceed.
 
-\vspace{10pt}
+<br>
+
 ```{r, out.width="50%", echo=FALSE}
 knitr::include_graphics("images/download_Rstudio.png")
 ```
@@ -57,6 +75,64 @@ knitr::include_graphics("images/download_Rstudio.png")
 Once installed, open up RStudio. You will see the console on your left, this is where you can type code and run R commands. There are two windows on your right, the top one shows you what is in the global R environment, and the bottom one is where you can view files, plots, packages and help pages. 
 
 There are two ways we can run R code in RStudio, directly from the console, or from an R script. We will start by looking at the console where we can write basic code to be run line by line. 
+
+<br>
+
+### Project management with Rstudio
+In RStudio you can use "projects" to manage your files and code. These help to organise everything into a working directory and allow you to easily keep your files, scripts and outputs for a single project in one place. 
+
+You can either create a new project from scratch in RStudio, create a project from an existing folder containing R code or by cloning a version controlled (e.g. Git) repository.
+
+We will look at how to start a new project in RStudio. To do this we go to File > New Project. Select the option to create the project in a new directory and give the directory a name and create the project.
+
+<br>
+
+```{r, out.width="80%", echo=FALSE}
+knitr::include_graphics("images/new_proj.png")
+```
+
+<br>
+
+You will then see the project appear in the bottom right window. You can now navigate your project from this window. You can see the files you have saved as part of the project, create new folders, delete, move or rename files. 
+
+<br>
+
+```{r, out.width="50%", echo=FALSE}
+knitr::include_graphics("images/new_proj2.png")
+```
+
+<br>
+
+In this tutorial we will be working with the R project "NAME OF PROJECT" which can be downloaded from "WEBLINK TO DATA".
+<br>
+
+### Data types and structures
+We will now introduce you to some of the basic data types in R. There are five main types of data in R, these are:
+ 
+- Characters : “a”, “bananas”
+- Numeric: 1 ,   2.2321 ,  1999
+- Integer: 2L, 5L (L tells R to store as integer)
+- Logical: True, False
+- Complex: 1+4i (I is the imaginary part)
+- Factors (categorical data with labels)
+
+The major data structures in R are:
+
+- Vectors
+- Matrices
+- Arrays
+- Data frames
+- Lists
+
+Vectors are series of values, either numbers, characters or logical values (TRUE or FALSE). 
+
+Matrices are 2-dimensional array which can hold numeric, character or logical data types. All of the data in a matrix has to be of the same type and there is a fixed number of rows and columns.   
+
+A array is of 2 or more dimensions and as with a matrix can hold numeric, character or logical data types, with all data being of the same type.
+
+Data frames are a selection of equal length vectors grouped together, where the vectors can be of different data types. These are the most common format used to analyse datasets in and what we will primarily be working with in this session.
+
+Lists are essentially a list of other items, these can be a mixture of different data types, for example you can create a list  of data frames, matrices and vectors. It is useful way of organising and storing data. 
 
 <br>
 
@@ -87,7 +163,7 @@ positive <- 80
 positive / tested  ## Proportion of people tested confirmed positive
 ```
 
-If we then received updated information that 160 people were tested, not 120, we can update the value for tested and recalculate the proportion of positive cases.
+If we then receive updated information that 160 people were tested, not 120, we can update the value for tested and recalculate the proportion of positive cases.
 
 ```{r}
 tested <- 160    
@@ -111,7 +187,7 @@ country
 <br>
 
 ### Vectors
-In R we commonly work with vectors, these are sequences of values. Vectors can be numeric or character strings and are created using the `c()` function. Once we have created the vector we can access different values of the vector by using square brackets. `[2]` will return the second value in the vector.  
+In R we commonly work with vectors, these are sequences of values. Vectors can be numeric or character strings and are created using the `c()`, concatenate, function. Once we have created the vector we can access different values of the vector by using square brackets. `[2]` will return the second value in the vector.  
 
 ```{r}
 tested <- c(56, 102, 65, 43, 243) 
@@ -131,6 +207,7 @@ sum(tested)
 mean(tested)
 max(tested)
 ```
+
 Some functions will take additional arguments. Take the `round()` function. This takes two arguments, the first is the number you wish to round, the second is the number of digits to round to.
 
 ```{r}
@@ -141,22 +218,19 @@ round(3.14159, 2)
 
 ### Scripts
 In most situations you will be wanting to write multiple lines of reproducible code. To do this you can open an R script by going to File > New File > R Script (or the shortcut `Ctrl+Shift+N`). This opens a text editor in the top left window where we can write our code. You can then run the whole script by clicking the "Run" button. Alternatively, you can run sections by highlighting the lines to execute and either clicking "Run" or `Ctrl+Enter`. You can also run the script line by line, by typing `Ctr+Enter` to run the line your cursor is currently on. Scripts can be saved, shared with others, and built on or rerun at later dates. From this point on we will work in R scripts.   
-  
-  <br>
-  
+
+<br>
+
 ### Installing packages
 R has a range of base functions available to be used, these include things such as `mean()`, `sqrt()` and `round()`. For more advanced data management, analysis and visualisations there are additional packages you can download which contain a wide range of functions.
 
-Many packages are available on CRAN. CRAN is "The Comprehensive R Archive Network" and it stores up-to-date versions of code and documentation for R. Packages from CRAN can be installed directly from RStudio. For this module we will primarily be using the `tidyverse` group of packages. First we need to install the packages, then we need to load it into R to be able to use the functions. At the top of most R scripts you will find code for the packages being used in that script.
+Many packages are available on CRAN. CRAN is "The Comprehensive R Archive Network" and it stores up-to-date versions of code and documentation for R. Packages from CRAN can be installed directly from RStudio. For this module we will primarily be using the `tidyverse` group of packages. Firstly we need to install the packages, then we need to load it into R to be able to use the functions. At the top of most R scripts you will find code for the packages being used in that script.
 
 ```{r, warning=FALSE, eval=FALSE}
 install.packages("tidyverse")
 library(tidyverse)
 ```
 
-```{r lib, results='hide', message=FALSE, echo=FALSE}
-library(tidyverse)
-```
 You will only need to install the package onto your machine once, from then on for each new session of R you will need to load the packages required, but not to install them again.
 
 <br>
@@ -184,58 +258,14 @@ Finally, the internet provides a huge amount of help for coding in R. Search eng
 
 <br>
 
-## Project management with Rstudio
-In RStudio you can use "projects" to manage your files and code. These help by organising everything into a working directory and allowing you to easily keep your files, scripts and outputs for a single project in one place. 
-
-You can either create a new project from scratch in RStudio, create a project from an existing folder containing R code or by cloning a version controlled (e.g. Git) repository.
-
-We will look at how to start a new project in RStudio. To do this we go to File > New Project. Select the option to create the project in a new directory and give the directory a name and create the project.
-
-```{r, out.width="80%", echo=FALSE}
-knitr::include_graphics("images/new_proj.png")
-```
-
-You will then see the project appear in the bottom right window. You can now navigate your project from this window. You can see the files you have saved as part of the project, create new folders, delete, move or rename files. 
-
-```{r, out.width="50%", echo=FALSE}
-knitr::include_graphics("images/new_proj2.png")
-```
-
-<br>
-
-> ### Task 1
-> - Open up RStudio and create a new project called  **MAP_spatial_analysis_course**
-> - Create some folders to organise your work. Create one new folder called *"scripts"* and one called *"data"*.
-> - Move the data you have downloaded from XXX to the *"data"* folder
-> - Open a new script in RStudio, install and load the `tidyverse` package and save the script into the scripts folder, calling in `session2.R`
-
-<br>
-
-## Data structures
-We will now introduce you to some of the basic data types in R, how to import data and interrogate it in R Studio. The major data structures in R are:
-
-- Vectors
-- Factors
-- Data frames
-- Lists
-- Matrices
-
-We have looked at vectors, which are a series of values, either numbers, characters or logical values (TRUE or FALSE). Factors are the data type for storing categorical data. Data frames are a selection of equal length vectors grouped together, where the vectors can be of different data types.
-
-A matrix is a 2-dimensional array which can hold numeric, character or logical data types. All of the data in a matrix has to be of the same type and there is a fixed number of rows and columns.   
-
-Lists are essentially a list of other items, these can be a mixture of different data types, for example you can create a list  of data frames, matrices and vectors. It is useful way of organising and storing data. 
-
-Data frames are the most common format used to analyse datasets in R. In this section we will work with data frames, and introduce factors.
-
-<br>
+## Importing and exploring data in R
 
 ### Importing data
-R has the functionality to import various types of data. One of the most common file types we work with are `.csv` files, but we can also import `.dta` files and `.xlsx` files amongst others.
+R has the functionality to import various types of data. One of the most common file types we work with are `.csv` files, but we can also import `.dta` files and `.xlsx` files among others.
 
 We can import .csv files into RStudio using the base function `read.csv()`. In this function we insert the file path to the data we wish to import. Note that as we have set up a project, this is our base directory so file paths stem from where the project is saved. We can assign the imported dataset to an object, here called "routine_data", using the `<-` operator to store it in our environment.
 
-For this module we are using a dataset called "routine_data". This is an fake dataset of malaria routine case reporting and contains variables for the numbers of malaria tests performed and the numbers of confirmed cases. Data are reported by health facility for children under and over the age of 5 seperately. 
+For this module we are using a dataset called "routine_data". This is a fake dataset of malaria routine case reporting and contains variables for the numbers of malaria tests performed and the numbers of confirmed cases. Data are reported by health facilities for children under and over the age of 5 seperately. 
 
 ```{r}
 routine_data <- read.csv("data/routine_data.csv") 
@@ -252,7 +282,7 @@ library(readxl)
 excel_file <- read_excel("filename.xlsx")
 ```
 
-Whilst `read.csv()` is the most common way to read data into R, there is the alternative `read_csv()` function (note the underscore). This is part of the `tidyverse` group of packages and is often a better option for reading in CSV files. This function is quicker, it reads the data in as a tibble instead of a data frame and allows for non standard variable namesm amongst other benefits.
+Whilst `read.csv()` is the most common way to read data into R, there is the alternative `read_csv()` function (note the underscore). This is part of the `tidyverse` group of packages and is often a better option for reading in CSV files. This function is quicker, it reads the data in as a tibble instead of a data frame and allows for non standard variable names among other benefits.
 
 ```{r}
 routine_data <- read_csv("data/routine_data.csv") 
@@ -263,7 +293,7 @@ There are various options we can use when importing data, such as whether to inc
 <br>
 
 ### Data frames
-We will now look at the csv we just imported. You will now see the "routine_data" object in your environment that we created and assigned this dataset too. You can see what the data looks like either by clicking on it in the global environment window or by typing the command `View(routine_data)` which opens up a window displaying the data. Alternatively, we may just want to look at a few rows. We can do this by using the `head()` function, which shows us the first n rows of data
+We will now look at the csv we just imported. You will now see the "routine_data" object in your environment that we created and assigned this dataset too. You can see what the data looks like either by clicking on it in the global environment window or by typing the command `View(routine_data)` which opens up a window displaying the data. Alternatively, we may just want to look at a few rows. We can do this by using the `head()` function, which shows us the first rows of data
 
 ```{r}
 head(routine_data, 5)
@@ -275,7 +305,7 @@ To understand the structure of the data we can use the `str()` command. This sho
 str(routine_data)
 ```
 
-As we did with the vector, we can extract parts of the data frame using indices. For a data frame we can select the nth row, or the nth column using square brackets (note where the comma is paced).
+As we did with the vector, we can extract parts of the data frame using indices. For a data frame we can select the nth row, or the nth column using square brackets (note where the comma is placed).
 
 ```{r, out.line = 5}
 routine_data[,1]  # First column
@@ -322,18 +352,31 @@ routine_data$month <- factor(routine_data$month,
 table(routine_data$month)
 ```
 
+With months we can also achieve this using the helpful specification 'month.abb' to tell R we have abbreviated months, rather than listing these out everytime
+
+```{r}
+routine_data$month <- factor(routine_data$month,
+                        levels = month.abb)
+
+```
+
 <br>
 
-> ### Task 2 {.challenge}
-> - Import the `routine_data.csv` file using the `read_csv()` function, setting -9999 values to NA, call the object `routine_data`
+> ### Task 1 {.challenge}
+> - Open the R project "NAME OF PROJECT HERE", downloaded from "WEBLINK HERE"
+> - Open a new script and save it in the project folder "scripts"
+> - Install and load the tidyverse packages
+> - Import the `routine_data.csv` file using the `read_csv()` function, setting -9999 values to NA, call the object "routine_data"
 > - Explore the data using functions such as `str()`, `head()` and `summary()`
-> - Convert the variable `month` to an ordered factor
+> - Convert the variable "month" to an ordered factor
 >
 >
 > <details>
 >   <summary markdown="span">Solution</summary>
 > 
 >  ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>  install.packages("tidyverse")
+>  library(tidyverse)
 >  routine_data <- read_csv("data/routine_data.csv")
 >  str(routine_data)
 >  head(routine_data)
@@ -342,9 +385,10 @@ table(routine_data$month)
 >  ```
 > </details>
 
+
 <br>
 
-## Exploring data frames
+## Basic data cleaning and manipulation in Tidyverse
 In this section we introduce you to the `tidyverse` packages and show how these functions can be used to explore, manipulate and analyse data. 
 
 Tidyverse is a collection of R packages for data science, designed to make cleaning and analyses of data easy and tidy. It uses a range of packages and functions, along with the pipe operator, `%>%`, to produce easily readable and reproducible code.
@@ -357,8 +401,11 @@ We will cover the following simple, commonly used functions in tidyverse:
 - filter
 - rename
 - mutate
-- group_by
-- summarise
+- drop_na
+- arrange and relocate
+- group_by and summarise
+
+Additionally, we will cover working with dates in the "lubridate" package and using pipes to combined commands in a clean, stepwise manner
 
 We will continue this investigation using the `routine_data.csv` dataset we imported into R in the previous section.
 
@@ -423,7 +470,7 @@ filter(routine_data,
 <br>
 
 ### Rename
-There may be situations when we want to rename variables in a data frame to make it more comprehensive and easier to process. This can easily be done using the function `rename()`. We pass to this function the data frame we are working with, the new name we want the variable to take and the existing name of the variable. So if we wanted to change the variable "conf_u5" to "positive_u5", and to overwrite the object "routine_data" with this we would simply write:
+There may be situations where we want to rename variables in a data frame to make it more comprehensive and easier to process. This can easily be done using the function `rename()`. We pass to this function the data frame we are working with, the new name we want the variable to take and the existing name of the variable. So if we wanted to change the variable "conf_u5" to "positive_u5", and to overwrite the object "routine_data" with this we would simply write:
 
 ```{r, out.lines = 8}
 rename(routine_data, 
@@ -440,7 +487,7 @@ mutate(routine_data,
        prop_positive_u5 = conf_u5/test_u5)
 ```
 
-We can also use `mutate()` to alter existing variables within the data frame. Say we noticed that there was an error in the admin 1 name where in some instance "North Coast" was entered as "N. Coast" we can change this by by combining the `mutate()` function with an `ifelse` statement. The first command of the `ifelse()` statement is the condition which has to be met, here `adm1 == "N. Coast"`; the second command is what you wish to replace the variable with if this condition is met; the third part is what the variable should be else this condition is not met. 
+We can also use `mutate()` to alter existing variables within the data frame. Say we noticed that there was an error in the admin 1 name where in some instance "North Coast" was entered as "N. Coast" we can change this by by combining the `mutate()` function with an `ifelse` statement. The first command of the `ifelse()` statement is the condition which has to be met, here `adm1 == "N. Coast"`; the second command is what you wish to replace the variable with if this condition is met; the third part is what the variable should be if this condition is not met. 
 
 ```{r, eval=FALSE}
 table(routine_data$adm1)
@@ -470,7 +517,7 @@ Null values are treated differently in R. They appear as `NA` in the dataset, so
 filter(routine_data, test_u5 !=NA)
 ```
 
-However, this does not work as R has a special way of dealing with missing values. We use the `is.na()` command, which checks fo `NA` values. As with the equals command, if we want the reverse of this, i.e. "not NA" we can use `!is.na()`. So the code to remove missing values would be:
+However, this does not work as R has a special way of dealing with missing values. We use the `is.na()` command, which checks for `NA` values. As with the equals command, if we want the reverse of this, i.e. "not NA" we can use `!is.na()`. So the code to remove missing values would be:
 
 ```{r, eval = FALSE}
 filter(routine_data, !is.na(test_u5))
@@ -485,7 +532,7 @@ routine_data <- drop_na(routine_data, test_u5)
 <br>
 
 ### Dates
-Dates in R tidyverse are managed using the `lubridate`. This makes working with dates and times in R far easy allowing for various formats and calculations with dates. In the `lubridate` package we can use the following functions to get the current date and time.
+Dates in R tidyverse are managed using the `lubridate`. This makes working with dates and times in R far easier, allowing for various formats and calculations with dates. In the `lubridate` package we can use the following functions to get the current date and time.
 
 ```{r, warning=F, message=F}
 library(lubridate)
@@ -526,7 +573,7 @@ arrange(routine_data, desc(test_u5))
 
 arrange(routine_data, adm1, hf, date_tested)
 ```
-We can change the order that columns appear in the dataset using the `relocate()` function. This takes the first argument as the data frame, the second as the column(s) you wish to move, and then where you want to over them to.
+We can change the order that columns appear in the dataset using the `relocate()` function. This takes the first argument as the data frame, the second as the column(s) you wish to move, and then where you want to move them to.
 
 ```{r, out.lines = 8}
 relocate(routine_data, date_tested, .before = adm1)
@@ -577,7 +624,7 @@ mean(tested)        # Basic command
 tested %>% mean()   # Using the pipe
 ```
 
-This means that using our "routine_data" dataset we can link some of the commands we have introduced today together. We can read in our dataset, select the variables we want to keep, filter our dataest, and edit/create variables in one chunk of piped code. Note that as we are using the pipe operator we no longer need to tell each command what data frame is being used.
+This means that using our "routine_data" dataset we can link some of the commands we have introduced today together. We can read in our dataset, select the variables we want to keep, filter our dataset, and edit/create variables in one chunk of piped code. Note that as we are using the pipe operator we no longer need to tell each command what data frame is being used.
 
 ```{r}
 routine_data <- read.csv("data/routine_data.csv") %>% 
@@ -600,14 +647,13 @@ routine_data %>%
 
 <br>
 
-> ### Task 3 {.challenge}
+> ### Task 2 {.challenge}
 > Using the "routine_data" dataset we imported in the last task:
-> 
 > - Select the variables for location, date and the number of people tested and confirmed cases for children over 5 only (suffix "_ov5")
-> - Identify and remove any missing data, or unrealistic values (e.g  confirmed cases higher than those tested)
+> - Identify and remove any missing data, or unrealistic values (e.g confirmed cases higher than those tested)
 > - Identify any errors in year variable and correct them
-> - Create a date variable called `date_tested` using the `lubridate`  package
-> 
+> - Create a date variable called "date_tested" using the `lubridate` package
+>
 >
 > <details>
 >   <summary markdown="span">Solution</summary>
@@ -628,7 +674,6 @@ routine_data %>%
 >  ```
 > </details>
 
-
 <br>
 
 ### Demo 1
@@ -646,9 +691,7 @@ clean_routine_data <- routine_data %>%
                           adm1 == 'central'~'Central',
                           TRUE~adm1),
          month = factor(month,
-                        levels = 
-                          c("Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")),
+                        levels = month.abb),
          year = case_when(year == 3018 ~ 2018,
                           year == 18 ~ 2018,
                           TRUE ~ year),
@@ -666,11 +709,10 @@ clean_routine_data <- routine_data %>%
 head(clean_routine_data)
 ```
 
-
 <br>
 
 ## Advanced manipulation of data frames
-In this section we are building on the what we have introduced in the previous section and introducing some more advanced functions for data manipulation. We will be using the "clean_routine_data" dataset we just created.
+In this section we are building on what we have introduced in section 2.3 and introducing some more advanced functions for data manipulation. We will be using the "clean_routine_data" dataset we just created.
 
 <br>
 
@@ -679,7 +721,7 @@ Reshaping or pivoting data is an important part of data cleaning and manipulatio
 
 `pivot_longer()` takes a wide dataset and converts it into a long one, decreasing the number of columns and increasing the number of rows. Datasets are often created in a wide format, but for analysis a long format is often preferable, especially for data visualisations. 
 
-To reshape the data long we need to pass the argument the columns which are being pivoted, a name for the new column to identify the columns being reshaped, and a name for the values of the columns being reshaped. We can also combine this with helper functions such as `starts_with()` to help identify the columns to reshape. 
+To reshape the data to long we need to pass the argument for the columns which are being pivoted, a name for the new column to identify the columns being reshaped, and a name for the values of the columns being reshaped. We can also combine this with helper functions such as `starts_with()` to help identify the columns to reshape. 
 
 Lets look at an example using the confirmed malaria cases from our "clean_routine_data" dataset. Here we are taking all of the columns which start with "conf" and reshaping the data so there is one variable identifying the age group and one identifying the number of confirmed cases. We can use the option `names_prefix = ` to identify a common prefix on the variable names to be removed.
 
@@ -716,7 +758,7 @@ In R we can easily join two data frames together based on one, or multiple varia
 - `right_join()`: includes all rows in y
 - `full_join()`: includes all rows in x or y
 
-To run the command you need to pass it the data frames you wish to join and the variable(s) you wish to join by. If there are matching variables in the data frames these will be detected and you do not need to specify them. 
+To run the command you need to pass it through the data frames you wish to join and the variable(s) you wish to join by. If there are matching variables in the data frames these will be detected and you do not need to specify them. 
 
 If we have two data frames with varying numbers of rows, we can investigate the outcomes of using the different join commands. Firstly, we create two data frames of different lengths, `tested`, and `confirmed`, then look at what the commands and outcomes would be.
 
@@ -759,7 +801,9 @@ R has some specific formats you can use to store data, these are `.RDS` and `.RD
 
 Here, we can select which format we want to save the data in and save the `pf_incidence` data frame we created in this module.
 
-Similarly to importing data, we can use the base R functions of `write.csv()`, or preferably the `tidyverse` option if `write_csv()`
+Similar to importing data, we can use the base R functions of `write.csv()`, or preferably the `tidyverse` option. `write_csv()`
+
+<br>
 
 ```{r, eval = FALSE}
 write_csv(clean_routine_data, "outputs/clean_routine_data")
@@ -769,9 +813,7 @@ saveRDS(clean_routine_data, "outputs/clean_routine_data.RDS")
 save(clean_routine_data, population, "outputs/clean_data.R")
 ```
 
-<br>
-
-> ### Task 4 {.challenge}
+> ### Task 3 {.challenge}
 > - Import a clean version of the `routine_data.csv`, setting -9999 values  to NA
 > - Remove NAs from the `conf_u5` and `conf_ov5` variables
 > - Create a new data frame called `confirmed_malaria` which it the sum of confirmed malaria cases in children under 5 and people over 5 by admin 2  district
@@ -801,7 +843,7 @@ save(clean_routine_data, population, "outputs/clean_data.R")
 <br>
 
 ### Demo 2
-In this demo we will link together what we have learnt to create a dataset of the total number of confirmed cases, population and malaria incidence by month, and district. Then another dataset aggergated for the whole country.
+In this demo we will link together what we have learnt to create a dataset of the total number of confirmed cases, population and malaria incidence by month, and district. Then another dataset aggregated for the whole country.
 
 ```{r, message = F}
 # Import the population dataset
@@ -833,12 +875,10 @@ write_csv(pf_incidence_national, 'outputs/pf_incidence_national.csv')
 
 <br>
 
-## Data visualization
+## Introduction to visualization
 In this section we will introduce data visualisation using the popular `ggplot` package. This package contains functions to build a range of different plots, from scatter plots and line graphs, to box plots, bar charts and even maps. It is descriptive and makes it easy to build on plots and adjust the visualisations to your desired output, making publication quality plots.
 
 The data we will be using to create our plots is the dataset for the incidence of malaria created from our routine data. 
-
-<br>
 
 ### Basic plotting
 We will start by showing you how to build a basic plot with the `ggplot()` function. The `ggplot()` function creates a blank plot to which you add different functions to build your data visualisation using the `+` operator. 
@@ -856,13 +896,11 @@ total_incidence <-
 
 ```
 
-We then start with the ggplot command. We want to use the NGA dataset and wish to plot the year on the x-axis and the incidence on the y-axis so the command is as follows:
+We then start with the ggplot command. We want to use the total incidence dataset and wish to plot the year on the x-axis and the incidence on the y-axis so the command is as follows:
 
 ```{r, eval = FALSE}
 ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))
 ```
-
-<br>
 
 ### Scatter plots & line graphs
 This wont yet produce a figure as we need to tell ggplot what sort of figure we would like this to be. We will start by making a scatter plot using `geom_point()`. We add layers to the ggplot object using the `+` operator.
@@ -954,10 +992,9 @@ ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
   geom_point(size=5, colour = 'blue', shape = 18)
 ```
 
-<br>
 
-> ### Task 5
-> - Import the dataset `pf_incidence_national` we created in the demo from > the data folder and filter to just contain data for under 5's 
+> ### Task 4 {.challenge}
+> - Import the dataset `pf_incidence_national` we created in the demo from the data folder and filter to just contain data for under 5's 
 > - Create a line graph plotting the incidence of malaria (y-axis) by date (x-axis)
 > - Change this to be a green dotted line and increase the line thickness
 > 
@@ -969,8 +1006,7 @@ ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
 >   filter(age_group=="u5") 
 >   
 >   ggplot(pf_incidence_national)+
->   geom_line(mapping = aes(x = date_tested, y = incidence), color =  'green', size = 2)+
->   theme_bw()
+>   geom_line(mapping = aes(x = date_tested, y = incidence), color =  'green', size = 2)
 >   
 >   ```
 > </details>
@@ -1028,10 +1064,8 @@ ggplot(data = total_incidence, mapping = aes(x = date_tested, y = incidence))+
         title = element_text(size = 16,face = 'bold'))
 ```
 
-<br>
-
 ### Subgroups and facets
-We will now look visualising multiple data trends, for example if you had incidence data for multiple countries there are various ways you could show this data. Here we will use the dataset `pf_incidence_national.csv` we imported earlier, with incidence for different age groups.
+We will now look at visualising multiple data trends, for example if you had incidence data for multiple countries there are various ways you could show this data. Here we will use the dataset `pf_incidence_national.csv` we imported earlier, with incidence for different age groups.
 
 Firstly, we can incorporate the trends for different age_groups on the same plot by using different colours. We use the `colour` argument inside the `aes` functions and assign it to the country variable. This results in ggplot plotting a line for each country in the dataset in a different colour, with a legend added to the plot.
 
@@ -1085,9 +1119,10 @@ ggplot(data = pf_incidence_national, mapping = aes(x = date_tested, y = incidenc
 
 ```
 
+
 <br>
 
->### Task 6
+> ### Task 5 {.challenge}
 > - Using the `pf_incidence_national` dataset create scatter plots the number of confirmed malaria cases(y-axis) by date tested (x-axis), with  facets for age group.
 > - Change the colour of the points based on the age group
 > - Change the axis labels and add a title to the plot
@@ -1188,12 +1223,10 @@ ggplot()+
   theme_bw()
 ```
 
-<br>
-
 ### Box plots, bar charts and histograms
 `ggplot` can also be used to create plots summarising the data and incorporating statistical transformations. 
 
-Box plots are a good way of summarising continuous data by discrete variables. For example, in this dataset we have the number of confirmed malaria cases in different districts for each month. In `ggplot` we can use box plots to easiy summarise and visualise these data. 
+Box plots are a good way of summarising continuous data by discrete variables. For example, in this dataset we have the number of confirmed malaria cases in different districts for each month. In `ggplot` we can use box plots to easiy summarise and visualise this data. 
 
 As in the previous section, we provide ggplot() with the x and y variables in the `aes()` argument and R will calculate the size of the boxes and whiskers. Similarly, you can control the colour of the lines and the fill colour of the plot by using the `colour` and `fill` arguments. 
 
@@ -1265,8 +1298,6 @@ ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
 This is just an introduction to what you can achieve for ggplot. For further guidance look at the help pages and the cheat-sheet available at [https://www.rstudio.com/resources/cheatsheets](https://www.rstudio.com/resources/cheatsheets).
 
 
-<br>
-
 ### Saving plots
 There are a couple of different ways you can save plots in R. Firstly you can save them by opening a `png()`, `jpeg()` or `pdf()` depending on the file type you want to save. These commands contain the output file path and the desired height and width of the figure (optional). It is then followed by the figure, and closing down the file with `dev.off()`.
 
@@ -1297,9 +1328,10 @@ ggplot(mapping = aes(x = date_tested, y = conf, fill = age_group))+
 ggsave("outputs/malaria_incidence_plot.png")
 ```
 
+
 <br>
 
-> ### Task 7
+> ### Task 6 {.challenge}
 > - Import the `pf_incidence` dataset we created in demo 2. 
 > - Create a box plot of the confirmed malaria cases for children under 5  by month
 > - Using the `pf_incidence` dataset create a stacked bar chart of confirmed > malaria cases in children under 5 and over 5's by month
@@ -1322,6 +1354,6 @@ ggsave("outputs/malaria_incidence_plot.png")
 >  geom_boxplot(mapping = aes(x = month, y = conf, fill = age_group))+
 >  labs(y = "Confirmed Cases under 5")+
 >  theme_bw()
->  
->  ```
+>   
+>   ```
 > </details>

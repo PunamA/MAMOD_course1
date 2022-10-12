@@ -2,15 +2,16 @@
 title: "Introduction to Spatial data in R"
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 <br>
 
+Before you begin, this module expects students to have some basic knowledge of R and GIS. 
+
 ## Overview
-This module will follow a similar structure to Module 4, however, in these lessons, we aim to equip students with skills to manage, analyse and present spatial data using R software. For more details on practical tips for QGIS please refer to module 4.
+This module will follow a similar structure to previous QGIS session, however, in these lessons, we aim to equip students with skills to manage, analyse and present spatial data using R software. 
 
 ```{=tex}
 \vspace{15pt}
@@ -26,25 +27,25 @@ This module will follow a similar structure to Module 4, however, in these lesso
 ### Objectives of tutorial
 
 -   Vector data
-    -   Introduction to sp and sf packages
+    -   Introduction to `sp` and `sf` packages
     -   Importing shapefiles into R (Spatial points and polygons)
     -   Joining data to shapefiles
     -   Writing shapefiles out in R
 -   Raster data
-    -   Introduction to the terra package
+    -   Introduction to the `terra` package
     -   Importing rasters into R
-    -   Plotting, reprojecting and manipulating Rasters in R
+    -   Plotting, reprojecting and manipulating rasters in R
     -   Extracting data from rasters
     -   Writing rasters out in R
 -   Creating publication quality maps
-    -   Using ggplot
-    -   Using tmap
+    -   Using `ggplot2`
+    -   Using `tmap`
 -   Resources for advanced interactive maps with leaflet
 
 <br>
 
 ## Vector data in R
-<br>
+
 ### Introduction to sp and sf packages
 The `sp` package (spatial) provides classes and methods for spatial (vector) data; the classes document where the spatial location information resides, for 2D or 3D data. Utility functions are provided, e.g. for plotting data as maps, spatial selection, as well as methods for retrieving coordinates, for subsetting, print, summary, etc.
 
@@ -64,7 +65,6 @@ To sf `object_sf = st_as_sf(object_sp, "sf")`
 
 A word of advice: be flexible in the usage of sf and sp. Sometimes it may be hard to explain why functions work for one data type and do not for the other. But since transformation is quite easy, time is better spend on analyzing your data than on wondering why operations do not work. For the purpose of this material we will focus of teaching you the package `sf` as it is intended to succeed and replace R packages `sp`, `rgeos` and the vector parts of `rgdal` packages. It also connects nicely to tidyverse learnt in previous modules.
 
-
 <br>
 
 ### Importing spatial data into R (Spatial points and polygons)
@@ -73,7 +73,6 @@ To import data we would first need to start with loading the library
 
 ```{r libraries, warning = F}
 library(sf)
-library(terra)
 library(tidyverse)
 ```
 
@@ -165,10 +164,23 @@ st_write(annual_data_sf, "outputs/annual_admin_routine_data.shp")
 
 <br>
 
-> ### Task 1
-> - Load in the data for fakeland admin units
-> - What type of spatial data is this shapefile?
+> ### Task 1  {.challenge}
+> - Load in the shapefile called "fakeland_task"
+> - How many polygons are in the shapefile?
 > - What projection is this shapefile in?
+> - Change the projection to be in WGS 84
+>
+>
+> <details>
+>   <summary markdown="span">Solution</summary>
+> 
+>  ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>  fakeland <- st_read("shapefiles/fakeland_task.shp")
+>  fakeland
+>  st_crs(fakeland)
+>  fakeland <- st_transform(fakeland, 4326)
+>  ```
+> </details>
 
 <br>
 
@@ -218,8 +230,11 @@ plot(GPMM[[6]])
 <br>
 
 ### Plotting, reprojecting and manipulating Rasters in R
+
 <br>
+
 #### Plotting rasters
+
 We can quickly summarise the data from rasters in plots such as histograms.
 
 ```{r, out.width = '60%'}
@@ -333,10 +348,26 @@ writeRaster(West_pop, "rasters/West_adm1_population.tif")
 
 <br>
 
-> ### Task 2
-> - Import the fakeland shapefile, ensure the projection is > in "4326" (WGS84)
-> - Import the raster  "ihme_corrected_worldpop_All_Ages_3_2018"
-> - Find the mean population of the cells in each admin 2  district of fakeland
+> ### Task 2 {.challenge}
+> - Using the "fakelands_task" shapefile from task 1, ensure the projection is in "4326" (WGS84)
+> - Import the raster of rainfall for April "GPMM.IMerg.V06B.MM_Total.2018.04.Data.5km"
+> - Extract the vaules from the raster based on the polygons in your shapefile
+> - Calculate the mean rainfall for each polygon in the shapefile
+>
+> <details>
+>   <summary markdown="span">Solution</summary>
+> 
+>  ```{r, answer=TRUE, eval=FALSE, purl=FALSE}
+>  fakeland <- st_read("shapefiles/fakeland_task.shp")
+>  fakeland <- st_transform(fakeland, 4326)
+>  GPMM_Apr <- rast("rasters/GPMM.IMerg.V06B.MM_Total.2018.04.Data.5km.tif")
+>  names(GPMM_Apr) <- 'GPMM_Apr'
+>  fakeland_rain <- extract(GPMM_Apr, fakeland) %>% 
+                    group_by(ID) %>% 
+                    summarise(mean_rainfall = mean(GPMM_Apr, na.rm = T)) %>% 
+                    mutate(adm1 = fakeland$adm1)
+>  ```
+> </details>
  
  <br>
  
@@ -374,10 +405,6 @@ fakeland_annual <-
 ## Making chloropleth maps in R
 
 In the demo we have created a dataset with annual incidence at admin 2 level. The next obvious thing to do is have a look at it. In this section we'll explore some popular ways of making chloropleth maps in R. Although not designed as a full-scale GIS application, R (especially when combined with its vast ecosystem of packages) provides a powerful, endlessly customisable, tool for spatial visualisation.
-
-<!-- With the demo we have created a dataset with annual incidence at admin 2 level  to be used for plotting. I you plan to do monthly maps or ones with different indicators then we can just change this demo section to show them making the data we need -->
-
-<!-- Also we did have this section on plotting shapefiles in R put in early but i thought that may be duplicating what you will be doing. If you do want this intriduced earlier the we can put this back in after joining shapefiles otherwise use/delete this as needed -->
 
 <br>
 
@@ -623,7 +650,7 @@ basemap <- ggplot(admin0_regional) +
 
 <br>
 
-### Demo 2
+### Demo
 
 ```{r, message=F}
 
@@ -638,44 +665,4 @@ basemap +
         legend.position = "right", legend.key.width = unit(0.5,"cm"), 
         legend.key.height = unit(0.75,"cm"), legend.text=element_text(size=12)) 
 ```
-
-
-
-<br>
-
-### Final thoughts
-
-* 
-
-<!-- ### Plotting shapefiles in R -->
-<!-- So we've loaded spatial data in R, but what we would like to do here is make plots of them. Luckily, `sf` package connects nicely to `ggplot` so that can makes maps with the ggplot functions using `geom_sf()`. -->
-
-
-
-<!-- ```{r fakeland map} -->
-<!-- ggplot(annual_data_sf)+ -->
-<!--   geom_sf()+ -->
-<!--   theme_bw() -->
-<!-- ``` -->
-<!-- We can even add multiple layers ontop of each other -->
-
-<!-- ```{r fakland+hfs} -->
-<!-- ggplot()+ -->
-<!--   geom_sf(fakeland, mapping = aes(geometry = geometry))+  # we must include mapping() when loading data directly in geom_sf(), if we don't have any additional info we can simply load the geometry column -->
-<!-- geom_sf(fakeland_hf_points, mapping = aes(geometry = geometry))+ -->
-<!--   theme_bw() -->
-<!-- ``` -->
-
-<!-- As we have joined our annual routine surveillance data to the shapefile we can also plot aspects of our data linked to the shapefile. (Creating maps in R will be covered further later in this session) -->
-
-<!-- ```{r plot data} -->
-<!-- ggplot(annual_data_sf)+ -->
-<!--   geom_sf(mapping = aes(fill = conf))+ -->
-<!--   scale_fill_viridis_c() + # to use color blind friendly continuous color palette -->
-<!--   labs( fill = "Confirmed cases")+ -->
-<!--   theme_bw() -->
-<!-- ``` -->
-
-
-
 

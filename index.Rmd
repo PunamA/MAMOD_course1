@@ -1,34 +1,30 @@
 ---
-title: "Introduction to Spatial Analysis for Infectious Diseases"
-author: Adam Saddler, Amelia Bertozzi-Villa, Annie Browne, Jailos Lubinda, Justin Millar, Punam Amratia, Susan Rumisha, Tasmin Symons
+title: |
+  ![](map-logo-col.png){width=300px style="display: block; margin:0 auto;"}  
+  Introduction to Spatial Analysis for Infectious Diseases
 output:
   html_document:
     toc: true
     toc_depth: 4
     toc_float: true
-    fig_width: 1
+header-includes:
+  - \usepackage{titling}
+  - \pretitle{\begin{center}
+    \includegraphics[width=2in,height=2in]{map-logo-col.png}\LARGE\\}
+  - \posttitle{\end{center}}
 ---
 
 ----
 
-<p></p>
+Welcome to the Introduction of Spatial Analysis for Infectious diseases tutorial pages. In this part of the workshop we aim to teach basic concepts, skills and tools for working with data so that you can get more done in less time, and with less pain. The lessons here focus mainly on the use of R and QGIS.
 
-<div style="text-align: center; margin-top: 30px; margin-bottom: 30px;">
-![](./images/map-logo_col.png)
-</div>
-
-<p></p>
-
-
-Welcome to the Introduction of Spatial Analysis for Infectious diseases tutorial pages. In this part of the workshop we aim to teach basic concepts, skills and tools for working with data so that you can get more done n less time, and with less pain. The lessons here focus mainly on the use of R and QGIS.
-
-The main sections of this workshop are designed to be introductory for participants with little to no programming experience. The advanced section taught in R for Geostatistical Modelling using `R-INLA` requires participants to have some statistical knowledge, some understanding of bayesian statistics and some prior knowledge of spatial data.
+The main sections of this workshop are designed to be introductory for participants with little to no programming experience. The advanced section taught in R for Geostatistical Modelling using `R-INLA` requires participants to have some statistical knowledge, some understanding of Bayesian statistics and some prior knowledge of spatial data.
 
 ----
 
 **Goal of this tutorial:**
 
-We want to provide our audience with a few useful tools for their day-to-day data activities. Given the restricted time of ASTMH, we may not be able to cover all important aspects of data handling. But the team are excited to release future workshops more tailored to regional/country requests. Please get in touch with us at **INSERT EMAIL**
+We want to provide our audience with a few useful tools for their day-to-day data activities. Given the restricted time of ASTMH, we may not be able to cover all important aspects of data handling. But the team are excited to release future workshops more tailored to regional/country requests. Please get in touch with us at on our [GoogleGroup](https://groups.google.com/g/malaria-atlas-project-introduction-to-spatial-analysis)
 
 ----
 
@@ -36,15 +32,20 @@ We want to provide our audience with a few useful tools for their day-to-day dat
 
 ## Preparations
 
-This workshops is expected to be hands-on, and to follow this lessons participants must have R, RStudio and QGIS installed on their computers. They also need to be able to install a number of R packages, create directories and download files.
+This workshops is expected to be hands-on, and to follow this lessons participants must have R, RStudio and QGIS installed on their computers. You also need to be able to install a number of R packages, create directories and download files.
 
-To avoid troubleshooting during the lesson, participants should follow the instruction below to download and install everything beforehand. If they are using their own computers this should be no problem,  but if the computer is managed by their organization's IT department they might need help from an IT administrator. 
+To avoid troubleshooting during the lesson, participants should follow the instructions below to download and install everything beforehand. If you are using your own computers this should be no problem,  but if the computer is managed by your organization's IT department you might need help from an IT administrator. 
 
 <br>
 
-### Install QGIS
+###  Installing QGIS
 
 Follow the [QGIS](https://www.qgis.org/en/site/forusers/download.html) download for the appropriate operating system to download on your computer.
+
+1. Scroll down and click on "QGIS Standalone Installer Version 3.26" to download the installer package: this is recommended for new users 
+2. Save the window installer package in you desired location, usually on the C drive ("C:/Program Files/QGIS 3.26.2/") 
+3. Double click the installer and follow the prompts to install QGIS
+
 
 <br>
 
@@ -142,11 +143,17 @@ During the course we will need a number of R packages. Packages contain useful
 R code written by other people. We will use the packages 
 `tidyverse`, `sf` and `terra` mainly for this workshop.
 
-To try to install these packages, open RStudio and copy and paste the following 
-command into the console window (look for a blinking cursor on the bottom left),
+To try to install these packages, open RStudio. If this is your first time opening it you may be prompted to set a CRAN mirror - select any country or even the R global cran. This step is important because [CRAN](https://cran.r-project.org/#:~:text=CRAN%20is%20a%20network%20of,you%20to%20minimize%20network%20load.) aka *Comprehensive R Archive Network* is where R stores many useful packages that we may use. If you forgot to set this up or wish to change yours you can go to `Tools` -> `Global Options` -> `Packages`, you will have a screen that looks like this:
+
+```{r settingCRAN, echo=FALSE, out.width = '50%'}
+knitr::include_graphics("images/cran.png")
+```
+
+You can change CRAN by clicking the `change...` button. Additionally, make sure that the section circled in red in the image above is not selected
+
+Next, copy and paste the following command into the console window (look for a blinking cursor on the bottom left),
 then press the <kbd>Enter</kbd> (Windows and Linux) or <kbd>Return</kbd> (MacOS) 
 to execute the command.
-
 
 ```{r install, eval = FALSE}
 list.of.packages <- c("tidyverse", "sf", "terra", "rgdal", "sp", "raster", "scico", "RColorBrewer", "viridis", "viridisLite", "ggplot2", "tidyr", "dplyr", "readxl")
@@ -158,7 +165,7 @@ Alternatively, you can install the packages using RStudio's graphical user
 interface by going to `Tools > Install Packages` and typing the names of the 
 packages separated by a comma.
 
-R tries to download and install the packages on your machine.
+R tries to download and install the packages on your machine. Tidyverse is a group of packages so it can take some time to load. 
 When the installation has finished, you can try to load the
 packages by pasting the following code into the console:
 
@@ -171,6 +178,20 @@ library(rgdal)
 
 If you do not see an error like `there is no package called ‘...’` you are good 
 to go! 
+
+Also note that when you load a package like tidyverse in for the first time you may see such test in your console:
+
+```{r tidyverseload, echo=FALSE, out.width = '50%'}
+knitr::include_graphics("images/load_tidyverse.png")
+```
+
+This text is simply telling you what packages have loaded under tidyverse and also telling you that there were function in base R that had the same names as those in tidyverse and they have been 'over-written' by the tidyverse ones. Additionally some of you may see some warning signs:
+
+```{r warnings, echo=FALSE, out.width = '50%'}
+knitr::include_graphics("images/warnings.png")
+```
+
+`Warnings` are normally ok to ignore. Usually when you see a warning in R, it will still process the command you've entered, and just wants to draw your attention that later on you may have issues because of the text in the warning. Please ignore any warnings you may see.
 
 <br>
 
@@ -193,4 +214,5 @@ computer. However, the details are outside of the scope of this lesson.
 
 ### Download the data
 
-All data for this workshop will be found on your USB sticks
+All data for this workshop will be available on a USB stick provided in attendance.
+The data can also be found in advance of the training in a [GoogleDrive](https://drive.google.com/drive/folders/16KTr5tKvE73GibDDWxWa1RuOAJRF7ZPS?usp=sharing) folder. 
