@@ -1,0 +1,2576 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Version control with Git</title>
+
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Before we get Started</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="01_unix_tutorial2.html">Introduction to Unix Shell</a>
+</li>
+<li>
+  <a href="02_datahandling.html">Data handling and Visualisation in R</a>
+</li>
+<li>
+  <a href="03_QGIS.html">Spatial Data in QGIS</a>
+</li>
+<li>
+  <a href="04_spatial_in_R.html">Spatial Data in R</a>
+</li>
+<li>
+  <a href="05_Intro_to_INLA.html">Introduction to R-INLA</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Version control with Git</h1>
+
+</div>
+
+
+<div id="automated-version-control" class="section level1">
+<h1>Automated Version Control</h1>
+<div class="objectives">
+<ul>
+<li>Understand the benefits of an automated version control system.</li>
+<li>Understand the basics of how automated version control systems
+work.</li>
+</ul>
+</div>
+<div class="questions">
+<ul>
+<li>What is version control and why should I use it?</li>
+</ul>
+</div>
+<p>We’ll start by exploring how version control can be used to keep
+track of what one person did and when. Even if you aren’t collaborating
+with other people, automated version control is much better than this
+situation:</p>
+<div class="figure">
+<img src="fig/phd101212s.png"
+alt="Comic: a PhD student sends &quot;FINAL.doc&quot; to their supervisor, but after several increasingly intense and frustrating rounds of comments and revisions they end up with a file named &quot;FINAL_rev.22.comments49.corrections.10.#@$%WHYDIDCOMETOGRADSCHOOL????.doc&quot;" />
+<p class="caption">“notFinal.doc” by Jorge Cham, <a
+href="https://www.phdcomics.com"
+class="uri">https://www.phdcomics.com</a></p>
+</div>
+<p>We’ve all been in this situation before: it seems unnecessary to have
+multiple nearly-identical versions of the same document. Some word
+processors let us deal with this a little better, such as Microsoft
+Word’s <a
+href="https://support.office.com/en-us/article/Track-changes-in-Word-197ba630-0f5f-4a8e-9a77-3712475e806a">Track
+Changes</a>, Google Docs’ <a
+href="https://support.google.com/docs/answer/190843?hl=en">version
+history</a>, or LibreOffice’s <a
+href="https://help.libreoffice.org/Common/Recording_and_Displaying_Changes">Recording
+and Displaying Changes</a>.</p>
+<p>Version control systems start with a base version of the document and
+then record changes you make each step of the way. You can think of it
+as a recording of your progress: you can rewind to start at the base
+document and play back each change you made, eventually arriving at your
+more recent version.</p>
+<p><img src="fig/play-changes.svg"
+alt="Changes Are Saved Sequentially" /></p>
+<p>Once you think of changes as separate from the document itself, you
+can then think about “playing back” different sets of changes on the
+base document, ultimately resulting in different versions of that
+document. For example, two users can make independent sets of changes on
+the same document.</p>
+<p><img src="fig/versions.svg"
+alt="Different Versions Can be Saved" /></p>
+<p>Unless multiple users make changes to the same section of the
+document - a conflict - you can incorporate two sets of changes into the
+same base document.</p>
+<p><img src="fig/merge.svg" alt="Multiple Versions Can be Merged" /></p>
+<p>A version control system is a tool that keeps track of these changes
+for us, effectively creating different versions of our files. It allows
+us to decide which changes will be made to the next version (each record
+of these changes is called a <a
+href="../learners/reference.md#commit">commit</a>), and keeps useful
+metadata about them. The complete history of commits for a particular
+project and their metadata make up a <a
+href="../learners/reference.md#repository">repository</a>. Repositories
+can be kept in sync across different computers, facilitating
+collaboration among different people.</p>
+<div id="the-long-history-of-version-control-systems"
+class="section level2 callout">
+<h2>The Long History of Version Control Systems</h2>
+<p>Automated version control systems are nothing new. Tools like <a
+href="https://en.wikipedia.org/wiki/Revision_Control_System">RCS</a>, <a
+href="https://en.wikipedia.org/wiki/Concurrent_Versions_System">CVS</a>,
+or <a
+href="https://en.wikipedia.org/wiki/Apache_Subversion">Subversion</a>
+have been around since the early 1980s and are used by many large
+companies. However, many of these are now considered legacy systems
+(i.e., outdated) due to various limitations in their capabilities. More
+modern systems, such as Git and <a
+href="https://swcarpentry.github.io/hg-novice/">Mercurial</a>, are
+<em>distributed</em>, meaning that they do not need a centralized server
+to host the repository. These modern systems also include powerful
+merging tools that make it possible for multiple authors to work on the
+same files concurrently.</p>
+</div>
+<div class="challenge">
+<div id="paper-writing" class="section level2">
+<h2>Paper Writing</h2>
+<ul>
+<li><p>Imagine you drafted an excellent paragraph for a paper you are
+writing, but later ruin it. How would you retrieve the
+<em>excellent</em> version of your conclusion? Is it even
+possible?</p></li>
+<li><p>Imagine you have 5 co-authors. How would you manage the changes
+and comments they make to your paper? If you use LibreOffice Writer or
+Microsoft Word, what happens if you accept changes made using the
+<code>Track Changes</code> option? Do you have a history of those
+changes?</p></li>
+</ul>
+</div>
+<div id="solution" class="section level2 solution">
+<h2>Solution</h2>
+<ul>
+<li><p>Recovering the excellent version is only possible if you created
+a copy of the old version of the paper. The danger of losing good
+versions often leads to the problematic workflow illustrated in the PhD
+Comics cartoon at the top of this page.</p></li>
+<li><p>Collaborative writing with traditional word processors is
+cumbersome. Either every collaborator has to work on a document
+sequentially (slowing down the process of writing), or you have to send
+out a version to all collaborators and manually merge their comments
+into your document. The ‘track changes’ or ‘record changes’ option can
+highlight changes for you and simplifies merging, but as soon as you
+accept changes you will lose their history. You will then no longer know
+who suggested that change, why it was suggested, or when it was merged
+into the rest of the document. Even online word processors like Google
+Docs or Microsoft Office Online do not fully resolve these
+problems.</p></li>
+</ul>
+</div>
+</div>
+<div class="keypoints">
+<ul>
+<li>Version control is like an unlimited ‘undo’.</li>
+<li>Version control also allows many people to work in parallel.</li>
+</ul>
+</div>
+</div>
+<div id="setting-up-git" class="section level1">
+<h1>Setting Up Git</h1>
+<div class="objectives">
+<ul>
+<li>Configure <code>git</code> the first time it is used on a
+computer.</li>
+<li>Understand the meaning of the <code>--global</code> configuration
+flag.</li>
+</ul>
+</div>
+<div class="questions">
+<ul>
+<li>How do I get set up to use Git?</li>
+</ul>
+</div>
+<p>When we use Git on a new computer for the first time, we need to
+configure a few things. Below are a few examples of configurations we
+will set as we get started with Git:</p>
+<ul>
+<li>our name and email address,</li>
+<li>what our preferred text editor is,</li>
+<li>and that we want to use these settings globally (i.e. for every
+project).</li>
+</ul>
+<p>On a command line, Git commands are written as
+<code>git verb options</code>, where <code>verb</code> is what we
+actually want to do and <code>options</code> is additional optional
+information which may be needed for the <code>verb</code>. So here is
+how Dracula sets up his new laptop:</p>
+<pre class="bash"><code>$ git config --global user.name &quot;Vlad Dracula&quot;
+$ git config --global user.email &quot;vlad@tran.sylvan.ia&quot;</code></pre>
+<p>Please use your own name and email address instead of Dracula’s. This
+user name and email will be associated with your subsequent Git
+activity, which means that any changes pushed to <a
+href="https://github.com/">GitHub</a>, <a
+href="https://bitbucket.org/">BitBucket</a>, <a
+href="https://gitlab.com/">GitLab</a> or another Git host server after
+this lesson will include this information.</p>
+<p>For this lesson, we will be interacting with <a
+href="https://github.com/">GitHub</a> and so the email address used
+should be the same as the one used when setting up your GitHub account.
+If you are concerned about privacy, please review <a
+href="https://help.github.com/articles/keeping-your-email-address-private/">GitHub’s
+instructions for keeping your email address private</a>.</p>
+<div id="keeping-your-email-private" class="section level2 callout">
+<h2>Keeping your email private</h2>
+<p>If you elect to use a private email address with GitHub, then use
+that same email address for the <code>user.email</code> value,
+e.g. <code>username@users.noreply.github.com</code> replacing
+<code>username</code> with your GitHub one.</p>
+</div>
+<div id="line-endings" class="section level2 callout">
+<h2>Line Endings</h2>
+<p>As with other keys, when you hit <kbd>Enter</kbd> or <kbd>âµ</kbd> or
+on Macs, <kbd>Return</kbd> on your keyboard, your computer encodes this
+input as a character. Different operating systems use different
+character(s) to represent the end of a line. (You may also hear these
+referred to as newlines or line breaks.) Because Git uses these
+characters to compare files, it may cause unexpected issues when editing
+a file on different machines. Though it is beyond the scope of this
+lesson, you can read more about this issue <a
+href="https://www.git-scm.com/book/en/v2/Customizing-Git-Git-Configuration#_core_autocrlf">in
+the Pro Git book</a>.</p>
+<p>You can change the way Git recognizes and encodes line endings using
+the <code>core.autocrlf</code> command to <code>git config</code>. The
+following settings are recommended:</p>
+<p>On macOS and Linux:</p>
+<pre class="bash"><code>$ git config --global core.autocrlf input</code></pre>
+<p>And on Windows:</p>
+<pre class="bash"><code>$ git config --global core.autocrlf true</code></pre>
+</div>
+<p>Dracula also has to set his favorite text editor, following this
+table:</p>
+<table>
+<colgroup>
+<col width="27%" />
+<col width="72%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Editor</th>
+<th align="left">Configuration command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Atom</td>
+<td
+align="left"><code>$ git config --global core.editor "atom --wait"</code></td>
+</tr>
+<tr class="even">
+<td align="left">nano</td>
+<td
+align="left"><code>$ git config --global core.editor "nano -w"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">BBEdit (Mac, with command line tools)</td>
+<td
+align="left"><code>$ git config --global core.editor "bbedit -w"</code></td>
+</tr>
+<tr class="even">
+<td align="left">Sublime Text (Mac)</td>
+<td
+align="left"><code>$ git config --global core.editor "/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl -n -w"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Sublime Text (Win, 32-bit install)</td>
+<td
+align="left"><code>$ git config --global core.editor "'c:/program files (x86)/sublime text 3/sublime_text.exe' -w"</code></td>
+</tr>
+<tr class="even">
+<td align="left">Sublime Text (Win, 64-bit install)</td>
+<td
+align="left"><code>$ git config --global core.editor "'c:/program files/sublime text 3/sublime_text.exe' -w"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Notepad (Win)</td>
+<td
+align="left"><code>$ git config --global core.editor "c:/Windows/System32/notepad.exe"</code></td>
+</tr>
+<tr class="even">
+<td align="left">Notepad++ (Win, 32-bit install)</td>
+<td
+align="left"><code>$ git config --global core.editor "'c:/program files (x86)/Notepad++/notepad++.exe' -multiInst -notabbar -nosession -noPlugin"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Notepad++ (Win, 64-bit install)</td>
+<td
+align="left"><code>$ git config --global core.editor "'c:/program files/Notepad++/notepad++.exe' -multiInst -notabbar -nosession -noPlugin"</code></td>
+</tr>
+<tr class="even">
+<td align="left">Kate (Linux)</td>
+<td
+align="left"><code>$ git config --global core.editor "kate"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Gedit (Linux)</td>
+<td
+align="left"><code>$ git config --global core.editor "gedit --wait --new-window"</code></td>
+</tr>
+<tr class="even">
+<td align="left">Scratch (Linux)</td>
+<td
+align="left"><code>$ git config --global core.editor "scratch-text-editor"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Emacs</td>
+<td
+align="left"><code>$ git config --global core.editor "emacs"</code></td>
+</tr>
+<tr class="even">
+<td align="left">Vim</td>
+<td
+align="left"><code>$ git config --global core.editor "vim"</code></td>
+</tr>
+<tr class="odd">
+<td align="left">VS Code</td>
+<td
+align="left"><code>$ git config --global core.editor "code --wait"</code></td>
+</tr>
+</tbody>
+</table>
+<p>It is possible to reconfigure the text editor for Git whenever you
+want to change it.</p>
+<div id="exiting-vim" class="section level2 callout">
+<h2>Exiting Vim</h2>
+<p>Note that Vim is the default editor for many programs. If you haven’t
+used Vim before and wish to exit a session without saving your changes,
+press <kbd>Esc</kbd> then type <code>:q!</code> and hit <kbd>Enter</kbd>
+or <kbd>âµ</kbd> or on Macs, <kbd>Return</kbd>. If you want to save your
+changes and quit, press <kbd>Esc</kbd> then type <code>:wq</code> and
+hit <kbd>Enter</kbd> or <kbd>âµ</kbd> or on Macs, <kbd>Return</kbd>.</p>
+</div>
+<p>Git (2.28+) allows configuration of the name of the branch created
+when you initialize any new repository. Dracula decides to use that
+feature to set it to <code>main</code> so it matches the cloud service
+he will eventually use.</p>
+<pre class="bash"><code>$ git config --global init.defaultBranch main</code></pre>
+<div id="default-git-branch-naming" class="section level2 callout">
+<h2>Default Git branch naming</h2>
+<p>Source file changes are associated with a “branch.” For new learners
+in this lesson, it’s enough to know that branches exist, and this lesson
+uses one branch.<br />
+By default, Git will create a branch called <code>master</code> when you
+create a new repository with <code>git init</code> (as explained in the
+next Episode). This term evokes the racist practice of human slavery and
+the <a href="https://github.com/github/renaming">software development
+community</a> has moved to adopt more inclusive language.</p>
+<p>In 2020, most Git code hosting services transitioned to using
+<code>main</code> as the default branch. As an example, any new
+repository that is opened in GitHub and GitLab default to
+<code>main</code>. However, Git has not yet made the same change. As a
+result, local repositories must be manually configured have the same
+main branch name as most cloud services.</p>
+<p>For versions of Git prior to 2.28, the change can be made on an
+individual repository level. The command for this is in the next
+episode. Note that if this value is unset in your local Git
+configuration, the <code>init.defaultBranch</code> value defaults to
+<code>master</code>.</p>
+</div>
+<p>The five commands we just ran above only need to be run once: the
+flag <code>--global</code> tells Git to use the settings for every
+project, in your user account, on this computer.</p>
+<p>Let’s review those settings and test our <code>core.editor</code>
+right away:</p>
+<pre class="bash"><code>$ git config --global --edit</code></pre>
+<p>Let’s close the file without making any additional changes. Remember,
+since typos in the config file will cause issues, it’s safer to view the
+configuration with:</p>
+<pre class="bash"><code>$ git config --list</code></pre>
+<p>And if necessary, change your configuration using the same commands
+to choose another editor or update your email address. This can be done
+as many times as you want.</p>
+<div id="proxy" class="section level2 callout">
+<h2>Proxy</h2>
+<p>In some networks you need to use a <a
+href="https://en.wikipedia.org/wiki/Proxy_server">proxy</a>. If this is
+the case, you may also need to tell Git about the proxy:</p>
+<pre class="bash"><code>$ git config --global http.proxy proxy-url
+$ git config --global https.proxy proxy-url</code></pre>
+<p>To disable the proxy, use</p>
+<pre class="bash"><code>$ git config --global --unset http.proxy
+$ git config --global --unset https.proxy</code></pre>
+</div>
+<div id="git-help-and-manual" class="section level2 callout">
+<h2>Git Help and Manual</h2>
+<p>Always remember that if you forget the subcommands or options of a
+<code>git</code> command, you can access the relevant list of options
+typing <code>git &lt;command&gt; -h</code> or access the corresponding
+Git manual by typing <code>git &lt;command&gt; --help</code>, e.g.:</p>
+<pre class="bash"><code>$ git config -h
+$ git config --help</code></pre>
+<p>While viewing the manual, remember the <code>:</code> is a prompt
+waiting for commands and you can press <kbd>Q</kbd> to exit the
+manual.</p>
+<p>More generally, you can get the list of available <code>git</code>
+commands and further resources of the Git manual typing:</p>
+<pre class="bash"><code>$ git help</code></pre>
+</div>
+<div class="keypoints">
+<ul>
+<li>Use <code>git config</code> with the <code>--global</code> option to
+configure a user name, email address, editor, and other preferences once
+per machine.</li>
+</ul>
+</div>
+</div>
+<div id="creating-a-repository" class="section level1">
+<h1>Creating a Repository</h1>
+<div class="objectives">
+<ul>
+<li>Create a local Git repository.</li>
+<li>Describe the purpose of the <code>.git</code> directory.</li>
+</ul>
+</div>
+<div class="questions">
+<ul>
+<li>Where does Git store information?</li>
+</ul>
+</div>
+<p>Once Git is configured, we can start using it.</p>
+<p>We will continue with the story of Wolfman and Dracula who are
+investigating if it is possible to send a planetary lander to Mars.</p>
+<p><img src="fig/motivatingexample.png" alt="motivatingexample" /> <a
+href="https://www.deviantart.com/b-maze/art/Werewolf-vs-Dracula-124893530">Werewolf
+vs dracula</a> by <a href="https://www.deviantart.com/b-maze">b-maze</a>
+/ <a href="https://www.deviantart.com/">Deviant Art</a>. <a
+href="https://en.wikipedia.org/wiki/File:OSIRIS_Mars_true_color.jpg">Mars</a>
+by European Space Agency / <a
+href="https://creativecommons.org/licenses/by/3.0/deed.en">CC-BY-SA 3.0
+IGO</a>. <a
+href="https://commons.wikimedia.org/wiki/File:PIA19873-Pluto-NewHorizons-FlyingPastImage-20150714-transparent.png">Pluto</a>
+/ Courtesy NASA/JPL-Caltech. <a
+href="https://commons.wikimedia.org/wiki/File:Mummy_icon_-_Noun_Project_4070.svg">Mummy</a>
+Â© Gilad Fried / <a href="https://thenounproject.com/">The Noun
+Project</a> / <a
+href="https://creativecommons.org/licenses/by/3.0/deed.en">CC BY
+3.0</a>. <a
+href="https://commons.wikimedia.org/wiki/File:Lune_ico.png">Moon</a> Â©
+Luc Viatour / <a href="https://lucnix.be/">https://lucnix.be</a> / <a
+href="https://creativecommons.org/licenses/by-sa/3.0/deed.en">CC BY-SA
+3.0</a>.</p>
+<p>First, let’s create a new directory in the <code>Desktop</code>
+folder for our work and then change the current working directory to the
+newly created one:</p>
+<pre class="bash"><code>$ cd ~/Desktop
+$ mkdir planets
+$ cd planets</code></pre>
+<p>Then we tell Git to make <code>planets</code> a <a
+href="../learners/reference.md#repository">repository</a> -- a place
+where Git can store versions of our files:</p>
+<pre class="bash"><code>$ git init</code></pre>
+<p>It is important to note that <code>git init</code> will create a
+repository that can include subdirectories and their files—there is no
+need to create separate repositories nested within the
+<code>planets</code> repository, whether subdirectories are present from
+the beginning or added later. Also, note that the creation of the
+<code>planets</code> directory and its initialization as a repository
+are completely separate processes.</p>
+<p>If we use <code>ls</code> to show the directory’s contents, it
+appears that nothing has changed:</p>
+<pre class="bash"><code>$ ls</code></pre>
+<p>But if we add the <code>-a</code> flag to show everything, we can see
+that Git has created a hidden directory within <code>planets</code>
+called <code>.git</code>:</p>
+<pre class="bash"><code>$ ls -a</code></pre>
+<pre class="output"><code>.   ..  .git</code></pre>
+<p>Git uses this special subdirectory to store all the information about
+the project, including the tracked files and sub-directories located
+within the project’s directory. If we ever delete the <code>.git</code>
+subdirectory, we will lose the project’s history.</p>
+<p>Next, we will change the default branch to be called
+<code>main</code>. This might be the default branch depending on your
+settings and version of git. See the <a
+href="02-setup.md#default-git-branch-naming">setup episode</a> for more
+information on this change.</p>
+<pre class="bash"><code>$ git checkout -b main</code></pre>
+<pre class="output"><code>Switched to a new branch &#39;main&#39;</code></pre>
+<p>We can check that everything is set up correctly by asking Git to
+tell us the status of our project:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use &quot;git add&quot; to track)</code></pre>
+<p>If you are using a different version of <code>git</code>, the exact
+wording of the output might be slightly different.</p>
+<div class="challenge">
+<div id="places-to-create-git-repositories" class="section level2">
+<h2>Places to Create Git Repositories</h2>
+<p>Along with tracking information about planets (the project we have
+already created), Dracula would also like to track information about
+moons. Despite Wolfman’s concerns, Dracula creates a <code>moons</code>
+project inside his <code>planets</code> project with the following
+sequence of commands:</p>
+<pre class="bash"><code>$ cd ~/Desktop   # return to Desktop directory
+$ cd planets     # go into planets directory, which is already a Git repository
+$ ls -a          # ensure the .git subdirectory is still present in the planets directory
+$ mkdir moons    # make a subdirectory planets/moons
+$ cd moons       # go into moons subdirectory
+$ git init       # make the moons subdirectory a Git repository
+$ ls -a          # ensure the .git subdirectory is present indicating we have created a new Git repository</code></pre>
+<p>Is the <code>git init</code> command, run inside the
+<code>moons</code> subdirectory, required for tracking files stored in
+the <code>moons</code> subdirectory?</p>
+</div>
+<div id="solution-1" class="section level2 solution">
+<h2>Solution</h2>
+<p>No. Dracula does not need to make the <code>moons</code> subdirectory
+a Git repository because the <code>planets</code> repository can track
+any files, sub-directories, and subdirectory files under the
+<code>planets</code> directory. Thus, in order to track all information
+about moons, Dracula only needed to add the <code>moons</code>
+subdirectory to the <code>planets</code> directory.</p>
+<p>Additionally, Git repositories can interfere with each other if they
+are “nested”: the outer repository will try to version-control the inner
+repository. Therefore, it’s best to create each new Git repository in a
+separate directory. To be sure that there is no conflicting repository
+in the directory, check the output of <code>git status</code>. If it
+looks like the following, you are good to go to create a new repository
+as shown above:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>fatal: Not a git repository (or any of the parent directories): .git</code></pre>
+</div>
+<div id="correcting-git-init-mistakes" class="section level2">
+<h2>Correcting <code>git init</code> Mistakes</h2>
+<p>Wolfman explains to Dracula how a nested repository is redundant and
+may cause confusion down the road. Dracula would like to remove the
+nested repository. How can Dracula undo his last <code>git init</code>
+in the <code>moons</code> subdirectory?</p>
+</div>
+<div id="solution-use-with-caution" class="section level2 solution">
+<h2>Solution – USE WITH CAUTION!</h2>
+<div id="background" class="section level3">
+<h3>Background</h3>
+<p>Removing files from a Git repository needs to be done with caution.
+But we have not learned yet how to tell Git to track a particular file;
+we will learn this in the next episode. Files that are not tracked by
+Git can easily be removed like any other “ordinary” files with</p>
+<pre class="bash"><code>$ rm filename</code></pre>
+<p>Similarly a directory can be removed using <code>rm -r dirname</code>
+or <code>rm -rf dirname</code>. If the files or folder being removed in
+this fashion are tracked by Git, then their removal becomes another
+change that we will need to track, as we will see in the next
+episode.</p>
+</div>
+<div id="solution-2" class="section level3">
+<h3>Solution</h3>
+<p>Git keeps all of its files in the <code>.git</code> directory. To
+recover from this little mistake, Dracula can just remove the
+<code>.git</code> folder in the moons subdirectory by running the
+following command from inside the <code>planets</code> directory:</p>
+<pre class="bash"><code>$ rm -rf moons/.git</code></pre>
+<p>But be careful! Running this command in the wrong directory will
+remove the entire Git history of a project you might want to keep.
+Therefore, always check your current directory using the command
+<code>pwd</code>.</p>
+</div>
+</div>
+</div>
+<div class="keypoints">
+<ul>
+<li><code>git init</code> initializes a repository.</li>
+<li>Git stores all of its repository data in the <code>.git</code>
+directory.</li>
+</ul>
+</div>
+</div>
+<div id="tracking-changes" class="section level1">
+<h1>Tracking Changes</h1>
+<div class="objectives">
+<ul>
+<li>Go through the modify-add-commit cycle for one or more files.</li>
+<li>Explain where information is stored at each stage of that
+cycle.</li>
+<li>Distinguish between descriptive and non-descriptive commit
+messages.</li>
+</ul>
+</div>
+<div class="questions">
+<ul>
+<li>How do I record changes in Git?</li>
+<li>How do I check the status of my version control repository?</li>
+<li>How do I record notes about what changes I made and why?</li>
+</ul>
+</div>
+<p>First let’s make sure we’re still in the right directory. You should
+be in the <code>planets</code> directory.</p>
+<pre class="bash"><code>$ cd ~/Desktop/planets</code></pre>
+<p>Let’s create a file called <code>mars.txt</code> that contains some
+notes about the Red Planet’s suitability as a base. We’ll use
+<code>nano</code> to edit the file; you can use whatever editor you
+like. In particular, this does not have to be the
+<code>core.editor</code> you set globally earlier. But remember, the
+bash command to create or edit a new file will depend on the editor you
+choose (it might not be <code>nano</code>). For a refresher on text
+editors, check out <a
+href="https://swcarpentry.github.io/shell-novice/03-create.html#which-editor">“Which
+Editor?”</a> in <a
+href="https://swcarpentry.github.io/shell-novice/">The Unix Shell</a>
+lesson.</p>
+<pre class="bash"><code>$ nano mars.txt</code></pre>
+<p>Type the text below into the <code>mars.txt</code> file:</p>
+<pre class="output"><code>Cold and dry, but everything is my favorite color</code></pre>
+<p>Let’s first verify that the file was properly created by running the
+list command (<code>ls</code>):</p>
+<pre class="bash"><code>$ ls</code></pre>
+<pre class="output"><code>mars.txt</code></pre>
+<p><code>mars.txt</code> contains a single line, which we can see by
+running:</p>
+<pre class="bash"><code>$ cat mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color</code></pre>
+<p>If we check the status of our project again, Git tells us that it’s
+noticed the new file:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+
+No commits yet
+
+Untracked files:
+   (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+    mars.txt
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)</code></pre>
+<p>The “untracked files” message means that there’s a file in the
+directory that Git isn’t keeping track of. We can tell Git to track a
+file using <code>git add</code>:</p>
+<pre class="bash"><code>$ git add mars.txt</code></pre>
+<p>and then check that the right thing happened:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)
+
+    new file:   mars.txt
+</code></pre>
+<p>Git now knows that it’s supposed to keep track of
+<code>mars.txt</code>, but it hasn’t recorded these changes as a commit
+yet. To get it to do that, we need to run one more command:</p>
+<pre class="bash"><code>$ git commit -m &quot;Start notes on Mars as a base&quot;</code></pre>
+<pre class="output"><code>[main (root-commit) f22b25e] Start notes on Mars as a base
+ 1 file changed, 1 insertion(+)
+ create mode 100644 mars.txt</code></pre>
+<p>When we run <code>git commit</code>, Git takes everything we have
+told it to save by using <code>git add</code> and stores a copy
+permanently inside the special <code>.git</code> directory. This
+permanent copy is called a <a
+href="../learners/reference.md#commit">commit</a> (or <a
+href="../learners/reference.md#revision">revision</a>) and its short
+identifier is <code>f22b25e</code>. Your commit may have another
+identifier.</p>
+<p>We use the <code>-m</code> flag (for “message”) to record a short,
+descriptive, and specific comment that will help us remember later on
+what we did and why. If we just run <code>git commit</code> without the
+<code>-m</code> option, Git will launch <code>nano</code> (or whatever
+other editor we configured as <code>core.editor</code>) so that we can
+write a longer message.</p>
+<p><a href="https://chris.beams.io/posts/git-commit/">Good commit
+messages</a> start with a brief (&lt;50 characters) statement about the
+changes made in the commit. Generally, the message should complete the
+sentence “If applied, this commit will” <commit message here>. If you
+want to go into more detail, add a blank line between the summary line
+and your additional notes. Use this additional space to explain why you
+made changes and/or what their impact will be.</p>
+<p>If we run <code>git status</code> now:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+nothing to commit, working tree clean</code></pre>
+<p>it tells us everything is up to date. If we want to know what we’ve
+done recently, we can ask Git to show us the project’s history using
+<code>git log</code>:</p>
+<pre class="bash"><code>$ git log</code></pre>
+<pre class="output"><code>commit f22b25e3233b4645dabd0d81e651fe074bd8e73b
+Author: Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+Date:   Thu Aug 22 09:51:46 2013 -0400
+
+    Start notes on Mars as a base</code></pre>
+<p><code>git log</code> lists all commits made to a repository in
+reverse chronological order. The listing for each commit includes the
+commit’s full identifier (which starts with the same characters as the
+short identifier printed by the <code>git commit</code> command
+earlier), the commit’s author, when it was created, and the log message
+Git was given when the commit was created.</p>
+<div id="where-are-my-changes" class="section level2 callout">
+<h2>Where Are My Changes?</h2>
+<p>If we run <code>ls</code> at this point, we will still see just one
+file called <code>mars.txt</code>. That’s because Git saves information
+about files’ history in the special <code>.git</code> directory
+mentioned earlier so that our filesystem doesn’t become cluttered (and
+so that we can’t accidentally edit or delete an old version).</p>
+</div>
+<p>Now suppose Dracula adds more information to the file. (Again, we’ll
+edit with <code>nano</code> and then <code>cat</code> the file to show
+its contents; you may use a different editor, and don’t need to
+<code>cat</code>.)</p>
+<pre class="bash"><code>$ nano mars.txt
+$ cat mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman</code></pre>
+<p>When we run <code>git status</code> now, it tells us that a file it
+already knows about has been modified:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+
+    modified:   mars.txt
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</code></pre>
+<p>The last line is the key phrase: “no changes added to commit”. We
+have changed this file, but we haven’t told Git we will want to save
+those changes (which we do with <code>git add</code>) nor have we saved
+them (which we do with <code>git commit</code>). So let’s do that now.
+It is good practice to always review our changes before saving them. We
+do this using <code>git diff</code>. This shows us the differences
+between the current state of the file and the most recently saved
+version:</p>
+<pre class="bash"><code>$ git diff</code></pre>
+<pre class="output"><code>diff --git a/mars.txt b/mars.txt
+index df0654a..315bf3a 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1 +1,2 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman</code></pre>
+<p>The output is cryptic because it is actually a series of commands for
+tools like editors and <code>patch</code> telling them how to
+reconstruct one file given the other. If we break it down into
+pieces:</p>
+<ol style="list-style-type: decimal">
+<li>The first line tells us that Git is producing output similar to the
+Unix <code>diff</code> command comparing the old and new versions of the
+file.</li>
+<li>The second line tells exactly which versions of the file Git is
+comparing; <code>df0654a</code> and <code>315bf3a</code> are unique
+computer-generated labels for those versions.</li>
+<li>The third and fourth lines once again show the name of the file
+being changed.</li>
+<li>The remaining lines are the most interesting, they show us the
+actual differences and the lines on which they occur. In particular, the
+<code>+</code> marker in the first column shows where we added a
+line.</li>
+</ol>
+<p>After reviewing our change, it’s time to commit it:</p>
+<pre class="bash"><code>$ git commit -m &quot;Add concerns about effects of Mars&#39; moons on Wolfman&quot;</code></pre>
+<pre class="output"><code>On branch main
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+
+    modified:   mars.txt
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</code></pre>
+<p>Whoops: Git won’t commit because we didn’t use <code>git add</code>
+first. Let’s fix that:</p>
+<pre class="bash"><code>$ git add mars.txt
+$ git commit -m &quot;Add concerns about effects of Mars&#39; moons on Wolfman&quot;</code></pre>
+<pre class="output"><code>[main 34961b1] Add concerns about effects of Mars&#39; moons on Wolfman
+ 1 file changed, 1 insertion(+)</code></pre>
+<p>Git insists that we add files to the set we want to commit before
+actually committing anything. This allows us to commit our changes in
+stages and capture changes in logical portions rather than only large
+batches. For example, suppose we’re adding a few citations to relevant
+research to our thesis. We might want to commit those additions, and the
+corresponding bibliography entries, but <em>not</em> commit some of our
+work drafting the conclusion (which we haven’t finished yet).</p>
+<p>To allow for this, Git has a special <em>staging area</em> where it
+keeps track of things that have been added to the current <a
+href="../learners/reference.md#changeset">changeset</a> but not yet
+committed.</p>
+<div id="staging-area" class="section level2 callout">
+<h2>Staging Area</h2>
+<p>If you think of Git as taking snapshots of changes over the life of a
+project, <code>git add</code> specifies <em>what</em> will go in a
+snapshot (putting things in the staging area), and
+<code>git commit</code> then <em>actually takes</em> the snapshot, and
+makes a permanent record of it (as a commit). If you don’t have anything
+staged when you type <code>git commit</code>, Git will prompt you to use
+<code>git commit -a</code> or <code>git commit --all</code>, which is
+kind of like gathering <em>everyone</em> to take a group photo! However,
+it’s almost always better to explicitly add things to the staging area,
+because you might commit changes you forgot you made. (Going back to the
+group photo simile, you might get an extra with incomplete makeup
+walking on the stage for the picture because you used <code>-a</code>!)
+Try to stage things manually, or you might find yourself searching for
+“git undo commit” more than you would like!</p>
+</div>
+<p><img src="fig/git-staging-area.svg" alt="The Git Staging Area" /></p>
+<p>Let’s watch as our changes to a file move from our editor to the
+staging area and into long-term storage. First, we’ll add another line
+to the file:</p>
+<pre class="bash"><code>$ nano mars.txt
+$ cat mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity</code></pre>
+<pre class="bash"><code>$ git diff</code></pre>
+<pre class="output"><code>diff --git a/mars.txt b/mars.txt
+index 315bf3a..b36abfd 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1,2 +1,3 @@
+ Cold and dry, but everything is my favorite color
+ The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity</code></pre>
+<p>So far, so good: we’ve added one line to the end of the file (shown
+with a <code>+</code> in the first column). Now let’s put that change in
+the staging area and see what <code>git diff</code> reports:</p>
+<pre class="bash"><code>$ git add mars.txt
+$ git diff</code></pre>
+<p>There is no output: as far as Git can tell, there’s no difference
+between what it’s been asked to save permanently and what’s currently in
+the directory. However, if we do this:</p>
+<pre class="bash"><code>$ git diff --staged</code></pre>
+<pre class="output"><code>diff --git a/mars.txt b/mars.txt
+index 315bf3a..b36abfd 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1,2 +1,3 @@
+ Cold and dry, but everything is my favorite color
+ The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity</code></pre>
+<p>it shows us the difference between the last committed change and
+what’s in the staging area. Let’s save our changes:</p>
+<pre class="bash"><code>$ git commit -m &quot;Discuss concerns about Mars&#39; climate for Mummy&quot;</code></pre>
+<pre class="output"><code>[main 005937f] Discuss concerns about Mars&#39; climate for Mummy
+ 1 file changed, 1 insertion(+)</code></pre>
+<p>check our status:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+nothing to commit, working tree clean</code></pre>
+<p>and look at the history of what we’ve done so far:</p>
+<pre class="bash"><code>$ git log</code></pre>
+<pre class="output"><code>commit 005937fbe2a98fb83f0ade869025dc2636b4dad5 (HEAD -&gt; main)
+Author: Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+Date:   Thu Aug 22 10:14:07 2013 -0400
+
+    Discuss concerns about Mars&#39; climate for Mummy
+
+commit 34961b159c27df3b475cfe4415d94a6d1fcd064d
+Author: Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+Date:   Thu Aug 22 10:07:21 2013 -0400
+
+    Add concerns about effects of Mars&#39; moons on Wolfman
+
+commit f22b25e3233b4645dabd0d81e651fe074bd8e73b
+Author: Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+Date:   Thu Aug 22 09:51:46 2013 -0400
+
+    Start notes on Mars as a base</code></pre>
+<div id="word-based-diffing" class="section level2 callout">
+<h2>Word-based diffing</h2>
+<p>Sometimes, e.g. in the case of the text documents a line-wise diff is
+too coarse. That is where the <code>--color-words</code> option of
+<code>git diff</code> comes in very useful as it highlights the changed
+words using colors.</p>
+</div>
+<div id="paging-the-log" class="section level2 callout">
+<h2>Paging the Log</h2>
+<p>When the output of <code>git log</code> is too long to fit in your
+screen, <code>git</code> uses a program to split it into pages of the
+size of your screen. When this “pager” is called, you will notice that
+the last line in your screen is a <code>:</code>, instead of your usual
+prompt.</p>
+<ul>
+<li>To get out of the pager, press <kbd>Q</kbd>.</li>
+<li>To move to the next page, press <kbd>Spacebar</kbd>.</li>
+<li>To search for <code>some_word</code> in all pages, press
+<kbd>/</kbd> and type <code>some_word</code>. Navigate through matches
+pressing <kbd>N</kbd>.</li>
+</ul>
+</div>
+<div id="limit-log-size" class="section level2 callout">
+<h2>Limit Log Size</h2>
+<p>To avoid having <code>git log</code> cover your entire terminal
+screen, you can limit the number of commits that Git lists by using
+<code>-N</code>, where <code>N</code> is the number of commits that you
+want to view. For example, if you only want information from the last
+commit you can use:</p>
+<pre class="bash"><code>$ git log -1</code></pre>
+<pre class="output"><code>commit 005937fbe2a98fb83f0ade869025dc2636b4dad5 (HEAD -&gt; main)
+Author: Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+Date:   Thu Aug 22 10:14:07 2013 -0400
+
+   Discuss concerns about Mars&#39; climate for Mummy</code></pre>
+<p>You can also reduce the quantity of information using the
+<code>--oneline</code> option:</p>
+<pre class="bash"><code>$ git log --oneline</code></pre>
+<pre class="output"><code>005937f (HEAD -&gt; main) Discuss concerns about Mars&#39; climate for Mummy
+34961b1 Add concerns about effects of Mars&#39; moons on Wolfman
+f22b25e Start notes on Mars as a base</code></pre>
+<p>You can also combine the <code>--oneline</code> option with others.
+One useful combination adds <code>--graph</code> to display the commit
+history as a text-based graph and to indicate which commits are
+associated with the current <code>HEAD</code>, the current branch
+<code>main</code>, or <a
+href="https://git-scm.com/book/en/v2/Git-Internals-Git-References">other
+Git references</a>:</p>
+<pre class="bash"><code>$ git log --oneline --graph</code></pre>
+<pre class="output"><code>* 005937f (HEAD -&gt; main) Discuss concerns about Mars&#39; climate for Mummy
+* 34961b1 Add concerns about effects of Mars&#39; moons on Wolfman
+* f22b25e Start notes on Mars as a base</code></pre>
+</div>
+<div id="directories" class="section level2 callout">
+<h2>Directories</h2>
+<p>Two important facts you should know about directories in Git.</p>
+<ol style="list-style-type: decimal">
+<li>Git does not track directories on their own, only files within them.
+Try it for yourself:</li>
+</ol>
+<pre class="bash"><code>$ mkdir spaceships
+$ git status
+$ git add spaceships
+$ git status</code></pre>
+<p>Note, our newly created empty directory <code>spaceships</code> does
+not appear in the list of untracked files even if we explicitly add it
+(<em>via</em> <code>git add</code>) to our repository. This is the
+reason why you will sometimes see <code>.gitkeep</code> files in
+otherwise empty directories. Unlike <code>.gitignore</code>, these files
+are not special and their sole purpose is to populate a directory so
+that Git adds it to the repository. In fact, you can name such files
+anything you like.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>If you create a directory in your Git repository and populate it
+with files, you can add all files in the directory at once by:</li>
+</ol>
+<pre class="bash"><code>git add &lt;directory-with-files&gt;</code></pre>
+<p>Try it for yourself:</p>
+<pre class="bash"><code>$ touch spaceships/apollo-11 spaceships/sputnik-1
+$ git status
+$ git add spaceships
+$ git status</code></pre>
+<p>Before moving on, we will commit these changes.</p>
+<pre class="bash"><code>$ git commit -m &quot;Add some initial thoughts on spaceships&quot;</code></pre>
+</div>
+<p>To recap, when we want to add changes to our repository, we first
+need to add the changed files to the staging area (<code>git add</code>)
+and then commit the staged changes to the repository
+(<code>git commit</code>):</p>
+<p><img src="fig/git-committing.svg"
+alt="The Git Commit Workflow" /></p>
+<div class="challenge">
+<div id="choosing-a-commit-message" class="section level2">
+<h2>Choosing a Commit Message</h2>
+<p>Which of the following commit messages would be most appropriate for
+the last commit made to <code>mars.txt</code>?</p>
+<ol style="list-style-type: decimal">
+<li>“Changes”</li>
+<li>“Added line ‘But the Mummy will appreciate the lack of humidity’ to
+mars.txt”</li>
+<li>“Discuss effects of Mars’ climate on the Mummy”</li>
+</ol>
+</div>
+<div id="solution-3" class="section level2 solution">
+<h2>Solution</h2>
+<p>Answer 1 is not descriptive enough, and the purpose of the commit is
+unclear; and answer 2 is redundant to using “git diff” to see what
+changed in this commit; but answer 3 is good: short, descriptive, and
+imperative.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="committing-changes-to-git" class="section level2">
+<h2>Committing Changes to Git</h2>
+<p>Which command(s) below would save the changes of
+<code>myfile.txt</code> to my local Git repository?</p>
+<ol style="list-style-type: decimal">
+<li><pre class="bash"><code>  $ git commit -m &quot;my recent changes&quot;</code></pre></li>
+<li><pre class="bash"><code>  $ git init myfile.txt
+  $ git commit -m &quot;my recent changes&quot;</code></pre></li>
+<li><pre class="bash"><code>  $ git add myfile.txt
+  $ git commit -m &quot;my recent changes&quot;</code></pre></li>
+<li><pre class="bash"><code>  $ git commit -m myfile.txt &quot;my recent changes&quot;</code></pre></li>
+</ol>
+</div>
+<div id="solution-4" class="section level2 solution">
+<h2>Solution</h2>
+<ol style="list-style-type: decimal">
+<li>Would only create a commit if files have already been staged.</li>
+<li>Would try to create a new repository.</li>
+<li>Is correct: first add the file to the staging area, then
+commit.</li>
+<li>Would try to commit a file “my recent changes” with the message
+myfile.txt.</li>
+</ol>
+</div>
+</div>
+<div class="challenge">
+<div id="committing-multiple-files" class="section level2">
+<h2>Committing Multiple Files</h2>
+<p>The staging area can hold changes from any number of files that you
+want to commit as a single snapshot.</p>
+<ol style="list-style-type: decimal">
+<li>Add some text to <code>mars.txt</code> noting your decision to
+consider Venus as a base</li>
+<li>Create a new file <code>venus.txt</code> with your initial thoughts
+about Venus as a base for you and your friends</li>
+<li>Add changes from both files to the staging area, and commit those
+changes.</li>
+</ol>
+</div>
+<div id="solution-5" class="section level2 solution">
+<h2>Solution</h2>
+<p>The output below from <code>cat mars.txt</code> reflects only content
+added during this exercise. Your output may vary.</p>
+<p>First we make our changes to the <code>mars.txt</code> and
+<code>venus.txt</code> files:</p>
+<pre class="bash"><code>$ nano mars.txt
+$ cat mars.txt</code></pre>
+<pre class="output"><code>Maybe I should start with a base on Venus.</code></pre>
+<pre class="bash"><code>$ nano venus.txt
+$ cat venus.txt</code></pre>
+<pre class="output"><code>Venus is a nice planet and I definitely should consider it as a base.</code></pre>
+<p>Now you can add both files to the staging area. We can do that in one
+line:</p>
+<pre class="bash"><code>$ git add mars.txt venus.txt</code></pre>
+<p>Or with multiple commands:</p>
+<pre class="bash"><code>$ git add mars.txt
+$ git add venus.txt</code></pre>
+<p>Now the files are ready to commit. You can check that using
+<code>git status</code>. If you are ready to commit use:</p>
+<pre class="bash"><code>$ git commit -m &quot;Write plans to start a base on Venus&quot;</code></pre>
+<pre class="output"><code>[main cc127c2]
+ Write plans to start a base on Venus
+ 2 files changed, 2 insertions(+)
+ create mode 100644 venus.txt</code></pre>
+</div>
+</div>
+<div class="challenge">
+<div id="bio-repository" class="section level2">
+<h2><code>bio</code> Repository</h2>
+<ul>
+<li>Create a new Git repository on your computer called
+<code>bio</code>.</li>
+<li>Write a three-line biography for yourself in a file called
+<code>me.txt</code>, commit your changes</li>
+<li>Modify one line, add a fourth line</li>
+<li>Display the differences between its updated state and its original
+state.</li>
+</ul>
+</div>
+<div id="solution-6" class="section level2 solution">
+<h2>Solution</h2>
+<p>If needed, move out of the <code>planets</code> folder:</p>
+<pre class="bash"><code>$ cd ..</code></pre>
+<p>Create a new folder called <code>bio</code> and ‘move’ into it:</p>
+<pre class="bash"><code>$ mkdir bio
+$ cd bio</code></pre>
+<p>Initialise git:</p>
+<pre class="bash"><code>$ git init</code></pre>
+<p>Create your biography file <code>me.txt</code> using
+<code>nano</code> or another text editor. Once in place, add and commit
+it to the repository:</p>
+<pre class="bash"><code>$ git add me.txt
+$ git commit -m &quot;Add biography file&quot; </code></pre>
+<p>Modify the file as described (modify one line, add a fourth line). To
+display the differences between its updated state and its original
+state, use <code>git diff</code>:</p>
+<pre class="bash"><code>$ git diff me.txt</code></pre>
+</div>
+</div>
+<div class="keypoints">
+<ul>
+<li><code>git status</code> shows the status of a repository.</li>
+<li>Files can be stored in a project’s working directory (which users
+see), the staging area (where the next commit is being built up) and the
+local repository (where commits are permanently recorded).</li>
+<li><code>git add</code> puts files in the staging area.</li>
+<li><code>git commit</code> saves the staged content as a new commit in
+the local repository.</li>
+<li>Write a commit message that accurately describes your changes.</li>
+</ul>
+</div>
+</div>
+<div id="exploring-history" class="section level1">
+<h1>Exploring History</h1>
+<div class="objectives">
+<ul>
+<li>Explain what the HEAD of a repository is and how to use it.</li>
+<li>Identify and use Git commit numbers.</li>
+<li>Compare various versions of tracked files.</li>
+<li>Restore old versions of files.</li>
+</ul>
+</div>
+<div class="questions">
+<ul>
+<li>How can I identify old versions of files?</li>
+<li>How do I review my changes?</li>
+<li>How can I recover old versions of files?</li>
+</ul>
+</div>
+<p>As we saw in the previous episode, we can refer to commits by their
+identifiers. You can refer to the <em>most recent commit</em> of the
+working directory by using the identifier <code>HEAD</code>.</p>
+<p>We’ve been adding one line at a time to <code>mars.txt</code>, so
+it’s easy to track our progress by looking, so let’s do that using our
+<code>HEAD</code>s. Before we start, let’s make a change to
+<code>mars.txt</code>, adding yet another line.</p>
+<pre class="bash"><code>$ nano mars.txt
+$ cat mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity
+An ill-considered change</code></pre>
+<p>Now, let’s see what we get.</p>
+<pre class="bash"><code>$ git diff HEAD mars.txt</code></pre>
+<pre class="output"><code>diff --git a/mars.txt b/mars.txt
+index b36abfd..0848c8d 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1,3 +1,4 @@
+ Cold and dry, but everything is my favorite color
+ The two moons may be a problem for Wolfman
+ But the Mummy will appreciate the lack of humidity
++An ill-considered change.</code></pre>
+<p>which is the same as what you would get if you leave out
+<code>HEAD</code> (try it). The real goodness in all this is when you
+can refer to previous commits. We do that by adding <code>~1</code>
+(where “~” is “tilde”, pronounced [<strong>til</strong>-d<em>uh</em>])
+to refer to the commit one before <code>HEAD</code>.</p>
+<pre class="bash"><code>$ git diff HEAD~1 mars.txt</code></pre>
+<p>If we want to see the differences between older commits we can use
+<code>git diff</code> again, but with the notation <code>HEAD~1</code>,
+<code>HEAD~2</code>, and so on, to refer to them:</p>
+<pre class="bash"><code>$ git diff HEAD~3 mars.txt</code></pre>
+<pre class="output"><code>diff --git a/mars.txt b/mars.txt
+index df0654a..b36abfd 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1 +1,4 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity
++An ill-considered change</code></pre>
+<p>We could also use <code>git show</code> which shows us what changes
+we made at an older commit as well as the commit message, rather than
+the <em>differences</em> between a commit and our working directory that
+we see by using <code>git diff</code>.</p>
+<pre class="bash"><code>$ git show HEAD~3 mars.txt</code></pre>
+<pre class="output"><code>commit f22b25e3233b4645dabd0d81e651fe074bd8e73b
+Author: Vlad Dracula &lt;vlad@tran.sylvan.ia&gt;
+Date:   Thu Aug 22 09:51:46 2013 -0400
+
+    Start notes on Mars as a base
+
+diff --git a/mars.txt b/mars.txt
+new file mode 100644
+index 0000000..df0654a
+--- /dev/null
++++ b/mars.txt
+@@ -0,0 +1 @@
++Cold and dry, but everything is my favorite color</code></pre>
+<p>In this way, we can build up a chain of commits. The most recent end
+of the chain is referred to as <code>HEAD</code>; we can refer to
+previous commits using the <code>~</code> notation, so
+<code>HEAD~1</code> means “the previous commit”, while
+<code>HEAD~123</code> goes back 123 commits from where we are now.</p>
+<p>We can also refer to commits using those long strings of digits and
+letters that <code>git log</code> displays. These are unique IDs for the
+changes, and “unique” really does mean unique: every change to any set
+of files on any computer has a unique 40-character identifier. Our first
+commit was given the ID
+<code>f22b25e3233b4645dabd0d81e651fe074bd8e73b</code>, so let’s try
+this:</p>
+<pre class="bash"><code>$ git diff f22b25e3233b4645dabd0d81e651fe074bd8e73b mars.txt</code></pre>
+<pre class="output"><code>diff --git a/mars.txt b/mars.txt
+index df0654a..93a3e13 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1 +1,4 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity
++An ill-considered change</code></pre>
+<p>That’s the right answer, but typing out random 40-character strings
+is annoying, so Git lets us use just the first few characters (typically
+seven for normal size projects):</p>
+<pre class="bash"><code>$ git diff f22b25e mars.txt</code></pre>
+<pre class="output"><code>diff --git a/mars.txt b/mars.txt
+index df0654a..93a3e13 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1 +1,4 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity
++An ill-considered change</code></pre>
+<p>All right! So we can save changes to files and see what we’ve
+changed. Now, how can we restore older versions of things? Let’s suppose
+we change our mind about the last update to <code>mars.txt</code> (the
+“ill-considered change”).</p>
+<p><code>git status</code> now tells us that the file has been changed,
+but those changes haven’t been staged:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+
+    modified:   mars.txt
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</code></pre>
+<p>We can put things back the way they were by using
+<code>git checkout</code>:</p>
+<pre class="bash"><code>$ git checkout HEAD mars.txt
+$ cat mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity</code></pre>
+<p>As you might guess from its name, <code>git checkout</code> checks
+out (i.e., restores) an old version of a file. In this case, we’re
+telling Git that we want to recover the version of the file recorded in
+<code>HEAD</code>, which is the last saved commit. If we want to go back
+even further, we can use a commit identifier instead:</p>
+<pre class="bash"><code>$ git checkout f22b25e mars.txt</code></pre>
+<pre class="bash"><code>$ cat mars.txt</code></pre>
+<pre class="output"><code>Cold and dry, but everything is my favorite color</code></pre>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+Changes to be committed:
+  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
+
+    modified:   mars.txt
+</code></pre>
+<p>Notice that the changes are currently in the staging area. Again, we
+can put things back the way they were by using
+<code>git checkout</code>:</p>
+<pre class="bash"><code>$ git checkout HEAD mars.txt</code></pre>
+<div id="dont-lose-your-head" class="section level2 callout">
+<h2>Don’t Lose Your HEAD</h2>
+<p>Above we used</p>
+<pre class="bash"><code>$ git checkout f22b25e mars.txt</code></pre>
+<p>to revert <code>mars.txt</code> to its state after the commit
+<code>f22b25e</code>. But be careful! The command <code>checkout</code>
+has other important functionalities and Git will misunderstand your
+intentions if you are not accurate with the typing. For example, if you
+forget <code>mars.txt</code> in the previous command.</p>
+<pre class="bash"><code>$ git checkout f22b25e</code></pre>
+<pre class="error"><code>Note: checking out &#39;f22b25e&#39;.
+
+You are in &#39;detached HEAD&#39; state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+ git checkout -b &lt;new-branch-name&gt;
+
+HEAD is now at f22b25e Start notes on Mars as a base</code></pre>
+<p>The “detached HEAD” is like “look, but don’t touch” here, so you
+shouldn’t make any changes in this state. After investigating your
+repo’s past state, reattach your <code>HEAD</code> with
+<code>git checkout main</code>.</p>
+</div>
+<p>It’s important to remember that we must use the commit number that
+identifies the state of the repository <em>before</em> the change we’re
+trying to undo. A common mistake is to use the number of the commit in
+which we made the change we’re trying to discard. In the example below,
+we want to retrieve the state from before the most recent commit
+(<code>HEAD~1</code>), which is commit <code>f22b25e</code>:</p>
+<p><img src="fig/git-checkout.svg" alt="Git Checkout" /></p>
+<p>So, to put it all together, here’s how Git works in cartoon form:</p>
+<div class="figure">
+<img src="fig/git_staging.svg" alt="" />
+<p class="caption"><a
+href="https://figshare.com/articles/How_Git_works_a_cartoon/1328266"
+class="uri">https://figshare.com/articles/How_Git_works_a_cartoon/1328266</a></p>
+</div>
+<div id="simplifying-the-common-case" class="section level2 callout">
+<h2>Simplifying the Common Case</h2>
+<p>If you read the output of <code>git status</code> carefully, you’ll
+see that it includes this hint:</p>
+<pre class="output"><code>(use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)</code></pre>
+<p>As it says, <code>git checkout</code> without a version identifier
+restores files to the state saved in <code>HEAD</code>. The double dash
+<code>--</code> is needed to separate the names of the files being
+recovered from the command itself: without it, Git would try to use the
+name of the file as the commit identifier.</p>
+</div>
+<p>The fact that files can be reverted one by one tends to change the
+way people organize their work. If everything is in one large document,
+it’s hard (but not impossible) to undo changes to the introduction
+without also undoing changes made later to the conclusion. If the
+introduction and conclusion are stored in separate files, on the other
+hand, moving backward and forward in time becomes much easier.</p>
+<div class="challenge">
+<div id="recovering-older-versions-of-a-file" class="section level2">
+<h2>Recovering Older Versions of a File</h2>
+<p>Jennifer has made changes to the Python script that she has been
+working on for weeks, and the modifications she made this morning
+“broke” the script and it no longer runs. She has spent ~ 1hr trying to
+fix it, with no luck…</p>
+<p>Luckily, she has been keeping track of her project’s versions using
+Git! Which commands below will let her recover the last committed
+version of her Python script called <code>data_cruncher.py</code>?</p>
+<ol style="list-style-type: decimal">
+<li><p><code>$ git checkout HEAD</code></p></li>
+<li><p><code>$ git checkout HEAD data_cruncher.py</code></p></li>
+<li><p><code>$ git checkout HEAD~1 data_cruncher.py</code></p></li>
+<li><p><code>$ git checkout &lt;unique ID of last commit&gt; data_cruncher.py</code></p></li>
+<li><p>Both 2 and 4</p></li>
+</ol>
+</div>
+<div id="solution-7" class="section level2 solution">
+<h2>Solution</h2>
+<p>The answer is (5)-Both 2 and 4.</p>
+<p>The <code>checkout</code> command restores files from the repository,
+overwriting the files in your working directory. Answers 2 and 4 both
+restore the <em>latest</em> version <em>in the repository</em> of the
+file <code>data_cruncher.py</code>. Answer 2 uses <code>HEAD</code> to
+indicate the <em>latest</em>, whereas answer 4 uses the unique ID of the
+last commit, which is what <code>HEAD</code> means.</p>
+<p>Answer 3 gets the version of <code>data_cruncher.py</code> from the
+commit <em>before</em> <code>HEAD</code>, which is NOT what we
+wanted.</p>
+<p>Answer 1 can be dangerous! Without a filename,
+<code>git checkout</code> will restore <strong>all files</strong> in the
+current directory (and all directories below it) to their state at the
+commit specified. This command will restore
+<code>data_cruncher.py</code> to the latest commit version, but it will
+also restore <em>any other files that are changed</em> to that version,
+erasing any changes you may have made to those files! As discussed
+above, you are left in a <em>detached</em> <code>HEAD</code> state, and
+you don’t want to be there.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="reverting-a-commit" class="section level2">
+<h2>Reverting a Commit</h2>
+<p>Jennifer is collaborating with colleagues on her Python script. She
+realizes her last commit to the project’s repository contained an error,
+and wants to undo it. Jennifer wants to undo correctly so everyone in
+the project’s repository gets the correct change. The command
+<code>git revert [erroneous commit ID]</code> will create a new commit
+that reverses the erroneous commit.</p>
+<p>The command <code>git revert</code> is different from
+<code>git checkout [commit ID]</code> because <code>git checkout</code>
+returns the files not yet committed within the local repository to a
+previous state, whereas <code>git revert</code> reverses changes
+committed to the local and project repositories.</p>
+<p>Below are the right steps and explanations for Jennifer to use
+<code>git revert</code>, what is the missing command?</p>
+<ol style="list-style-type: decimal">
+<li><p><code>________ # Look at the git history of the project to find the commit ID</code></p></li>
+<li><p>Copy the ID (the first few characters of the ID,
+e.g. 0b1d055).</p></li>
+<li><p><code>git revert [commit ID]</code></p></li>
+<li><p>Type in the new commit message.</p></li>
+<li><p>Save and close</p></li>
+</ol>
+</div>
+<div id="solution-8" class="section level2 solution">
+<h2>Solution</h2>
+<p>The command <code>git log</code> lists project history with commit
+IDs.</p>
+<p>The command <code>git show HEAD</code> shows changes made at the
+latest commit, and lists the commit ID; however, Jennifer should
+double-check it is the correct commit, and no one else has committed
+changes to the repository.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="understanding-workflow-and-history" class="section level2">
+<h2>Understanding Workflow and History</h2>
+<p>What is the output of the last command in</p>
+<pre class="bash"><code>$ cd planets
+$ echo &quot;Venus is beautiful and full of love&quot; &gt; venus.txt
+$ git add venus.txt
+$ echo &quot;Venus is too hot to be suitable as a base&quot; &gt;&gt; venus.txt
+$ git commit -m &quot;Comment on Venus as an unsuitable base&quot;
+$ git checkout HEAD venus.txt
+$ cat venus.txt #this will print the contents of venus.txt to the screen</code></pre>
+<ol style="list-style-type: decimal">
+<li><pre class="output"><code>  Venus is too hot to be suitable as a base</code></pre></li>
+<li><pre class="output"><code>  Venus is beautiful and full of love</code></pre></li>
+<li><pre class="output"><code>  Venus is beautiful and full of love
+  Venus is too hot to be suitable as a base</code></pre></li>
+<li><pre class="output"><code>  Error because you have changed venus.txt without committing the changes</code></pre></li>
+</ol>
+</div>
+<div id="solution-9" class="section level2 solution">
+<h2>Solution</h2>
+<p>The answer is 2.</p>
+<p>The command <code>git add venus.txt</code> places the current version
+of <code>venus.txt</code> into the staging area. The changes to the file
+from the second <code>echo</code> command are only applied to the
+working copy, not the version in the staging area.</p>
+<p>So, when
+<code>git commit -m "Comment on Venus as an unsuitable base"</code> is
+executed, the version of <code>venus.txt</code> committed to the
+repository is the one from the staging area and has only one line.</p>
+<p>At this time, the working copy still has the second line (and
+<code>git status</code> will show that the file is modified). However,
+<code>git checkout HEAD venus.txt</code> replaces the working copy with
+the most recently committed version of <code>venus.txt</code>.</p>
+<p>So, <code>cat venus.txt</code> will output</p>
+<pre class="output"><code>Venus is beautiful and full of love.</code></pre>
+</div>
+</div>
+<div id="checking-understanding-of-git-diff"
+class="section level2 challenge">
+<h2>Checking Understanding of <code>git diff</code></h2>
+<p>Consider this command: <code>git diff HEAD~9 mars.txt</code>. What do
+you predict this command will do if you execute it? What happens when
+you do execute it? Why?</p>
+<p>Try another command, <code>git diff [ID] mars.txt</code>, where [ID]
+is replaced with the unique identifier for your most recent commit. What
+do you think will happen, and what does happen?</p>
+</div>
+<div class="challenge">
+<div id="getting-rid-of-staged-changes" class="section level2">
+<h2>Getting Rid of Staged Changes</h2>
+<p><code>git checkout</code> can be used to restore a previous commit
+when unstaged changes have been made, but will it also work for changes
+that have been staged but not committed? Make a change to
+<code>mars.txt</code>, add that change using <code>git add</code>, then
+use <code>git checkout</code> to see if you can remove your change.</p>
+</div>
+<div id="solution-10" class="section level2 solution">
+<h2>Solution</h2>
+<p>After adding a change, <code>git checkout</code> can not be used
+directly. Let’s look at the output of <code>git status</code>:</p>
+<pre class="output"><code>On branch main
+Changes to be committed:
+  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
+
+        modified:   mars.txt
+</code></pre>
+<p>Note that if you don’t have the same output you may either have
+forgotten to change the file, or you have added it <em>and</em>
+committed it.</p>
+<p>Using the command <code>git checkout -- mars.txt</code> now does not
+give an error, but it does not restore the file either. Git helpfully
+tells us that we need to use <code>git reset</code> first to unstage the
+file:</p>
+<pre class="bash"><code>$ git reset HEAD mars.txt</code></pre>
+<pre class="output"><code>Unstaged changes after reset:
+M   mars.txt</code></pre>
+<p>Now, <code>git status</code> gives us:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+
+        modified:   mars.txt
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</code></pre>
+<p>This means we can now use <code>git checkout</code> to restore the
+file to the previous commit:</p>
+<pre class="bash"><code>$ git checkout -- mars.txt
+$ git status</code></pre>
+<pre class="output"><code>On branch main
+nothing to commit, working tree clean</code></pre>
+</div>
+</div>
+<div id="explore-and-summarize-histories"
+class="section level2 challenge">
+<h2>Explore and Summarize Histories</h2>
+<p>Exploring history is an important part of Git, and often it is a
+challenge to find the right commit ID, especially if the commit is from
+several months ago.</p>
+<p>Imagine the <code>planets</code> project has more than 50 files. You
+would like to find a commit that modifies some specific text in
+<code>mars.txt</code>. When you type <code>git log</code>, a very long
+list appeared. How can you narrow down the search?</p>
+<p>Recall that the <code>git diff</code> command allows us to explore
+one specific file, e.g., <code>git diff mars.txt</code>. We can apply a
+similar idea here.</p>
+<pre class="bash"><code>$ git log mars.txt</code></pre>
+<p>Unfortunately some of these commit messages are very ambiguous, e.g.,
+<code>update files</code>. How can you search through these files?</p>
+<p>Both <code>git diff</code> and <code>git log</code> are very useful
+and they summarize a different part of the history for you. Is it
+possible to combine both? Let’s try the following:</p>
+<pre class="bash"><code>$ git log --patch mars.txt</code></pre>
+<p>You should get a long list of output, and you should be able to see
+both commit messages and the difference between each commit.</p>
+<p>Question: What does the following command do?</p>
+<pre class="bash"><code>$ git log --patch HEAD~9 *.txt</code></pre>
+</div>
+<div class="keypoints">
+<ul>
+<li><code>git diff</code> displays differences between commits.</li>
+<li><code>git checkout</code> recovers old versions of files.</li>
+</ul>
+</div>
+</div>
+<div id="ignoring-things" class="section level1">
+<h1>Ignoring Things</h1>
+<div class="objectives">
+<ul>
+<li>Configure Git to ignore specific files.</li>
+<li>Explain why ignoring files can be useful.</li>
+</ul>
+</div>
+<div class="questions">
+<ul>
+<li>How can I tell Git to ignore files I don’t want to track?</li>
+</ul>
+</div>
+<p>What if we have files that we do not want Git to track for us, like
+backup files created by our editor or intermediate files created during
+data analysis? Let’s create a few dummy files:</p>
+<pre class="bash"><code>$ mkdir results
+$ touch a.dat b.dat c.dat results/a.out results/b.out</code></pre>
+<p>and see what Git says:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+    a.dat
+    b.dat
+    c.dat
+    results/
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)</code></pre>
+<p>Putting these files under version control would be a waste of disk
+space. What’s worse, having them all listed could distract us from
+changes that actually matter, so let’s tell Git to ignore them.</p>
+<p>We do this by creating a file in the root directory of our project
+called <code>.gitignore</code>:</p>
+<pre class="bash"><code>$ nano .gitignore
+$ cat .gitignore</code></pre>
+<pre class="output"><code>*.dat
+results/</code></pre>
+<p>These patterns tell Git to ignore any file whose name ends in
+<code>.dat</code> and everything in the <code>results</code> directory.
+(If any of these files were already being tracked, Git would continue to
+track them.)</p>
+<p>Once we have created this file, the output of <code>git status</code>
+is much cleaner:</p>
+<pre class="bash"><code>$ git status</code></pre>
+<pre class="output"><code>On branch main
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+    .gitignore
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)</code></pre>
+<p>The only thing Git notices now is the newly-created
+<code>.gitignore</code> file. You might think we wouldn’t want to track
+it, but everyone we’re sharing our repository with will probably want to
+ignore the same things that we’re ignoring. Let’s add and commit
+<code>.gitignore</code>:</p>
+<pre class="bash"><code>$ git add .gitignore
+$ git commit -m &quot;Ignore data files and the results folder&quot;
+$ git status</code></pre>
+<pre class="output"><code>On branch main
+nothing to commit, working tree clean</code></pre>
+<p>As a bonus, using <code>.gitignore</code> helps us avoid accidentally
+adding files to the repository that we don’t want to track:</p>
+<pre class="bash"><code>$ git add a.dat</code></pre>
+<pre class="output"><code>The following paths are ignored by one of your .gitignore files:
+a.dat
+Use -f if you really want to add them.</code></pre>
+<p>If we really want to override our ignore settings, we can use
+<code>git add -f</code> to force Git to add something. For example,
+<code>git add -f a.dat</code>. We can also always see the status of
+ignored files if we want:</p>
+<pre class="bash"><code>$ git status --ignored</code></pre>
+<pre class="output"><code>On branch main
+Ignored files:
+ (use &quot;git add -f &lt;file&gt;...&quot; to include in what will be committed)
+
+        a.dat
+        b.dat
+        c.dat
+        results/
+
+nothing to commit, working tree clean</code></pre>
+<div class="challenge">
+<div id="ignoring-nested-files" class="section level2">
+<h2>Ignoring Nested Files</h2>
+<p>Given a directory structure that looks like:</p>
+<pre class="bash"><code>results/data
+results/plots</code></pre>
+<p>How would you ignore only <code>results/plots</code> and not
+<code>results/data</code>?</p>
+</div>
+<div id="solution-11" class="section level2 solution">
+<h2>Solution</h2>
+<p>If you only want to ignore the contents of
+<code>results/plots</code>, you can change your <code>.gitignore</code>
+to ignore only the <code>/plots/</code> subfolder by adding the
+following line to your .gitignore:</p>
+<pre class="output"><code>results/plots/</code></pre>
+<p>This line will ensure only the contents of <code>results/plots</code>
+is ignored, and not the contents of <code>results/data</code>.</p>
+<p>As with most programming issues, there are a few alternative ways
+that one may ensure this ignore rule is followed. The “Ignoring Nested
+Files: Variation” exercise has a slightly different directory structure
+that presents an alternative solution. Further, the discussion page has
+more detail on ignore rules.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="including-specific-files" class="section level2">
+<h2>Including Specific Files</h2>
+<p>How would you ignore all <code>.dat</code> files in your root
+directory except for <code>final.dat</code>? Hint: Find out what
+<code>!</code> (the exclamation point operator) does</p>
+</div>
+<div id="solution-12" class="section level2 solution">
+<h2>Solution</h2>
+<p>You would add the following two lines to your .gitignore:</p>
+<pre class="output"><code>*.dat           # ignore all data files
+!final.dat      # except final.data</code></pre>
+<p>The exclamation point operator will include a previously excluded
+entry.</p>
+<p>Note also that because you’ve previously committed <code>.dat</code>
+files in this lesson they will not be ignored with this new rule. Only
+future additions of <code>.dat</code> files added to the root directory
+will be ignored.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="ignoring-nested-files-variation" class="section level2">
+<h2>Ignoring Nested Files: Variation</h2>
+<p>Given a directory structure that looks similar to the earlier Nested
+Files exercise, but with a slightly different directory structure:</p>
+<pre class="bash"><code>results/data
+results/images
+results/plots
+results/analysis</code></pre>
+<p>How would you ignore all of the contents in the results folder, but
+not <code>results/data</code>?</p>
+<p>Hint: think a bit about how you created an exception with the
+<code>!</code> operator before.</p>
+</div>
+<div id="solution-13" class="section level2 solution">
+<h2>Solution</h2>
+<p>If you want to ignore the contents of <code>results/</code> but not
+those of <code>results/data/</code>, you can change your
+<code>.gitignore</code> to ignore the contents of results folder, but
+create an exception for the contents of the <code>results/data</code>
+subfolder. Your .gitignore would look like this:</p>
+<pre class="output"><code>results/*               # ignore everything in results folder
+!results/data/          # do not ignore results/data/ contents</code></pre>
+</div>
+</div>
+<div class="challenge">
+<div id="ignoring-all-data-files-in-a-directory" class="section level2">
+<h2>Ignoring all data Files in a Directory</h2>
+<p>Assuming you have an empty .gitignore file, and given a directory
+structure that looks like:</p>
+<pre class="bash"><code>results/data/position/gps/a.dat
+results/data/position/gps/b.dat
+results/data/position/gps/c.dat
+results/data/position/gps/info.txt
+results/plots</code></pre>
+<p>What’s the shortest <code>.gitignore</code> rule you could write to
+ignore all <code>.dat</code> files in
+<code>result/data/position/gps</code>? Do not ignore the
+<code>info.txt</code>.</p>
+</div>
+<div id="solution-14" class="section level2 solution">
+<h2>Solution</h2>
+<p>Appending <code>results/data/position/gps/*.dat</code> will match
+every file in <code>results/data/position/gps</code> that ends with
+<code>.dat</code>. The file
+<code>results/data/position/gps/info.txt</code> will not be ignored.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="ignoring-all-data-files-in-the-repository"
+class="section level2">
+<h2>Ignoring all data Files in the repository</h2>
+<p>Let us assume you have many <code>.dat</code> files in different
+subdirectories of your repository. For example, you might have:</p>
+<pre class="bash"><code>results/a.dat
+data/experiment_1/b.dat
+data/experiment_2/c.dat
+data/experiment_2/variation_1/d.dat</code></pre>
+<p>How do you ignore all the <code>.dat</code> files, without explicitly
+listing the names of the corresponding folders?</p>
+</div>
+<div id="solution-15" class="section level2 solution">
+<h2>Solution</h2>
+<p>In the <code>.gitignore</code> file, write:</p>
+<pre class="output"><code>**/*.dat               </code></pre>
+<p>This will ignore all the <code>.dat</code> files, regardless of their
+position in the directory tree. You can still include some specific
+exception with the exclamation point operator.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="the-order-of-rules" class="section level2">
+<h2>The Order of Rules</h2>
+<p>Given a <code>.gitignore</code> file with the following contents:</p>
+<pre class="bash"><code>*.dat
+!*.dat</code></pre>
+<p>What will be the result?</p>
+</div>
+<div id="solution-16" class="section level2 solution">
+<h2>Solution</h2>
+<p>The <code>!</code> modifier will negate an entry from a previously
+defined ignore pattern. Because the <code>!*.dat</code> entry negates
+all of the previous <code>.dat</code> files in the
+<code>.gitignore</code>, none of them will be ignored, and all
+<code>.dat</code> files will be tracked.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="log-files" class="section level2">
+<h2>Log Files</h2>
+<p>You wrote a script that creates many intermediate log-files of the
+form <code>log_01</code>, <code>log_02</code>, <code>log_03</code>, etc.
+You want to keep them but you do not want to track them through
+<code>git</code>.</p>
+<ol style="list-style-type: decimal">
+<li><p>Write <strong>one</strong> <code>.gitignore</code> entry that
+excludes files of the form <code>log_01</code>, <code>log_02</code>,
+etc.</p></li>
+<li><p>Test your “ignore pattern” by creating some dummy files of the
+form <code>log_01</code>, etc.</p></li>
+<li><p>You find that the file <code>log_01</code> is very important
+after all, add it to the tracked files without changing the
+<code>.gitignore</code> again.</p></li>
+<li><p>Discuss with your neighbor what other types of files could reside
+in your directory that you do not want to track and thus would exclude
+via <code>.gitignore</code>.</p></li>
+</ol>
+</div>
+<div id="solution-17" class="section level2 solution">
+<h2>Solution</h2>
+<ol style="list-style-type: decimal">
+<li>append either <code>log_*</code> or <code>log*</code> as a new entry
+in your .gitignore</li>
+<li>track <code>log_01</code> using <code>git add -f log_01</code></li>
+</ol>
+</div>
+</div>
+<div class="keypoints">
+<ul>
+<li>The <code>.gitignore</code> file tells Git what files to
+ignore.</li>
+</ul>
+</div>
+</div>
+<div id="remotes-in-github" class="section level1">
+<h1>Remotes in GitHub</h1>
+<div class="objectives">
+<ul>
+<li>Explain what remote repositories are and why they are useful.</li>
+<li>Push to or pull from a remote repository.</li>
+</ul>
+</div>
+<div class="questions">
+<ul>
+<li>How do I share my changes with others on the web?</li>
+</ul>
+</div>
+<p>Version control really comes into its own when we begin to
+collaborate with other people. We already have most of the machinery we
+need to do this; the only thing missing is to copy changes from one
+repository to another.</p>
+<p>Systems like Git allow us to move work between any two repositories.
+In practice, though, it’s easiest to use one copy as a central hub, and
+to keep it on the web rather than on someone’s laptop. Most programmers
+use hosting services like <a href="https://github.com">GitHub</a>, <a
+href="https://bitbucket.org">Bitbucket</a> or <a
+href="https://gitlab.com/">GitLab</a> to hold those main copies; we’ll
+explore the pros and cons of this in a <a href="13-hosting.md">later
+episode</a>.</p>
+<p>Let’s start by sharing the changes we’ve made to our current project
+with the world. To this end we are going to create a <em>remote</em>
+repository that will be linked to our <em>local</em> repository.</p>
+<div id="create-a-remote-repository" class="section level2">
+<h2>1. Create a remote repository</h2>
+<p>Log in to <a href="https://github.com">GitHub</a>, then click on the
+icon in the top right corner to create a new repository called
+<code>planets</code>:</p>
+<p><img src="fig/github-create-repo-01.png"
+alt="Creating a Repository on GitHub (Step 1)" /></p>
+<p>Name your repository “planets” and then click “Create
+Repository”.</p>
+<p>Note: Since this repository will be connected to a local repository,
+it needs to be empty. Leave “Initialize this repository with a README”
+unchecked, and keep “None” as options for both “Add .gitignore” and “Add
+a license.” See the “GitHub License and README files” exercise below for
+a full explanation of why the repository needs to be empty.</p>
+<p><img src="fig/github-create-repo-02.png"
+alt="Creating a Repository on GitHub (Step 2)" /></p>
+<p>As soon as the repository is created, GitHub displays a page with a
+URL and some information on how to configure your local repository:</p>
+<p><img src="fig/github-create-repo-03.png"
+alt="Creating a Repository on GitHub (Step 3)" /></p>
+<p>This effectively does the following on GitHub’s servers:</p>
+<pre class="bash"><code>$ mkdir planets
+$ cd planets
+$ git init</code></pre>
+<p>If you remember back to the earlier <a
+href="04-changes.md">episode</a> where we added and committed our
+earlier work on <code>mars.txt</code>, we had a diagram of the local
+repository which looked like this:</p>
+<p><img src="fig/git-staging-area.svg"
+alt="The Local Repository with Git Staging Area" /></p>
+<p>Now that we have two repositories, we need a diagram like this:</p>
+<p><img src="fig/git-freshly-made-github-repo.svg"
+alt="Freshly-Made GitHub Repository" /></p>
+<p>Note that our local repository still contains our earlier work on
+<code>mars.txt</code>, but the remote repository on GitHub appears empty
+as it doesn’t contain any files yet.</p>
+</div>
+<div id="connect-local-to-remote-repository" class="section level2">
+<h2>2. Connect local to remote repository</h2>
+<p>Now we connect the two repositories. We do this by making the GitHub
+repository a <a href="../learners/reference.md#remote">remote</a> for
+the local repository. The home page of the repository on GitHub includes
+the URL string we need to identify it:</p>
+<p><img src="fig/github-find-repo-string.png"
+alt="Where to Find Repository URL on GitHub" /></p>
+<p>Click on the ‘SSH’ link to change the <a
+href="../learners/reference.md#protocol">protocol</a> from HTTPS to
+SSH.</p>
+</div>
+<div id="https-vs.-ssh" class="section level2 callout">
+<h2>HTTPS vs. SSH</h2>
+<p>We use SSH here because, while it requires some additional
+configuration, it is a security protocol widely used by many
+applications. The steps below describe SSH at a minimum level for
+GitHub.</p>
+</div>
+<p><img src="fig/github-change-repo-string.png"
+alt="Changing the Repository URL on GitHub" /></p>
+<p>Copy that URL from the browser, go into the local
+<code>planets</code> repository, and run this command:</p>
+<pre class="bash"><code>$ git remote add origin git@github.com:vlad/planets.git</code></pre>
+<p>Make sure to use the URL for your repository rather than Vlad’s: the
+only difference should be your username instead of
+<code>vlad</code>.</p>
+<p><code>origin</code> is a local name used to refer to the remote
+repository. It could be called anything, but <code>origin</code> is a
+convention that is often used by default in git and GitHub, so it’s
+helpful to stick with this unless there’s a reason not to.</p>
+<p>We can check that the command has worked by running
+<code>git remote -v</code>:</p>
+<pre class="bash"><code>$ git remote -v</code></pre>
+<pre class="output"><code>origin   git@github.com:vlad/planets.git (fetch)
+origin   git@github.com:vlad/planets.git (push)</code></pre>
+<p>We’ll discuss remotes in more detail in the next episode, while
+talking about how they might be used for collaboration.</p>
+<div id="ssh-background-and-setup" class="section level2">
+<h2>3. SSH Background and Setup</h2>
+<p>Before Dracula can connect to a remote repository, he needs to set up
+a way for his computer to authenticate with GitHub so it knows it’s him
+trying to connect to his remote repository.</p>
+<p>We are going to set up the method that is commonly used by many
+different services to authenticate access on the command line. This
+method is called Secure Shell Protocol (SSH). SSH is a cryptographic
+network protocol that allows secure communication between computers
+using an otherwise insecure network.</p>
+<p>SSH uses what is called a key pair. This is two keys that work
+together to validate access. One key is publicly known and called the
+public key, and the other key called the private key is kept private.
+Very descriptive names.</p>
+<p>You can think of the public key as a padlock, and only you have the
+key (the private key) to open it. You use the public key where you want
+a secure method of communication, such as your GitHub account. You give
+this padlock, or public key, to GitHub and say “lock the communications
+to my account with this so that only computers that have my private key
+can unlock communications and send git commands as my GitHub
+account.”</p>
+<p>What we will do now is the minimum required to set up the SSH keys
+and add the public key to a GitHub account.</p>
+</div>
+<div id="advanced-ssh" class="section level2 callout">
+<h2>Advanced SSH</h2>
+<p>A supplemental episode in this lesson discusses SSH and key pairs in
+more depth and detail.</p>
+</div>
+<p>The first thing we are going to do is check if this has already been
+done on the computer you’re on. Because generally speaking, this setup
+only needs to happen once and then you can forget about it.</p>
+<div id="keeping-your-keys-secure" class="section level2 callout">
+<h2>Keeping your keys secure</h2>
+<p>You shouldn’t really forget about your SSH keys, since they keep your
+account secure. It’s good practice to audit your secure shell keys every
+so often. Especially if you are using multiple computers to access your
+account.</p>
+</div>
+<p>We will run the list command to check what key pairs already exist on
+your computer.</p>
+<pre class="bash"><code>ls -al ~/.ssh</code></pre>
+<p>Your output is going to look a little different depending on whether
+or not SSH has ever been set up on the computer you are using.</p>
+<p>Dracula has not set up SSH on his computer, so his output is</p>
+<pre class="output"><code>ls: cannot access &#39;/c/Users/Vlad Dracula/.ssh&#39;: No such file or directory</code></pre>
+<p>If SSH has been set up on the computer you’re using, the public and
+private key pairs will be listed. The file names are either
+<code>id_ed25519</code>/<code>id_ed25519.pub</code> or
+<code>id_rsa</code>/<code>id_rsa.pub</code> depending on how the key
+pairs were set up.<br />
+Since they don’t exist on Dracula’s computer, he uses this command to
+create them.</p>
+<div id="create-an-ssh-key-pair" class="section level3">
+<h3>3.1 Create an SSH key pair</h3>
+<p>To create an SSH key pair Vlad uses this command, where the
+<code>-t</code> option specifies which type of algorithm to use and
+<code>-C</code> attaches a comment to the key (here, Vlad’s email):</p>
+<pre class="bash"><code>$ ssh-keygen -t ed25519 -C &quot;vlad@tran.sylvan.ia&quot;</code></pre>
+<p>If you are using a legacy system that doesn’t support the Ed25519
+algorithm, use:
+<code>$ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"</code></p>
+<pre class="output"><code>Generating public/private ed25519 key pair.
+Enter file in which to save the key (/c/Users/Vlad Dracula/.ssh/id_ed25519):</code></pre>
+<p>We want to use the default file, so just press <kbd>Enter</kbd>.</p>
+<pre class="output"><code>Created directory &#39;/c/Users/Vlad Dracula/.ssh&#39;.
+Enter passphrase (empty for no passphrase):</code></pre>
+<p>Now, it is prompting Dracula for a passphrase. Since he is using his
+lab’s laptop that other people sometimes have access to, he wants to
+create a passphrase. Be sure to use something memorable or save your
+passphrase somewhere, as there is no “reset my password” option.</p>
+<pre class="output"><code>Enter same passphrase again:</code></pre>
+<p>After entering the same passphrase a second time, we receive the
+confirmation</p>
+<pre class="output"><code>Your identification has been saved in /c/Users/Vlad Dracula/.ssh/id_ed25519
+Your public key has been saved in /c/Users/Vlad Dracula/.ssh/id_ed25519.pub
+The key fingerprint is:
+SHA256:SMSPIStNyA00KPxuYu94KpZgRAYjgt9g4BA4kFy3g1o vlad@tran.sylvan.ia
+The key&#39;s randomart image is:
++--[ED25519 256]--+
+|^B== o.          |
+|%*=.*.+          |
+|+=.E =.+         |
+| .=.+.o..        |
+|....  . S        |
+|.+ o             |
+|+ =              |
+|.o.o             |
+|oo+.             |
++----[SHA256]-----+</code></pre>
+<p>The “identification” is actually the private key. You should never
+share it. The public key is appropriately named. The “key fingerprint”
+is a shorter version of a public key.</p>
+<p>Now that we have generated the SSH keys, we will find the SSH files
+when we check.</p>
+<pre class="bash"><code>ls -al ~/.ssh</code></pre>
+<pre class="output"><code>drwxr-xr-x 1 Vlad Dracula 197121   0 Jul 16 14:48 ./
+drwxr-xr-x 1 Vlad Dracula 197121   0 Jul 16 14:48 ../
+-rw-r--r-- 1 Vlad Dracula 197121 419 Jul 16 14:48 id_ed25519
+-rw-r--r-- 1 Vlad Dracula 197121 106 Jul 16 14:48 id_ed25519.pub</code></pre>
+</div>
+<div id="copy-the-public-key-to-github" class="section level3">
+<h3>3.2 Copy the public key to GitHub</h3>
+<p>Now we have a SSH key pair and we can run this command to check if
+GitHub can read our authentication.</p>
+<pre class="bash"><code>ssh -T git@github.com</code></pre>
+<pre class="output"><code>The authenticity of host &#39;github.com (192.30.255.112)&#39; can&#39;t be established.
+RSA key fingerprint is SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? y
+Please type &#39;yes&#39;, &#39;no&#39; or the fingerprint: yes
+Warning: Permanently added &#39;github.com&#39; (RSA) to the list of known hosts.
+git@github.com: Permission denied (publickey).</code></pre>
+<p>Right, we forgot that we need to give GitHub our public key!</p>
+<p>First, we need to copy the public key. Be sure to include the
+<code>.pub</code> at the end, otherwise you’re looking at the private
+key.</p>
+<pre class="bash"><code>cat ~/.ssh/id_ed25519.pub</code></pre>
+<pre class="output"><code>ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDmRA3d51X0uu9wXek559gfn6UFNF69yZjChyBIU2qKI vlad@tran.sylvan.ia</code></pre>
+<p>Now, going to GitHub.com, click on your profile icon in the top right
+corner to get the drop-down menu. Click “Settings,” then on the settings
+page, click “SSH and GPG keys,” on the left side “Account settings”
+menu. Click the “New SSH key” button on the right side. Now, you can add
+the title (Dracula uses the title “Vlad’s Lab Laptop” so he can remember
+where the original key pair files are located), paste your SSH key into
+the field, and click the “Add SSH key” to complete the setup.</p>
+<p>Now that we’ve set that up, let’s check our authentication again from
+the command line.</p>
+<pre class="bash"><code>$ ssh -T git@github.com</code></pre>
+<pre class="output"><code>Hi Vlad! You&#39;ve successfully authenticated, but GitHub does not provide shell access.</code></pre>
+<p>Good! This output confirms that the SSH key works as intended. We are
+now ready to push our work to the remote repository.</p>
+</div>
+<div id="push-local-changes-to-a-remote" class="section level2">
+<h2>4. Push local changes to a remote</h2>
+<p>Now that authentication is setup, we can return to the remote. This
+command will push the changes from our local repository to the
+repository on GitHub:</p>
+<pre class="bash"><code>$ git push origin main</code></pre>
+<p>Since Dracula set up a passphrase, it will prompt him for it. If you
+completed advanced settings for your authentication, it will not prompt
+for a passphrase.</p>
+<pre class="output"><code>Enumerating objects: 16, done.
+Counting objects: 100% (16/16), done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (11/11), done.
+Writing objects: 100% (16/16), 1.45 KiB | 372.00 KiB/s, done.
+Total 16 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), done.
+To https://github.com/vlad/planets.git
+ * [new branch]      main -&gt; main</code></pre>
+</div>
+<div id="proxy-1" class="section level2 callout">
+<h2>Proxy</h2>
+<p>If the network you are connected to uses a proxy, there is a chance
+that your last command failed with “Could not resolve hostname” as the
+error message. To solve this issue, you need to tell Git about the
+proxy:</p>
+<pre class="bash"><code>$ git config --global http.proxy http://user:password@proxy.url
+$ git config --global https.proxy https://user:password@proxy.url</code></pre>
+<p>When you connect to another network that doesn’t use a proxy, you
+will need to tell Git to disable the proxy using:</p>
+<pre class="bash"><code>$ git config --global --unset http.proxy
+$ git config --global --unset https.proxy</code></pre>
+</div>
+<div id="password-managers" class="section level2 callout">
+<h2>Password Managers</h2>
+<p>If your operating system has a password manager configured,
+<code>git push</code> will try to use it when it needs your username and
+password. For example, this is the default behavior for Git Bash on
+Windows. If you want to type your username and password at the terminal
+instead of using a password manager, type:</p>
+<pre class="bash"><code>$ unset SSH_ASKPASS</code></pre>
+<p>in the terminal, before you run <code>git push</code>. Despite the
+name, <a
+href="https://git-scm.com/docs/gitcredentials#_requesting_credentials">Git
+uses <code>SSH_ASKPASS</code> for all credential entry</a>, so you may
+want to unset <code>SSH_ASKPASS</code> whether you are using Git via SSH
+or https.</p>
+<p>You may also want to add <code>unset SSH_ASKPASS</code> at the end of
+your <code>~/.bashrc</code> to make Git default to using the terminal
+for usernames and passwords.</p>
+</div>
+<p>Our local and remote repositories are now in this state:</p>
+<p><img src="fig/github-repo-after-first-push.svg"
+alt="GitHub Repository After First Push" /></p>
+<div id="the--u-flag" class="section level2 callout">
+<h2>The ‘-u’ Flag</h2>
+<p>You may see a <code>-u</code> option used with <code>git push</code>
+in some documentation. This option is synonymous with the
+<code>--set-upstream-to</code> option for the <code>git branch</code>
+command, and is used to associate the current branch with a remote
+branch so that the <code>git pull</code> command can be used without any
+arguments. To do this, simply use <code>git push -u origin main</code>
+once the remote has been set up.</p>
+</div>
+<p>We can pull changes from the remote repository to the local one as
+well:</p>
+<pre class="bash"><code>$ git pull origin main</code></pre>
+<pre class="output"><code>From https://github.com/vlad/planets
+ * branch            main     -&gt; FETCH_HEAD
+Already up-to-date.</code></pre>
+<p>Pulling has no effect in this case because the two repositories are
+already synchronized. If someone else had pushed some changes to the
+repository on GitHub, though, this command would download them to our
+local repository.</p>
+<div class="challenge">
+<div id="github-gui" class="section level2">
+<h2>GitHub GUI</h2>
+<p>Browse to your <code>planets</code> repository on GitHub. Underneath
+the Code button, find and click on the text that says “XX commits”
+(where “XX” is some number). Hover over, and click on, the three buttons
+to the right of each commit. What information can you gather/explore
+from these buttons? How would you get that same information in the
+shell?</p>
+</div>
+<div id="solution-18" class="section level2 solution">
+<h2>Solution</h2>
+<p>The left-most button (with the picture of a clipboard) copies the
+full identifier of the commit to the clipboard. In the shell,
+<code>git log</code> will show you the full commit identifier for each
+commit.</p>
+<p>When you click on the middle button, you’ll see all of the changes
+that were made in that particular commit. Green shaded lines indicate
+additions and red ones removals. In the shell we can do the same thing
+with <code>git diff</code>. In particular,
+<code>git diff ID1..ID2</code> where ID1 and ID2 are commit identifiers
+(e.g. <code>git diff a3bf1e5..041e637</code>) will show the differences
+between those two commits.</p>
+<p>The right-most button lets you view all of the files in the
+repository at the time of that commit. To do this in the shell, we’d
+need to checkout the repository at that particular time. We can do this
+with <code>git checkout ID</code> where ID is the identifier of the
+commit we want to look at. If we do this, we need to remember to put the
+repository back to the right state afterwards!</p>
+</div>
+</div>
+<div id="uploading-files-directly-in-github-browser"
+class="section level2 callout">
+<h2>Uploading files directly in GitHub browser</h2>
+<p>Github also allows you to skip the command line and upload files
+directly to your repository without having to leave the browser. There
+are two options. First you can click the “Upload files” button in the
+toolbar at the top of the file tree. Or, you can drag and drop files
+from your desktop onto the file tree. You can read more about this <a
+href="https://help.github.com/articles/adding-a-file-to-a-repository/">on
+this GitHub page</a>.</p>
+</div>
+<div class="challenge">
+<div id="github-timestamp" class="section level2">
+<h2>GitHub Timestamp</h2>
+<p>Create a remote repository on GitHub. Push the contents of your local
+repository to the remote. Make changes to your local repository and push
+these changes. Go to the repo you just created on GitHub and check the
+<a href="../learners/reference.md#timestamp">timestamps</a> of the
+files. How does GitHub record times, and why?</p>
+</div>
+<div id="solution-19" class="section level2 solution">
+<h2>Solution</h2>
+<p>GitHub displays timestamps in a human readable relative format
+(i.e. “22 hours ago” or “three weeks ago”). However, if you hover over
+the timestamp, you can see the exact time at which the last change to
+the file occurred.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="push-vs.-commit" class="section level2">
+<h2>Push vs. Commit</h2>
+<p>In this episode, we introduced the “git push” command. How is “git
+push” different from “git commit”?</p>
+</div>
+<div id="solution-20" class="section level2 solution">
+<h2>Solution</h2>
+<p>When we push changes, we’re interacting with a remote repository to
+update it with the changes we’ve made locally (often this corresponds to
+sharing the changes we’ve made with others). Commit only updates your
+local repository.</p>
+</div>
+</div>
+<div class="challenge">
+<div id="github-license-and-readme-files" class="section level2">
+<h2>GitHub License and README files</h2>
+<p>In this episode we learned about creating a remote repository on
+GitHub, but when you initialized your GitHub repo, you didn’t add a
+README.md or a license file. If you had, what do you think would have
+happened when you tried to link your local and remote repositories?</p>
+</div>
+<div id="solution-21" class="section level2 solution">
+<h2>Solution</h2>
+<p>In this case, we’d see a merge conflict due to unrelated histories.
+When GitHub creates a README.md file, it performs a commit in the remote
+repository. When you try to pull the remote repository to your local
+repository, Git detects that they have histories that do not share a
+common origin and refuses to merge.</p>
+<pre class="bash"><code>$ git pull origin main</code></pre>
+<pre class="output"><code>warning: no common commits
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), done.
+From https://github.com/vlad/planets
+ * branch            main     -&gt; FETCH_HEAD
+ * [new branch]      main     -&gt; origin/main
+fatal: refusing to merge unrelated histories</code></pre>
+<p>You can force git to merge the two repositories with the option
+<code>--allow-unrelated-histories</code>. Be careful when you use this
+option and carefully examine the contents of local and remote
+repositories before merging.</p>
+<pre class="bash"><code>$ git pull --allow-unrelated-histories origin main</code></pre>
+<pre class="output"><code>From https://github.com/vlad/planets
+ * branch            main     -&gt; FETCH_HEAD
+Merge made by the &#39;recursive&#39; strategy.
+README.md | 1 +
+1 file changed, 1 insertion(+)
+create mode 100644 README.md</code></pre>
+</div>
+</div>
+<div class="keypoints">
+<ul>
+<li>A local Git repository can be connected to one or more remote
+repositories.</li>
+<li>Use the SSH protocol to connect to remote repositories.</li>
+<li><code>git push</code> copies changes from a local repository to a
+remote repository.</li>
+<li><code>git pull</code> copies changes from a remote repository to a
+local repository.</li>
+</ul>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
