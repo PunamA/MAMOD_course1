@@ -15,8 +15,6 @@ navbar:
 output_dir: "."
 output:
   html_document:
-    includes:
-      before_body: logo.html
     toc: true
     toc_depth: 4
     toc_float: true
