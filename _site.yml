@@ -2,8 +2,8 @@ name: "R Markdown Websites Tutorial"
 navbar:
   title: "Before we get Started"
   left:
-    - text: "Data management"
-      href: 01_datamanagement.html
+    - text: "Introduction to Unix Shell"
+      href: 01_unix_tutorial1.html
     - text: "Data handling and Visualisation in R"
       href: 02_datahandling.html
     - text: "Spatial Data in QGIS"

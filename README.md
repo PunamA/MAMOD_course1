@@ -1,3 +1,3 @@
-# ASTMH tutorial webpage
+# MAMOD course MSc
 
 this is a test website 
